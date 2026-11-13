@@ -855,7 +855,7 @@ function levelOf(c){
   return {src:"reg",coef:COEF.rg,lab:"Régional"};
 }
 function klassData(){
-  const B={};
+  const B={},seen=new Set();
   if(!RES)return B;
   D.comps.forEach(c=>{
     if(!inSeason(c))return;const lv=levelOf(c);if(!lv)return;
@@ -867,6 +867,7 @@ function klassData(){
         if(!r.final||!r.final.length)return;
         r.final.forEach(f=>{
           const p=r.players[f.id];if(!p)return;
+          const sk=(r.gid||"")+"|"+f.id;if(r.gid){if(seen.has(sk))return;seen.add(sk)}
           let pc=pcat(p[3])||single;if(!pc||!KCATS.includes(pc))return;
           const gap=minr&&KRK[pc]?Math.max(0,minr-KRK[pc]):0;
           const coef=lv.coef*(1+COEF.sur*gap),base=ptsOf(f.pl);
