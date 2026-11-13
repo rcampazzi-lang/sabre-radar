@@ -530,10 +530,11 @@ function bodyHTML(c){
   <div class="sec">Épreuves</div>${rows}
   <div class="mini">${c.src?esc(c.src)+". ":"Pas de note sur la fiche. "}Horaires et tarifs à confirmer dans la note.</div>`;
 }
-function compSheet(ci){const c=D.comps[ci];sheet(`${esc(c.v)}<div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
+function compSheet(ci){CUR.g=null;const c=D.comps[ci];sheet(`${esc(c.v)}<div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
 function addDay(s){const d=new Date(s+"T12:00:00");d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
+function noteKey(c){return c.nh||c.nt||""}
 function groupComps(L){
-  const by=new Map();for(const c of L){const k=c.v.toLowerCase().trim();if(!by.has(k))by.set(k,[]);by.get(k).push(c)}
+  const by=new Map();for(const c of L){const nk=noteKey(c);const k=c.v.toLowerCase().trim()+"|"+(nk||("#"+c.id));if(!by.has(k))by.set(k,[]);by.get(k).push(c)}
   const G=[];
   for(const arr of by.values()){arr.sort((a,b)=>a.d.localeCompare(b.d));let cur=null;
     for(const c of arr){if(cur&&c.d<=addDay(cur.f)){cur.cs.push(c);if(c.f>cur.f)cur.f=c.f}else{cur={d:c.d,f:c.f,cs:[c]};G.push(cur)}}}
@@ -555,7 +556,32 @@ function groupHTML(g){
     <div class="tags">${types}${g.cs.some(c=>c.go)?`<span class="pill warn">Pas encore sur FFE</span>`:""}${g.cs.some(c=>c.eps.some(e=>e.o))?'<span class="pill open">Open</span>':""}${dls}</div>
     <div class="eps">${rows}</div></article>`;
 }
-function grpSheet(gi){const g=GRP[gi];if(!g)return;sheet(`${esc(g.cs[0].v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,g.cs.map(c=>cardHTML(c,c.eps.filter(epMatch),false)).join(""))}
+let CUR={g:null};
+const reopen=ci=>{if(CUR.g!=null&&GRP[CUR.g])grpSheet(CUR.g);else compSheet(ci)};
+function epRowHTML(c,e){const i=c.eps.indexOf(e);
+  const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
+  return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div></div>`}
+function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
+  const types=[...new Set(g.cs.map(x=>x.ty).filter(Boolean))].map(t=>`<span class="pill ty-${TYC[t]||""}">${esc(TYL[t]||t)}</span>`).join("");
+  const dls=[...new Set(g.cs.filter(x=>x.f>=TODAY).map(dlInfo).filter(Boolean))].join("");
+  const inscr=g.cs.filter(x=>x.eps.some(e=>e.n)).map(x=>`<button class="btn primary" data-eng="${x.id}:all">Inscrits${multi?" · "+esc(fd(x.d)):""}</button>`).join("");
+  const ffe=g.cs.filter(x=>!x.go).map(x=>`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(x.k)}" target="_blank" rel="noopener">Page FFE${multi?" · "+esc(fd(x.d)):""}</a>`).join("");
+  const sections=g.cs.map(x=>{const eps=x.eps.filter(epMatch);const show=eps.length?eps:x.eps;return (multi?`<div class="sec">${esc(fd(x.d))}${x.f!==x.d?" → "+esc(fd(x.f)):""}</div>`:`<div class="sec">Épreuves</div>`)+show.map(e=>epRowHTML(x,e)).join("")}).join("");
+  const names=[...new Set(g.cs.map(x=>x.nn||x.n).filter(Boolean))];
+  const dl=[...new Set(g.cs.filter(x=>x.dl).map(x=>fdy(x.dl)))].join(", ");
+  const link=EGL[c.k]?"":"";
+  return `<div class="tags" style="margin-bottom:4px">${types}${g.cs.some(x=>x.go)?`<span class="pill warn">Pas encore sur FFE</span>`:""}${g.cs.some(x=>x.eps.some(e=>e.o))?'<span class="pill open">Open</span>':'<span class="pill mute">Non open</span>'}${dls}</div>
+  <div class="btns">${inscr}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${ffe}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c).replace('data-egsave="'+c.id+'"','data-egsave="'+c.id+'" data-eggrp="'+gi+'"').replace('data-egdel="'+c.id+'"','data-egdel="'+c.id+'" data-eggrp="'+gi+'"')}
+  <dl class="kv">
+    <dt>Dates</dt><dd>${esc(fd(g.d))}${g.f!==g.d?" → "+esc(fd(g.f)):""}</dd>
+    ${names.length?`<dt>Nom</dt><dd>${names.map(esc).join("<br>")}</dd>`:""}
+    <dt>Type</dt><dd>${esc(TYL[c.ty]||c.ty||"–")}${c.tw?`<br><span class="sub">${esc(c.tw)}</span>`:""}</dd>
+    <dt>Lieu</dt><dd>${[c.dt,c.rg&&c.rg!==c.gr?c.rg:"",c.gr].filter(Boolean).map(esc).join(" · ")||"Non déterminé"}</dd>
+    <dt>Adresse</dt><dd>${c.ad?esc(c.ad):"Non indiquée"}</dd>
+    ${dl?`<dt>Inscription</dt><dd>avant le ${dl}</dd>`:""}
+  </dl>${sections}
+  <div class="mini">${c.src?esc(c.src)+". ":""}Horaires et tarifs à confirmer dans la note.</div>`}
+function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;const c=g.cs[0];sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,groupBody(g,gi))}
 function renderComps(){
   const q=S.q.trim().toLowerCase();
   let L=D.comps.filter(c=>{
@@ -908,15 +934,15 @@ document.addEventListener("click",ev=>{
   if(!b){const cg=ev.target.closest("[data-grp]");if(cg&&!ev.target.closest("a")){grpSheet(Number(cg.dataset.grp));return}const cd=ev.target.closest("[data-comp]");if(cd&&!ev.target.closest("a"))compSheet(Number(cd.dataset.comp));return}
   if(b.dataset.close){closeSheet();return}
   if(b.dataset.ega||b.dataset.egsv||b.dataset.egrm||b.dataset.egback){const [ci0,ei0]=(b.dataset.ega||b.dataset.egsv||b.dataset.egrm||b.dataset.egback).split(":");const ci=D.comps.findIndex(x=>String(x.id)===ci0);
-    if(b.dataset.egback){compSheet(ci);return}
+    if(b.dataset.egback){reopen(ci);return}
     if(b.dataset.ega){egAdd(ci,Number(ei0));return}
     const c=D.comps[ci],e=c.eps[Number(ei0)];
-    if(b.dataset.egrm){delete EGE[epKey(c,e)];saveEE();compSheet(ci);return}
+    if(b.dataset.egrm){delete EGE[epKey(c,e)];saveEE();reopen(ci);return}
     const v=($("#ega-in")?.value||"").trim();
     if(/^https?:\/\/(www\.)?engarde-service\.com\/competition\/[^\/]+\/[^\/]+\/[^\/]+/i.test(v)){EGE[epKey(c,e)]=v;saveEE();egView(ci,Number(ei0),"tireurs")}else{$("#ega-in").style.borderColor="var(--bad)"}
     return}
   if(b.dataset.egv){const [ci,ei,k]=b.dataset.egv.split(":");const ix=D.comps.findIndex(x=>String(x.id)===ci);egView(ix,Number(ei),k);return}
-  if(b.dataset.egsave||b.dataset.egdel){const id=Number(b.dataset.egsave||b.dataset.egdel),c=D.comps.find(x=>x.id===id);if(c){const v=($("#eg-in")?.value||"").trim();if(b.dataset.egdel)delete EGL[c.k];else if(/^https?:\/\/([a-z0-9-]+\.)*engarde-service\.com\//i.test(v))EGL[c.k]=v;else{$("#eg-in").style.borderColor="var(--bad)";return}saveEG();compSheet(D.comps.indexOf(c))}return}
+  if(b.dataset.egsave||b.dataset.egdel){const id=Number(b.dataset.egsave||b.dataset.egdel),c=D.comps.find(x=>x.id===id);if(c){const gg=b.dataset.eggrp!=null?GRP[Number(b.dataset.eggrp)]:null,cs=gg?gg.cs:[c];const v=($("#eg-in")?.value||"").trim();if(b.dataset.egdel)cs.forEach(x=>delete EGL[x.k]);else if(/^https?:\/\/([a-z0-9-]+\.)*engarde-service\.com\//i.test(v))cs.forEach(x=>EGL[x.k]=v);else{$("#eg-in").style.borderColor="var(--bad)";return}saveEG();reopen(D.comps.indexOf(c))}return}
   if(b.dataset.eng){const [c,e]=b.dataset.eng.split(":");engages(Number(c),e==="all"?"all":Number(e));return}
   if(b.dataset.fav!==undefined){const i=+b.dataset.fav,l=D.tir[i][2];FAV.has(l)?FAV.delete(l):FAV.add(l);saveFav();tireur(i);renderTir();return}
   if(b.dataset.adm){admin(b.dataset.adm);return}
