@@ -378,7 +378,10 @@ function applySeason(){
   const per=D.tir.map(()=>({s:new Set(),n:0}));
   for(const c of D.comps){if(!inSeason(c))continue;
     for(const e of c.eps){const u=e.c.match(RXC)||[];for(const i of e.l){per[i].n++;if(u.length===1)per[i].s.add(u[0])}}}
-  D.tir.forEach((t,i)=>{let cs=[...per[i].s].filter(x=>x!=="VET").sort((a,b)=>RANK[a]-RANK[b]);if(!cs.length&&per[i].s.has("VET"))cs=["VET"];t[3]=cs[0]||"";t[4]=cs.length>1?cs[cs.length-1]:"";t[5]=per[i].n});
+  const VETN=new Set();
+  if(RES)for(const k in RES)for(const r of RES[k].res||[])for(const id in r.players){const p=r.players[id];if(/^V/.test(pcat(p[3])))VETN.add(nkey(p[0],p[1]))}
+  D.tir.forEach((t,i)=>{if(per[i].s.has("VET")||VETN.has(nkey(t[0],t[1]))){t[3]="VET";t[4]="";t[5]=per[i].n;return}
+    let cs=[...per[i].s].filter(x=>x!=="VET").sort((a,b)=>RANK[a]-RANK[b]);if(!cs.length&&per[i].s.has("VET"))cs=["VET"];t[3]=cs[0]||"";t[4]=cs.length>1?cs[cs.length-1]:"";t[5]=per[i].n});
 }
 const catsOf=e=>(e.c.match(/M9|M11|M13|M15|M17|M20|SENIOR|VET/g)||[]);
 let FAV=new Set();try{FAV=new Set(JSON.parse(localStorage.getItem("ffe-fav")||"[]"))}catch(e){}
@@ -1061,7 +1064,7 @@ $("#season").addEventListener("change",ev=>{SEASON=Number(ev.target.value);try{l
   S.gr="";S.rg="";S.dt="";applySeason();renderFilters();renderComps();renderTir();renderParcours()});
 applySeason();
 renderFilters();renderComps();renderTir();renderChanges();renderParcours();
-fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();renderComps();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
+fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
 fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();if(S.tab==="a")renderAdmin()}}).catch(()=>{});
 setInterval(()=>{
   if(document.hidden||$("#sheet").hidden||RS.ci==null||!RES||!$("#sheet").querySelector(".rtabs"))return;
