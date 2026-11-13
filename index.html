@@ -657,7 +657,7 @@ function vpoules(R){
     return (tours.length>1?`<div class="rh">Tour ${t}</div>`:"")+ps.map(p=>{
       const n=p.rows.length;
       const head=`<tr><th class="nm">Poule ${p.poule}</th>${p.rows.map((_,i)=>`<th>${i+1}</th>`).join("")}<th>V</th><th>V/M</th><th>TD</th><th>TR</th><th>Ind</th><th>Pl</th></tr>`;
-      const rows=p.rows.map(r=>`<tr><td class="nm">${esc(pname(R,r.id))}<small>${esc(pclub(R,r.id))}</small></td>${r.m.map(x=>x===""?'<td class="rx"></td>':`<td class="${x[0]==="V"?"rw":"rd"}">${esc(x)}</td>`).join("")}<td class="b">${r.v}</td><td>${n>1?fv(r.v/(n-1)):""}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.td-r.tr>0?"+":""}${r.td-r.tr}</td><td class="b">${r.pl}</td></tr>`).join("");
+      const rows=p.rows.map((r,i)=>`<tr><td class="nm"><span style="display:inline-block;min-width:20px;font-weight:700;color:var(--accent)">${i+1}</span>${esc(pname(R,r.id))}<small style="padding-left:20px">${esc(pclub(R,r.id))}</small></td>${r.m.map(x=>x===""?'<td class="rx"></td>':`<td class="${x[0]==="V"?"rw":"rd"}">${esc(x)}</td>`).join("")}<td class="b">${r.v}</td><td>${n>1?fv(r.v/(n-1)):""}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.td-r.tr>0?"+":""}${r.td-r.tr}</td><td class="b">${r.pl}</td></tr>`).join("");
       return `<div class="rgrid" style="margin-top:6px"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>${p.arb?`<div class="mini">Arbitre : ${esc(p.arb)}</div>`:""}`;
     }).join("");
   }).join("");
