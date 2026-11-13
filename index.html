@@ -465,10 +465,12 @@ function openPill(c){
   return '<span class="pill mute">Open : inconnu</span>';
 }
 const catShort=s=>{const t=s.split(", ");const nm=x=>x==="SENIOR"?"Sén.":x==="VET"?"Vét.":x;return t.length>2?nm(t[0])+" → "+nm(t[t.length-1]):t.map(nm).join(" · ")};
+let DIM=false;
 function epBtn(c,e){
   const i=c.eps.indexOf(e);const l=e.s==="Hommes"?"H":e.s==="Dames"?"D":"Mixte";
   const r=resOf(c,e)?`<button class="rs" data-res="${c.id}:${i}::0" aria-label="Résultats ${esc(epLabel(e))}">${ICON.trophy}Résultats</button>`:"";
-  return `<span class="eg">${e.n?`<button class="cnt" data-eng="${c.id}:${i}" aria-label="Voir les ${e.n} inscrits ${esc(epLabel(e))}"><b>${l}</b> ${e.n}</button>`:`<span class="cnt z"><b>${l}</b> 0</span>`}${r}</span>`;
+  const dim=DIM&&(S.cats.size||S.sx||S.open||S.inscrits)&&!epMatch(e);
+  return `<span class="eg"${dim?' style="opacity:.42"':""}>${e.n?`<button class="cnt" data-eng="${c.id}:${i}" aria-label="Voir les ${e.n} inscrits ${esc(epLabel(e))}"><b>${l}</b> ${e.n}</button>`:`<span class="cnt z"><b>${l}</b> 0</span>`}${r}</span>`;
 }
 function epRows(c,eps){
   const g=new Map();for(const e of eps){if(!g.has(e.c))g.set(e.c,[]);g.get(e.c).push(e)}
@@ -542,13 +544,13 @@ function groupComps(L){
 }
 let GRP=[];
 function groupHTML(g){
-  if(g.cs.length===1)return cardHTML(g.cs[0],g.cs[0].eps.filter(epMatch),false);
+  if(g.cs.length===1)return cardHTML(g.cs[0],g.cs[0].eps,false);
   const gi=GRP.push(g)-1,past=g.f<TODAY,c0=g.cs[0];
   const names=[...new Set(g.cs.map(c=>c.n))].join(" · ");
   const when=fd(g.d)+(g.f!==g.d?" → "+fd(g.f):"");
   const types=[...new Set(g.cs.map(c=>c.ty).filter(Boolean))].map(t=>`<span class="pill ty-${TYC[t]||""}">${esc(TYL[t]||t)}</span>`).join("");
   const dls=[...new Set(g.cs.filter(c=>c.f>=TODAY).map(c=>past?"":dlInfo(c)).filter(Boolean))].join("");
-  const by=new Map();for(const c of g.cs)for(const e of c.eps.filter(epMatch)){if(!by.has(e.c))by.set(e.c,[]);by.get(e.c).push([c,e])}
+  const by=new Map();for(const c of g.cs)for(const e of c.eps){if(!by.has(e.c))by.set(e.c,[]);by.get(e.c).push([c,e])}
   const rows=[...by].sort((a,b)=>(CATS.indexOf(a[0])+1||99)-(CATS.indexOf(b[0])+1||99)).map(([cat,L])=>`<div class="ep"><span class="cat">${esc(catShort(cat))}</span><span class="eb">${L.map(([c,e])=>epBtn(c,e)).join("")}</span></div>`).join("");
   return `<article class="card" data-grp="${gi}" tabindex="0" role="button" aria-label="${esc(c0.v)}">
     <div class="c-top">${dateBlock(g.d,g.f,past)}
@@ -566,7 +568,7 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
   const dls=[...new Set(g.cs.filter(x=>x.f>=TODAY).map(dlInfo).filter(Boolean))].join("");
   const inscr=g.cs.filter(x=>x.eps.some(e=>e.n)).map(x=>`<button class="btn primary" data-eng="${x.id}:all">Inscrits${multi?" · "+esc(fd(x.d)):""}</button>`).join("");
   const ffe=g.cs.filter(x=>!x.go).map(x=>`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(x.k)}" target="_blank" rel="noopener">Page FFE${multi?" · "+esc(fd(x.d)):""}</a>`).join("");
-  const sections=g.cs.map(x=>{const eps=x.eps.filter(epMatch);const show=eps.length?eps:x.eps;return (multi?`<div class="sec">${esc(fd(x.d))}${x.f!==x.d?" → "+esc(fd(x.f)):""}</div>`:`<div class="sec">Épreuves</div>`)+show.map(e=>epRowHTML(x,e)).join("")}).join("");
+  const sections=g.cs.map(x=>{const show=x.eps;return (multi?`<div class="sec">${esc(fd(x.d))}${x.f!==x.d?" → "+esc(fd(x.f)):""}</div>`:`<div class="sec">Épreuves</div>`)+show.map(e=>epRowHTML(x,e)).join("")}).join("");
   const names=[...new Set(g.cs.map(x=>x.nn||x.n).filter(Boolean))];
   const dl=[...new Set(g.cs.filter(x=>x.dl).map(x=>fdy(x.dl)))].join(", ");
   const link=EGL[c.k]?"":"";
@@ -581,7 +583,7 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
     ${dl?`<dt>Inscription</dt><dd>avant le ${dl}</dd>`:""}
   </dl>${sections}
   <div class="mini">${c.src?esc(c.src)+". ":""}Horaires et tarifs à confirmer dans la note.</div>`}
-function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;const c=g.cs[0];sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,groupBody(g,gi))}
+function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
 function renderComps(){
   const q=S.q.trim().toLowerCase();
   let L=D.comps.filter(c=>{
@@ -594,12 +596,12 @@ function renderComps(){
     return c.eps.some(epMatch);
   });
   const ORD=S.ord||(S.st==="passe"?"desc":"asc");L.sort((a,b)=>ORD==="desc"?b.d.localeCompare(a.d):a.d.localeCompare(b.d));
-  const nE=L.reduce((n,c)=>n+c.eps.filter(epMatch).length,0);
+  const nE=L.reduce((n,c)=>n+c.eps.length,0);
   const _g=groupComps(L).length;$("#c-count").textContent=L.length+" compétition"+(L.length>1?"s":"")+(_g<L.length?" · "+_g+" tournois/lieux":"")+" · "+nE+" épreuve"+(nE>1?"s":"");
   $("#fs-show").textContent=L.length?"Voir "+L.length+" compétition"+(L.length>1?"s":""):"Aucune compétition";
-  GRP=[];const GR=groupComps(L);GR.sort((a,b)=>ORD==="desc"?b.d.localeCompare(a.d):a.d.localeCompare(b.d));
+  GRP=[];DIM=true;const GR=groupComps(L);GR.sort((a,b)=>ORD==="desc"?b.d.localeCompare(a.d):a.d.localeCompare(b.d));
   const shown=GR.slice(0,80);
-  $("#c-list").innerHTML=shown.length?shown.map(groupHTML).join("")+(GR.length>shown.length?`<div class="empty">${GR.length-shown.length} autres. Affinez avec les filtres ou la recherche.</div>`:""):`<div class="empty">Aucune compétition avec ces filtres.</div>`;
+  $("#c-list").innerHTML=shown.length?shown.map(groupHTML).join("")+(GR.length>shown.length?`<div class="empty">${GR.length-shown.length} autres. Affinez avec les filtres ou la recherche.</div>`:""):`<div class="empty">Aucune compétition avec ces filtres.</div>`;DIM=false;
 }
 function tirQ(){
   const q=S.tq.trim().toLowerCase();
