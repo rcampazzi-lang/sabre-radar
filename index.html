@@ -481,12 +481,20 @@ const saveEG=()=>{try{localStorage.setItem(EGK,JSON.stringify(EGL))}catch(e){}};
 const egSearch=c=>"https://www.google.com/search?q="+encodeURIComponent("site:engarde-service.com "+c.v+" sabre "+c.d.slice(0,4));
 const egBtns=c=>EGL[c.k]?`<a class="btn primary" href="${esc(EGL[c.k])}" target="_blank" rel="noopener">Page En Garde</a>`:`<a class="btn" href="${esc(egSearch(c))}" target="_blank" rel="noopener">Chercher sur En Garde</a>`;
 const egForm=c=>`<div class="row" style="margin:0 0 8px"><input id="eg-in" type="url" inputmode="url" placeholder="Coller l'adresse En Garde" value="${esc(EGL[c.k]||"")}" style="flex:1;min-width:0;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0 10px;font:400 14px var(--font-body)"><button class="btn sm" data-egsave="${c.id}">Enregistrer</button>${EGL[c.k]?`<button class="btn sm" data-egdel="${c.id}">Retirer</button>`:""}</div>`;
+const EGP=[["tireurs","Inscrits","tireurs.htm"],["poules","Poules","poules1.htm"],["clpoules","Class. poules","claspoules1.htm"],["tab16","Tableau","tableau16.htm"],["final","Classement","clasfinal.htm"]];
+function egBase(u){const m=/^https?:\/\/(?:www\.)?engarde-service\.com\/(?:tournament|competition)\/([^\/?#]+)\/([^\/?#]+)(?:\/([^\/?#]+))?/i.exec(u||"");return m?{base:`https://engarde-service.com/competition/${m[1]}/${m[2]}/`,tpl:m[3]&&!/\.htm/i.test(m[3])?m[3].toLowerCase():""}:null}
+function egCode(c,e){const b=egBase(EGL[c.k]);if(!b)return null;const m=/^M(9|11|13|15|17|20)$/.exec(e.c.trim());if(!m||(e.s!=="Hommes"&&e.s!=="Dames"))return null;const t=/^([a-z])[hd]m\d+(.*)$/.exec(b.tpl);return(t?t[1]:"s")+(e.s==="Hommes"?"h":"d")+"m"+m[1]+(t?t[2]:"")}
+function egUrl(c,e,pg){const b=egBase(EGL[c.k]),code=egCode(c,e);return b&&code?b.base+code+"/"+pg:null}
+function egView(ci,ei,key){const c=D.comps[ci],e=c.eps[ei],k=key||"final",p=EGP.find(x=>x[0]===k)||EGP[4],u=egUrl(c,e,p[2]);
+  const seg=EGP.map(x=>`<button aria-pressed="${x[0]===k}" data-egv="${ci}:${ei}:${x[0]}">${x[1]}</button>`).join("");
+  sheet(`${esc(c.v)}<div class="sub">${esc(epLabel(e))} · En Garde</div>`,
+   `<div class="seg" style="overflow-x:auto">${seg}</div>`+(u?`<iframe src="${esc(u)}" referrerpolicy="no-referrer" loading="lazy" style="width:100%;height:58vh;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe><div class="btns"><a class="btn primary" href="${esc(u)}" target="_blank" rel="noopener">Ouvrir dans le navigateur</a></div><div class="mini">Si la page reste vide, le site refuse l'affichage ici : utilisez « Ouvrir dans le navigateur ». Source : En-Garde.</div>`:`<div class="empty">Pas de page En Garde déductible pour cette épreuve.</div>`))}
 function bodyHTML(c){
   const eps=c.eps.filter(epMatch);const show=eps.length?eps:c.eps;
   const rows=show.map(e=>{
     const i=c.eps.indexOf(e);
     const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
-    return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div></div>`}).join("");
+    return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${egCode(c,e)?`<button class="btn sm" data-egv="${c.id}:${i}:final">En Garde</button>`:""}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div></div>`}).join("");
   return `<div class="tags" style="margin-bottom:4px">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${c.f<TODAY?"":dlInfo(c)}</div>
   <div class="btns">${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c)}
   <dl class="kv">
@@ -854,6 +862,7 @@ document.addEventListener("click",ev=>{
   const b=ev.target.closest("button");
   if(!b){const cd=ev.target.closest("[data-comp]");if(cd&&!ev.target.closest("a"))compSheet(Number(cd.dataset.comp));return}
   if(b.dataset.close){closeSheet();return}
+  if(b.dataset.egv){const [ci,ei,k]=b.dataset.egv.split(":");const ix=D.comps.findIndex(x=>String(x.id)===ci);egView(ix,Number(ei),k);return}
   if(b.dataset.egsave||b.dataset.egdel){const id=Number(b.dataset.egsave||b.dataset.egdel),c=D.comps.find(x=>x.id===id);if(c){const v=($("#eg-in")?.value||"").trim();if(b.dataset.egdel)delete EGL[c.k];else if(/^https?:\/\/([a-z0-9-]+\.)*engarde-service\.com\//i.test(v))EGL[c.k]=v;else{$("#eg-in").style.borderColor="var(--bad)";return}saveEG();compSheet(D.comps.indexOf(c))}return}
   if(b.dataset.eng){const [c,e]=b.dataset.eng.split(":");engages(Number(c),e==="all"?"all":Number(e));return}
   if(b.dataset.fav!==undefined){const i=+b.dataset.fav,l=D.tir[i][2];FAV.has(l)?FAV.delete(l):FAV.add(l);saveFav();tireur(i);renderTir();return}
