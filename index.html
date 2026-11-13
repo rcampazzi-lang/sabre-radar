@@ -476,6 +476,11 @@ function cardHTML(c,eps,open,extra){
     <div class="tags">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${extra||""}${past?"":dlInfo(c)}</div>
     <div class="eps">${epRows(c,eps)}</div></article>`;
 }
+const EGK="ffe-engarde";let EGL={};try{EGL=JSON.parse(localStorage.getItem(EGK)||"{}")}catch(e){}
+const saveEG=()=>{try{localStorage.setItem(EGK,JSON.stringify(EGL))}catch(e){}};
+const egSearch=c=>"https://www.google.com/search?q="+encodeURIComponent("site:engarde-service.com "+c.v+" sabre "+c.d.slice(0,4));
+const egBtns=c=>EGL[c.k]?`<a class="btn primary" href="${esc(EGL[c.k])}" target="_blank" rel="noopener">Page En Garde</a>`:`<a class="btn" href="${esc(egSearch(c))}" target="_blank" rel="noopener">Chercher sur En Garde</a>`;
+const egForm=c=>`<div class="row" style="margin:0 0 8px"><input id="eg-in" type="url" inputmode="url" placeholder="Coller l'adresse En Garde" value="${esc(EGL[c.k]||"")}" style="flex:1;min-width:0;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0 10px;font:400 14px var(--font-body)"><button class="btn sm" data-egsave="${c.id}">Enregistrer</button>${EGL[c.k]?`<button class="btn sm" data-egdel="${c.id}">Retirer</button>`:""}</div>`;
 function bodyHTML(c){
   const eps=c.eps.filter(epMatch);const show=eps.length?eps:c.eps;
   const rows=show.map(e=>{
@@ -483,7 +488,7 @@ function bodyHTML(c){
     const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
     return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div></div>`}).join("");
   return `<div class="tags" style="margin-bottom:4px">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${c.f<TODAY?"":dlInfo(c)}</div>
-  <div class="btns">${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}</div>
+  <div class="btns">${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c)}
   <dl class="kv">
     <dt>Dates</dt><dd>${esc(fd(c.d))}${c.f!==c.d?" → "+esc(fd(c.f)):""}</dd>
     ${c.nn?`<dt>Nom</dt><dd>${esc(c.nn)}</dd>`:""}
@@ -849,6 +854,7 @@ document.addEventListener("click",ev=>{
   const b=ev.target.closest("button");
   if(!b){const cd=ev.target.closest("[data-comp]");if(cd&&!ev.target.closest("a"))compSheet(Number(cd.dataset.comp));return}
   if(b.dataset.close){closeSheet();return}
+  if(b.dataset.egsave||b.dataset.egdel){const id=Number(b.dataset.egsave||b.dataset.egdel),c=D.comps.find(x=>x.id===id);if(c){const v=($("#eg-in")?.value||"").trim();if(b.dataset.egdel)delete EGL[c.k];else if(/^https?:\/\/([a-z0-9-]+\.)*engarde-service\.com\//i.test(v))EGL[c.k]=v;else{$("#eg-in").style.borderColor="var(--bad)";return}saveEG();compSheet(D.comps.indexOf(c))}return}
   if(b.dataset.eng){const [c,e]=b.dataset.eng.split(":");engages(Number(c),e==="all"?"all":Number(e));return}
   if(b.dataset.fav!==undefined){const i=+b.dataset.fav,l=D.tir[i][2];FAV.has(l)?FAV.delete(l):FAV.add(l);saveFav();tireur(i);renderTir();return}
   if(b.dataset.adm){admin(b.dataset.adm);return}
