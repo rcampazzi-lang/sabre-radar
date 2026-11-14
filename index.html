@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794640264";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794640356";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
@@ -40,6 +40,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.c
 .lt{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:14px 0 10px}
 .lt h1{font:700 32px/1.05 var(--font-head);letter-spacing:-.025em;margin:0}
 .lt .stamp{display:block;font-size:12.5px;color:var(--muted);margin-top:4px}
+.rfb{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:var(--fill);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}.rfb.spin svg{animation:rfs .7s linear infinite}@keyframes rfs{to{transform:rotate(360deg)}}
 .seas{position:relative;flex:none}
 .seas select{min-width:0;appearance:none;-webkit-appearance:none;height:34px;padding:0 30px 0 12px;border:0;border-radius:999px;background:var(--fill);color:var(--ink);font:600 13px var(--font-body)}
 .seas::after{content:"";position:absolute;right:12px;top:50%;width:6px;height:6px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none}
@@ -259,7 +260,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.c
 </style>
 <div id="app">
 <section id="v-c" class="screen">
-  <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><label class="seas"><select id="season" aria-label="Saison"></select></label></div>
+  <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><div style="display:flex;gap:8px;align-items:center;flex:none"><button class="rfb" id="rfb" type="button" aria-label="Actualiser l'appli"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><label class="seas"><select id="season" aria-label="Saison"></select></label></div></div>
   <div class="bar">
     <div class="srow">
       <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg><input type="search" id="q" placeholder="Ville ou compétition" autocomplete="off" enterkeyhint="search"></label>
@@ -1073,4 +1074,7 @@ setInterval(()=>{
     const N=j.eps[c.k+"|"+e.c+"|"+e.s];if(!N||N.t===X.t)return;
     RES=j.eps;applyDec();if(!$("#sheet").hidden&&!document.activeElement.matches?.("input"))results(RS.ci,RS.ei,RS.view,RS.gi);renderComps()}).catch(()=>{});
 },60000);
+
+(function(){const b=document.getElementById("rfb");if(!b)return;b.addEventListener("click",async()=>{b.classList.add("spin");try{if(window.caches){const k=await caches.keys();await Promise.all(k.map(x=>caches.delete(x)))}}catch(e){}
+if(/github\.io$/.test(location.hostname)||location.protocol==="http:"||location.protocol==="https:"&&location.pathname.indexOf("sabre-radar")>-1){location.replace(location.pathname+"?r="+Date.now())}else{location.reload()}})})();
 </script>
