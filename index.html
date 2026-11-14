@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794643088";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794643257";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
@@ -440,7 +440,7 @@ function actChips(){
 function renderFilters(){
   $("#f-ty").innerHTML=TYPES.map(t=>chip(TYL[t],S.ty.has(t),`data-f="ty" data-v="${t}"`)).join("");
   renderGeo();
-  $("#f-st").innerHTML=[["avenir","À venir"],["passe","Passées"],["tout","Toutes"]].map(([k,l])=>seg(l,S.st===k,`data-f="st" data-v="${k}"`)).join("");
+  $("#f-st").innerHTML=[["cours","En cours"],["avenir","À venir"],["passe","Passées"],["tout","Toutes"]].map(([k,l])=>seg(l,S.st===k,`data-f="st" data-v="${k}"`)).join("");
   $("#f-cat").innerHTML=CATS.map(c=>chip(CATL[c],S.cats.has(c),`data-f="cat" data-v="${c}"`)).join("");
   {const o=S.ord||(S.st==="passe"?"desc":"asc");$("#fs-ord").innerHTML=[["asc","Plus anciennes d’abord"],["desc","Plus récentes d’abord"]].map(([k,l])=>seg(l,o===k,`data-f="ord" data-v="${k}"`)).join("")}
   $("#fs-sx").innerHTML=[["","Tous"],["Hommes","Hommes"],["Dames","Dames"]].map(([k,l])=>seg(l,S.sx===k,`data-f="sx" data-v="${k}"`)).join("");
@@ -609,7 +609,7 @@ function renderComps(){
     if(q&&!(c.v+" "+c.n+" "+(c.nn||"")+" "+(c.dt||"")+" "+(c.rg||"")+" "+(c.gr||"")).toLowerCase().includes(q))return false;
     return compMatch(c);
   });
-  const GR0=groupComps(L).filter(g=>g.cs.some(c=>c.eps.some(epMatch)));L=GR0.flatMap(g=>g.cs);
+  const GR0=groupComps(L).filter(g=>g.cs.some(c=>c.eps.some(epMatch))&&(S.st!=="cours"||(g.d<=TODAY&&TODAY<=g.f)));L=GR0.flatMap(g=>g.cs);
   const ORD=S.ord||(S.st==="passe"?"desc":"asc");L.sort((a,b)=>ORD==="desc"?b.d.localeCompare(a.d):a.d.localeCompare(b.d));
   const nE=L.reduce((n,c)=>n+c.eps.length,0);
   const _g=GR0.length;$("#c-count").textContent=L.length+" compétition"+(L.length>1?"s":"")+(_g<L.length?" · "+_g+" tournois/lieux":"")+" · "+nE+" épreuve"+(nE>1?"s":"");
