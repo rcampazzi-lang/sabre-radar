@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794755736";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794755879";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -825,13 +825,17 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
 function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
 function renderHero(){
   const h=$("#hero");if(!h)return;
-  const c=!S.q.trim()&&D.comps.filter(c=>c.f>=TODAY&&followed(c)).sort((a,b)=>a.d.localeCompare(b.d))[0];
-  if(!c){h.innerHTML="";return}
-  const dd=Math.round((new Date(c.d+"T12:00:00")-new Date(TODAY+"T12:00:00"))/864e5);
+  const g=!S.q.trim()&&groupComps(D.comps.filter(c=>c.f>=TODAY)).filter(g=>g.cs.some(followed)).sort((a,b)=>a.d.localeCompare(b.d))[0];
+  if(!g){h.innerHTML="";return}
+  const c=g.cs[0];
+  const dd=Math.round((new Date(g.d+"T12:00:00")-new Date(TODAY+"T12:00:00"))/864e5);
   const when=dd<=0?"en cours":dd===1?"demain":"dans "+dd+" jours";
-  const fi=[...favIn([c]).keys()].map(i=>D.tir[i]);
+  const fi=[...favIn(g.cs).keys()].map(i=>D.tir[i]);
   const av2=fi.slice(0,4).map(t=>`<i style="--h:${hue(t[2])}">${esc((t[0][0]||"")+(t[1][0]||""))}</i>`).join("");
-  h.innerHTML=`<div class="hero"><span class="hl">Prochaine suivie · ${when}</span><h2>${esc(c.v)}</h2><div class="hs">${esc(c.n)} · ${esc(fd(c.d))}</div>${fi.length?`<div class="hf"><span class="hav">${av2}</span><span>${fi.length} favori${fi.length>1?"s":""} inscrit${fi.length>1?"s":""}</span></div>`:""}<button type="button" data-hero="${c.id}">Voir la fiche</button></div>`;
+  const names=[...new Set(g.cs.map(x=>x.n))].join(" · ");
+  const date=fd(g.d)+(g.f!==g.d?" → "+fd(g.f):"");
+  const act=g.cs.length>1?`data-hero-g="${GRP.push(g)-1}"`:`data-hero="${c.id}"`;
+  h.innerHTML=`<div class="hero"><span class="hl">Prochaine suivie · ${when}</span><h2>${esc(c.v)}</h2><div class="hs">${esc(names)} · ${esc(date)}</div>${fi.length?`<div class="hf"><span class="hav">${av2}</span><span>${fi.length} favori${fi.length>1?"s":""} inscrit${fi.length>1?"s":""}</span></div>`:""}<button type="button" ${act}>Voir la fiche</button></div>`;
 }
 function renderComps(){
   const q=S.q.trim().toLowerCase();
@@ -1410,6 +1414,7 @@ function syncSheet(msg){
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
 function xclick(b){
   if(b.dataset.hero!==undefined){compSheet(Number(b.dataset.hero));return true}
+  if(b.dataset.heroG!==undefined){grpSheet(Number(b.dataset.heroG));return true}
   if(b.dataset.favc!==undefined){toggleFavc(b.dataset.favc.split(",").map(Number));return true}
   if(b.dataset.f==="sync"){if(window.SYNC)syncSheet();return true}
   const a=b.dataset.sy;if(!a||!window.SYNC)return false;
