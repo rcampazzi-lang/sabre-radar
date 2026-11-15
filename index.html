@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794778971";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794779989";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -810,15 +810,34 @@ function pickSheet(kind,cs){
   sheet(`${T}<div class="sub">${esc(cs[0].v)}</div>`,`<div class="pks">${cs.map(row).join("")}</div>`);
   BACK=()=>reopen(back)}
 const lkForm=(c,gi,P)=>{const u=lnkOf(c,P.id),g=gi!=null?` data-lkgrp="${gi}"`:"";return `<div class="sec">Lien ${P.n}</div><div class="note">Un bouton « ${P.n} » apparaîtra dans la fiche.</div><div class="row" style="margin:0 0 8px"><input id="lk-${P.id}" type="url" inputmode="url" placeholder="Coller l'adresse ${P.n}" value="${esc(u)}" style="flex:1;min-width:0;height:40px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:0 12px;font:400 14px var(--font-body)"></div><div class="btns"><button class="btn primary" data-lksave="${P.id}:${c.id}"${g}>Enregistrer</button>${u?`<button class="btn" data-lkdel="${P.id}:${c.id}"${g}>Retirer</button>`:""}<a class="btn" href="${esc(provSearch(c,P))}" target="_blank" rel="noopener">Chercher</a><a class="btn" href="${esc(provSearch(c,P,true))}" target="_blank" rel="noopener">Chercher avec la date</a></div>`};
-function egSet(ci,gi){const c=D.comps[ci];CUR.g=gi!=null?gi:null;const _g=CUR.g;
-  sheet(`Réglages<div class="sub">${esc(c.v)}</div>`,`<div class="sec" style="margin-top:0">Lien En Garde</div><div class="note">Colle l'adresse En Garde de la compétition : un bouton « En Garde » apparaîtra à côté des inscrits.</div>${egForm(c,gi)}<div class="btns"><a class="btn" href="${esc(egSearch(c))}" target="_blank" rel="noopener">Chercher sur En Garde</a><a class="btn" href="${esc(egSearch(c,true))}" target="_blank" rel="noopener">Chercher avec la date</a></div>${PROV.map(P=>lkForm(c,gi,P)).join("")}<div class="btns" style="margin-top:14px"><button class="btn" data-egback="${ci}">Retour à la fiche</button></div>`);BACK=()=>reopen(ci)}
-
+function egSet(ci,gi,msg){
+  const c=D.comps[ci];CUR.g=gi!=null?gi:null;
+  const cs=gi!=null&&GRP[gi]?GRP[gi].cs:[c];
+  const list=cs.flatMap(x=>x.eps.map(e=>({c:x,e})));
+  EGCUR={ci,gi,cs,list};if(EGST.ep>=list.length)EGST.ep=0;
+  const TABS=[{id:"eg",n:"En Garde"},...PROV.map(P=>({id:P.id,n:P.n}))];
+  if(!TABS.some(t=>t.id===EGST.tab))EGST.tab="eg";
+  const tabs=`<div class="chips">${TABS.map(t=>chip(t.n,t.id===EGST.tab,`data-egt="${t.id}"`)).join("")}</div>`;
+  let body;
+  if(EGST.tab==="eg"){
+    const it=list[EGST.ep];
+    const multi=cs.length>1;
+    const eps=list.length?`<div class="sec">Épreuves</div><div class="chips">${list.map((x,i)=>chip((multi?fd(x.c.d).replace(/^\S+ /,"")+" · ":"")+epLabel(x.e)+(ENG[x.c.k+"|"+x.e.c+"|"+x.e.s]?" ✓":""),i===EGST.ep,`data-ege="${i}"`)).join("")}</div>${it?egZonesHTML(it,msg):""}`:"";
+    body=`<div class="sec" style="margin-top:0">Compétition</div><div class="note">Adresse En Garde de la compétition : un bouton « En Garde » apparaîtra à côté des inscrits.</div>${egForm(c,gi)}<div class="btns"><a class="btn" href="${esc(egSearch(c))}" target="_blank" rel="noopener">Chercher sur En Garde</a><a class="btn" href="${esc(egSearch(c,true))}" target="_blank" rel="noopener">Chercher avec la date</a></div>${eps}`;
+  }else{
+    const P=PROV.find(x=>x.id===EGST.tab);
+    body=`<div class="sec" style="margin-top:0">Compétition</div>${lkForm(c,gi,P).replace(/^<div class="sec">[^<]*<\/div>/,"")}<div class="sec">Épreuves</div><div class="note">L'import des pages ${P.n} n'est pas encore disponible.</div>`;
+  }
+  sheet(`Réglages<div class="sub">${esc(c.v)}</div>`,`${tabs}${body}<div class="btns" style="margin-top:14px"><button class="btn" data-egback="${ci}">Retour à la fiche</button></div>`);
+  BACK=()=>reopen(ci);
+  if(EGST.tab==="eg")egBindZones();
+}
 function bodyHTML(c){
   const eps=c.eps.filter(epMatch);const show=eps.length?eps:c.eps;
   const rows=show.map(e=>{
     const i=c.eps.indexOf(e);
     const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
-    return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}${egImpBtn(c,e)}</div>`}).join("");
+    return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}).join("");
   return `<div class="tags" style="margin-bottom:4px">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${c.f<TODAY?"":dlInfo(c)}</div>
   ${actHTML([c])}
   <dl class="kv">
@@ -870,7 +889,7 @@ let CUR={g:null};
 const reopen=ci=>{if(CUR.g!=null&&GRP[CUR.g])grpSheet(CUR.g);else compSheet(ci)};
 function epRowHTML(c,e){const i=c.eps.indexOf(e);
   const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
-  return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}${egImpBtn(c,e)}</div>`}
+  return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}
 function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
   const types=[...new Set(g.cs.map(x=>x.ty).filter(Boolean))].map(t=>`<span class="pill ty-${TYC[t]||""}">${esc(TYL[t]||t)}</span>`).join("");
   const dls=[...new Set(g.cs.filter(x=>x.f>=TODAY).map(dlInfo).filter(Boolean))].join("");
@@ -963,13 +982,14 @@ function engages(ci,ei){
   const withN=c.eps.map((e,i)=>[e,i]).filter(([e])=>e.n);
   const all=ei==="all";
   let ids=all?[...new Set(withN.flatMap(([e])=>e.l))]:c.eps[ei].l.slice();
-  const rows=ids.map(i=>D.tir[i]).sort((a,b)=>a[0].localeCompare(b[0]));
+  const egE=all?withN.map(([e])=>e):[c.eps[ei]];const egR=egE.filter(e=>e&&e._egl).flatMap(e=>e._egl.map(t=>{const a=[t.nom,t.pre,"","","","",t.nat];a.eg=true;return a}));
+  const rows=ids.map(i=>D.tir[i]).concat(egR).sort((a,b)=>a[0].localeCompare(b[0]));
   const title=all?"Tous les inscrits":epLabel(c.eps[ei]);
   const hn=!all&&c.eps[ei].hn;
   const evo=hn&&hn.length>1?`<div class="mini">Évolution des inscrits : ${hn.map(([d,n])=>fd(d).replace(/^\S+ /,"")+" : "+n).join(" · ")}</div>`:"";
   const vn=!all&&c.eps[ei].vn?`<div class="mini">Par catégorie : ${Object.entries(c.eps[ei].vn).map(([k,n])=>k+" : "+n).join(" · ")}</div>`:"";
   const chips=withN.length>1?`<div class="chips">${chip("Tous",all,`data-eng="${ci}:all"`)}${withN.map(([e,i])=>chip(epLabel(e)+" · "+e.n,!all&&i===Number(ei),`data-eng="${ci}:${i}"`)).join("")}</div>`:"";
-  const body=chips+evo+vn+(rows.length?`<div class="mini">${rows.length} tireur${rows.length>1?"s":""}</div>`+rows.map(t=>`<div class="li"><div><button data-t="${D.tir.indexOf(t)}">${esc(t[0])} ${esc(t[1])}</button><br><small>${esc(t[6])}</small></div><span class="tag">${t[3]?CATL[t[3]]:"–"}${t[4]?" ↑ "+CATL[t[4]]:""}</span></div>`).join("")+(all||!resOf(c,c.eps[ei])?"":`<button class="btn primary" style="margin-top:6px" data-res="${ci}:${ei}::0">Résultats</button>`)+(all||!c.eps[ei].u?"":`<a class="btn" style="margin-top:6px;text-align:center" href="${esc(c.eps[ei].u)}" target="_blank" rel="noopener">Page FFE des engagés</a>`):`<div class="empty">Aucun engagé pour l'instant.</div>`);
+  const body=chips+evo+vn+(rows.length?`<div class="mini">${rows.length} tireur${rows.length>1?"s":""}</div>`+rows.map(t=>t.eg?`<div class="li"><div>${esc(t[0])} ${esc(t[1])}<br><small>${esc(t[6])}</small></div></div>`:`<div class="li"><div><button data-t="${D.tir.indexOf(t)}">${esc(t[0])} ${esc(t[1])}</button><br><small>${esc(t[6])}</small></div><span class="tag">${t[3]?CATL[t[3]]:"–"}${t[4]?" ↑ "+CATL[t[4]]:""}</span></div>`).join("")+(all||!resOf(c,c.eps[ei])?"":`<button class="btn primary" style="margin-top:6px" data-res="${ci}:${ei}::0">Résultats</button>`)+(all||!c.eps[ei].u?"":`<a class="btn" style="margin-top:6px;text-align:center" href="${esc(c.eps[ei].u)}" target="_blank" rel="noopener">Page FFE des engagés</a>`):`<div class="empty">Aucun engagé pour l'instant.</div>`);
   const keep=$("#sheet").querySelector(".inner");const st=keep?keep.scrollTop:0;
   sheet(`${esc(c.v)} · ${esc(title)}<div class="sub" style="font-weight:400">${esc(fd(c.d))} · ${esc(c.n)}</div>`,body);
 }
@@ -1061,6 +1081,8 @@ function egBuild(z){
   return R;
 }
 function applyEG(){
+  for(const c of D.comps)for(const e of c.eps){if(e._n0===undefined)e._n0=e.n;e.n=e._n0;delete e._egl;
+    const o=ENG[c.k+"|"+e.c+"|"+e.s];if(o&&o.z&&o.z.ins&&o.z.ins.length&&!e._n0){e.n=o.z.ins.length;e._egl=o.z.ins}}
   if(!RES)RES={};
   for(const k in ENG){const o=ENG[k];if(!o||!o.z)continue;try{RES[k]={src:"engarde",gids:[],res:[egBuild(o.z)],t:o.t,done:true,local:true,eg:true}}catch(e){}}
 }
@@ -1071,23 +1093,23 @@ function egzInfo(z,id){
   if(id==="cls")return z.cls?z.cls.length+" classés":"";
   if(id==="fin")return z.fin?z.fin.length+" classés":"";
   const t=z.tab&&z.tab[id.slice(1)];return t?t.matches.length+" matchs":""}
-const egImpBtn=(c,e)=>isAdmin()?`<div class="btns" style="margin-top:6px"><button class="btn sm" data-egimp="${D.comps.indexOf(c)}:${c.eps.indexOf(e)}">${ENG[c.k+"|"+e.c+"|"+e.s]?"Source En Garde ✓":"Source En Garde"}</button></div>`:"";
-let EGCUR=null;
-function egDel(b){const {ci,ei,gi}=EGCUR,c=D.comps[ci],e=c.eps[ei],key=c.k+"|"+e.c+"|"+e.s,o=ENG[key];if(!o)return;
+let EGCUR=null;const EGST={tab:"eg",ep:0};
+const egItem=()=>{const L=EGCUR.list;return L[Math.min(EGST.ep,L.length-1)]};
+function egDel(b){const it=egItem(),c=it.c,e=it.e,key=c.k+"|"+e.c+"|"+e.s,o=ENG[key];if(!o)return;
   if(b.dataset.egzall)delete ENG[key];
   else if(b.dataset.egtdel){delete o.z.tab[b.dataset.egtdel];if(!Object.keys(o.z.tab).length)delete o.z.tab}
   else delete o.z[b.dataset.egzdel];
   if(ENG[key]&&!Object.keys(ENG[key].z).length)delete ENG[key];
   if(!ENG[key]&&RES)delete RES[key];
-  saveENG();applyEG();renderComps();egImport(ci,ei,null,gi)}
-function egImport(ci,ei,msg,gi){EGCUR={ci,ei,gi};
-  const c=D.comps[ci],e=c.eps[ei],key=c.k+"|"+e.c+"|"+e.s,o=ENG[key]||{z:{}},z=o.z;
-  CUR.ci=ci;if(gi!=null)CUR.g=gi;
+  saveENG();applyEG();renderComps();egSet(EGCUR.ci,EGCUR.gi)}
+function egZonesHTML(it,msg){
+  const c=it.c,e=it.e,key=c.k+"|"+e.c+"|"+e.s,o=ENG[key]||{z:{}},z=o.z;
   const rows=EGZ.map(([id,lab,kind])=>{const inf=egzInfo(z,id);return `<div class="sec">${lab}${inf&&kind!=="tab"?` <span class="mini">· ✓ ${inf}</span>`:""}</div><textarea class="egta" data-egz="${id}" rows="2" placeholder="Colle ici la page En Garde (HTML)…"></textarea><div class="mini" id="egs-${id}">${msg&&msg[id]?esc(msg[id]):""}</div>${inf&&kind!=="tab"?`<div class="btns"><button class="btn sm" data-egzdel="${id}">Effacer</button></div>`:""}`}).join("");
   const tabs=Object.keys(z.tab||{}).sort((a,b)=>b-a).map(n=>`<div class="btns"><span class="mini">Tableau de ${n} : ${z.tab[n].matches.length} matchs</span><button class="btn sm" data-egtdel="${n}">Effacer</button></div>`).join("");
   const has=Object.keys(z).length>0;
-  sheet(`Source En Garde<div class="sub">${esc(c.v)} · ${esc(epLabel(e))}</div>`,`<div class="note">Sur la page En Garde (Safari) : Partager, Capturer HTML, puis colle ici. Chaque zone se remplit toute seule au collage.</div>${rows}${tabs?`<div class="sec">Tableaux enregistrés</div>${tabs}`:""}<div class="btns" style="margin-top:12px">${has?`<button class="btn primary" data-res="${ci}:${ei}::0">Voir les résultats</button><button class="btn" data-egzall="1">Tout effacer</button>`:""}<button class="btn" data-egback="${ci}">Retour à la fiche</button></div>`);
-  BACK=()=>reopen(ci);
+  return `<div class="note">Sur la page En Garde (Safari) : Partager, Capturer HTML, puis colle ici. Chaque zone se remplit toute seule au collage.</div>${rows}${tabs?`<div class="sec">Tableaux enregistrés</div>${tabs}`:""}${has?`<div class="btns" style="margin-top:12px"><button class="btn primary" data-res="${EGCUR.list.indexOf(it)>=0?D.comps.indexOf(c)+":"+c.eps.indexOf(e)+"::0":""}">Voir les résultats</button><button class="btn" data-egzall="1">Tout effacer</button></div>`:""}`}
+function egBindZones(){
+  const it=egItem(),c=it.c,e=it.e,key=c.k+"|"+e.c+"|"+e.s;
   document.querySelectorAll("textarea[data-egz]").forEach(ta=>{
     const h=()=>{const v=ta.value;if(v.length<200)return;const id=ta.dataset.egz;const st=$("#egs-"+id);
       try{const p=egParse(v);const kind=EGZ.find(x=>x[0]===id)[2];
@@ -1096,7 +1118,7 @@ function egImport(ci,ei,msg,gi){EGCUR={ci,ei,gi};
         if(kind==="tab"){zz.tab=zz.tab||{};zz.tab[p.N]=p.data}else zz[kind]=p.data;
         ENG[key].t=iso(new Date())+"T"+new Date().toTimeString().slice(0,5);
         saveENG();applyEG();renderComps();
-        egImport(ci,ei,{[id]:"Enregistré."},gi)}
+        egSet(EGCUR.ci,EGCUR.gi,{[id]:"Enregistré."})}
       catch(er){st.textContent=er.message;st.style.color="var(--bad)"}};
     ta.addEventListener("input",()=>setTimeout(h,50));ta.addEventListener("paste",()=>setTimeout(h,150));
   });
@@ -1503,7 +1525,8 @@ document.addEventListener("click",ev=>{
   if(!b){const cg=ev.target.closest("[data-grp]");if(cg&&!ev.target.closest("a")){grpSheet(Number(cg.dataset.grp));return}const cd=ev.target.closest("[data-comp]");if(cd&&!ev.target.closest("a"))compSheet(Number(cd.dataset.comp));return}
   if(b.dataset.close){closeSheet();return}
   if(xclick(b))return;
-  if(b.dataset.egimp){const [a,b2]=b.dataset.egimp.split(":");egImport(Number(a),Number(b2));return true}
+  if(b.dataset.egt){EGST.tab=b.dataset.egt;egSet(EGCUR.ci,EGCUR.gi);return true}
+  if(b.dataset.ege!==undefined){EGST.ep=Number(b.dataset.ege);egSet(EGCUR.ci,EGCUR.gi);return true}
   if(b.dataset.egzdel||b.dataset.egzall||b.dataset.egtdel){egDel(b);return true}
   if(b.dataset.lksave||b.dataset.lkdel){const [pid,ids]=(b.dataset.lksave||b.dataset.lkdel).split(":"),P=PROV.find(x=>x.id===pid),c=D.comps.find(x=>x.id===Number(ids));if(c&&P){const gg=b.dataset.lkgrp!=null?GRP[Number(b.dataset.lkgrp)]:null,cs=gg?gg.cs:[c];const v=($("#lk-"+pid)?.value||"").trim();let host="";try{host=new URL(v).hostname}catch(e){}
     if(b.dataset.lkdel)cs.forEach(x=>{if(LNK[x.k]){delete LNK[x.k][pid];if(!Object.keys(LNK[x.k]).length)delete LNK[x.k]}});
@@ -1749,7 +1772,7 @@ newsScan();buildNewC();
 document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend",'<button type="button" class="sclr" aria-label="Effacer la recherche">×</button>'));
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".sclr");if(!b)return;e.stopPropagation();const i=b.parentElement.querySelector("input");i.value="";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()},true);
 applyTypes();applySeason();
-renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
+applyEG();renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
 fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
 fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();admBadge();if(S.tab==="m")renderAdmin()}}).catch(()=>{});
 setInterval(()=>{
