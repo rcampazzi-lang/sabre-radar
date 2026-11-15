@@ -7,7 +7,7 @@ here=os.path.dirname(os.path.abspath(__file__))
 HEAD=('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
  '<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png">'
  '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar">'
- '<meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50">')
+ '<meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E">')
 import time
 BUILD=str(int(time.time()))
 HEAD+=('<script>(function(){var B="%s";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;'
