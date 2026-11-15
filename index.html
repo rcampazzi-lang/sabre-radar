@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794772557";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794772845";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -414,7 +414,7 @@ body.scr .screen>.lt .stamp{display:none}
 .pks{display:flex;flex-direction:column;gap:8px}
 .pk{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:12px 14px;border:0;border-radius:16px;background:var(--surface);color:var(--ink);box-shadow:var(--sh);text-decoration:none;font:inherit;cursor:pointer}
 .pk b{font-size:15px}.pk span{font-size:22px;color:var(--muted)}
-.favt .star{width:auto;height:auto;min-width:0;background:none;border:0;box-shadow:none;font-size:24px;line-height:1;padding:0 8px;vertical-align:middle;color:var(--mute,#8a7f78)}.favt .star.on{color:var(--accent,#C85F2F)}.er-h .cnt::after{content:" inscrits";font-size:.72em;font-weight:500;opacity:.8}.btn.live{gap:8px}.btn.live .ri{width:20px;height:20px}.btn.eg .egi{height:20px;width:auto;flex:none}
+.favt .star{width:auto;height:auto;min-width:0;background:none;border:0;box-shadow:none;font-size:24px;line-height:1;padding:0 8px;vertical-align:middle;color:var(--mute,#8a7f78)}.favt .star.on{color:var(--accent,#C85F2F)}.er-h .cnt::after{content:" inscrits";font-size:.72em;font-weight:500;opacity:.8}.pi{display:inline-block;font:800 10px/1 var(--font-body);letter-spacing:.02em;color:#fff;padding:4px 5px;border-radius:6px}.pi-ftl{background:#2F5FA8}.pi-ftv{background:#1F7A6B}.pi-oph{background:#7A3E9D}.egb .pi{font-size:9px}.btn.live .pi{font-size:11px}.btn.live{gap:8px}.btn.live .ri{width:20px;height:20px}.btn.eg .egi{height:20px;width:auto;flex:none}
 .egb{display:inline-flex;align-items:center;justify-content:center;height:30px;min-width:34px;padding:0 8px;border-radius:10px;background:var(--tab-bg);text-decoration:none}.egb .egi{height:15px;width:auto}
 .btns.lk{gap:6px;margin-top:-2px}
 .btns.lk .btn.sm{height:34px;padding:0 12px;font-size:13.5px;background:var(--fill);box-shadow:none;border-radius:12px}
@@ -748,7 +748,7 @@ function epBtn(c,e){
   const i=c.eps.indexOf(e);const l=e.s==="Hommes"?"H":e.s==="Dames"?"D":"Mixte";
   const r=resOf(c,e)?`<button class="rs" data-res="${c.id}:${i}::0" aria-label="Résultats ${esc(epLabel(e))}">${ICON.trophy}Résultats</button>`:"";
   const dim=DIM&&(S.cats.size||S.sx||S.open||S.inscrits)&&!epMatch(e);
-  return `<span class="eg"${dim?' style="opacity:.42"':""}>${e.n?`<button class="cnt${favN(c,e)?" fv":""}" data-eng="${c.id}:${i}" aria-label="Voir les ${e.n} inscrits ${esc(epLabel(e))}"><b>${l}</b> ${e.n}${favN(c,e)?`<i class="fst">★${favN(c,e)>1?favN(c,e):""}</i>`:""}</button>`:`<span class="cnt z"><b>${l}</b> 0</span>`}${r}${EGL[c.k]?`<a class="egb" href="${esc(EGL[c.k])}" target="_blank" rel="noopener" aria-label="Page En Garde">${EGI}</a>`:""}</span>`;
+  return `<span class="eg"${dim?' style="opacity:.42"':""}>${e.n?`<button class="cnt${favN(c,e)?" fv":""}" data-eng="${c.id}:${i}" aria-label="Voir les ${e.n} inscrits ${esc(epLabel(e))}"><b>${l}</b> ${e.n}${favN(c,e)?`<i class="fst">★${favN(c,e)>1?favN(c,e):""}</i>`:""}</button>`:`<span class="cnt z"><b>${l}</b> 0</span>`}${r}${EGL[c.k]?`<a class="egb" href="${esc(EGL[c.k])}" target="_blank" rel="noopener" aria-label="Page En Garde">${EGI}</a>`:""}${PROV.map(P=>{const u=lnkOf(c,P.id);return u?`<a class="egb" href="${esc(u)}" target="_blank" rel="noopener" aria-label="Page ${P.n}">${pchip(P)}</a>`:""}).join("")}</span>`;
 }
 function epRows(c,eps){
   const g=new Map();for(const e of eps){if(!g.has(e.c))g.set(e.c,[]);g.get(e.c).push(e)}
@@ -774,8 +774,9 @@ const EGK="ffe-engarde";let EGL={};try{EGL=JSON.parse(localStorage.getItem(EGK)|
 const saveEG=()=>{try{localStorage.setItem(EGK,JSON.stringify(EGL))}catch(e){}};
 const LKK="ffe-links";let LNK={};try{LNK=JSON.parse(localStorage.getItem(LKK)||"{}")}catch(e){}
 const saveLK=()=>{try{localStorage.setItem(LKK,JSON.stringify(LNK))}catch(e){}};
-const PROV=[{id:"ftl",n:"Fencing Time Live",re:/(^|\.)fencingtimelive\.com$/i,dom:"fencingtimelive.com"},{id:"ftv",n:"Fencing TV",re:/fencing\.?tv/i,dom:"fencingtv.com"},{id:"oph",n:"Ophardt",re:/(fencingworldwide\.com|ophardt\.online|ophardt\.com)$/i,dom:"fencingworldwide.com"}];
+const PROV=[{id:"ftl",n:"Fencing Time Live",ab:"FTL",re:/(^|\.)fencingtimelive\.com$/i,dom:"fencingtimelive.com"},{id:"ftv",n:"Fencing TV",ab:"TV",re:/fencing\.?tv/i,dom:"fencingtv.com"},{id:"oph",n:"Ophardt",ab:"OPH",re:/(fencingworldwide\.com|ophardt\.online|ophardt\.com)$/i,dom:"fencingworldwide.com"}];
 const PLAY='<svg class="ri" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor"/></svg>';
+const pchip=P=>`<span class="pi pi-${P.id}">${P.ab}</span>`;
 const lnkOf=(c,pid)=>(LNK[c.k]||{})[pid]||"";
 const MOISL=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 const dq=c=>{const a=c.d.split("-");return a[2]+"/"+a[1]+"/"+a[0]};
@@ -791,7 +792,7 @@ function actHTML(cs,gi){
   const iC=cs.filter(x=>x.eps.some(e=>e.n));
   const inscr=iC.length>1?`<button class="btn primary" data-pick="eng:${ids(iC)}">Voir les inscrits</button>`:iC.length?`<button class="btn primary" data-eng="${iC[0].id}:all">Voir les inscrits</button>`:"";
   const eg=EGL[c.k]?`<a class="btn eg" href="${esc(EGL[c.k])}" target="_blank" rel="noopener">${EGI}En Garde</a>`:"";
-  const live=PROV.map(P=>{const u=lnkOf(c,P.id);return u?`<a class="btn live" href="${esc(u)}" target="_blank" rel="noopener">${PLAY}${P.n}</a>`:""}).join("");
+  const live=PROV.map(P=>{const u=lnkOf(c,P.id);return u?`<a class="btn live" href="${esc(u)}" target="_blank" rel="noopener">${pchip(P)}${P.n}</a>`:""}).join("");
   const fC=cs.filter(x=>!x.go);
   const ffe=fC.length>1?`<button class="btn sm" data-pick="ffe:${ids(fC)}">Page FFE</button>`:fC.length?`<a class="btn sm" href="https://www.ffescrime.fr/competition/${esc(fC[0].k)}" target="_blank" rel="noopener">Page FFE</a>`:"";
   const nC=[...new Map(cs.filter(x=>x.nt).map(x=>[x.nt,x])).values()];
