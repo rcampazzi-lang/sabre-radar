@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794764373";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794765173";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -405,6 +405,10 @@ body.scr .screen>.lt{padding-top:8px;padding-bottom:8px;align-items:center}
 body.scr .screen>.lt h1{font-size:24px}
 body.scr .screen>.lt .stamp{display:none}
 .screen>.bar{top:calc(env(safe-area-inset-top,0px) + var(--lth,0px))}
+.btn svg.rt,.hero svg.rt{width:19px;height:19px;fill:currentColor;stroke:none;flex:none}
+.hero .hb{margin-top:14px;display:flex;gap:8px}
+.hero .hb button{margin-top:0;flex:1;width:auto}
+.hero .hb a{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:46px;padding:0 16px;border-radius:16px;background:rgba(255,255,255,.22);color:#fff;font:700 15px var(--font-body);text-decoration:none}
 .adet{margin-top:8px}.adet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent)}.adet .kv{margin-top:6px}
 .card.ty-open{background:var(--c-op)}.pill.ty-open{color:var(--t-op)}
 :root{--c-op:#DDEEEC;--t-op:#0F6B63}
@@ -645,6 +649,7 @@ const save=()=>{try{localStorage.setItem("ffe-state",JSON.stringify({st:S.st,cat
 function chip(label,pressed,attrs){return `<button class="chip" aria-pressed="${pressed}" ${attrs}>${esc(label)}</button>`}
 function seg(label,pressed,attrs){return `<button aria-pressed="${pressed}" ${attrs}>${esc(label)}</button>`}
 function sw(label,on,attrs){return `<button class="sw" role="switch" aria-checked="${on}" ${attrs}><span>${esc(label)}</span><i class="knob"></i></button>`}
+const RT='<svg class="rt" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M13.06 1.94a1.5 1.5 0 0 0-2.12 0L1.94 10.94a1.5 1.5 0 0 0 0 2.12l9 9a1.5 1.5 0 0 0 2.12 0l9-9a1.5 1.5 0 0 0 0-2.12zM8.5 15.5v-3.2a1.3 1.3 0 0 1 1.3-1.3h4.2V9l3 3-3 3v-2h-3.5v2.5z"/></svg>';
 const ICON={x:'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>',
  trophy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4.2M16 6h3a3 3 0 0 1-3 4.2M12 13v4M8.5 20h7"/></svg>',
  chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>'};
@@ -774,7 +779,7 @@ function bodyHTML(c){
     const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
     return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}).join("");
   return `<div class="tags" style="margin-bottom:4px">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${c.f<TODAY?"":dlInfo(c)}</div>
-  <div class="btns">${favcBig([c])}<button class="btn" type="button" data-upd1="${esc(c.k)}">Actualiser les résultats</button>${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${c.go?"":`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(c.k)}" target="_blank" rel="noopener">Page FFE</a>`}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c)}
+  <div class="btns">${favcBig([c])}<button class="btn" type="button" data-upd1="${esc(c.k)}">Actualiser les résultats</button>${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${c.go?"":`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(c.k)}" target="_blank" rel="noopener">Page FFE</a>`}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c)}
   <dl class="kv">
     <dt>Dates</dt><dd>${esc(fd(c.d))}${c.f!==c.d?" → "+esc(fd(c.f)):""}</dd>
     ${c.nn?`<dt>Nom</dt><dd>${esc(c.nn)}</dd>`:""}
@@ -834,7 +839,7 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
   const dl=[...new Set(g.cs.filter(x=>x.dl).map(x=>fdy(x.dl)))].join(", ");
   const link=EGL[c.k]?"":"";
   return `<div class="tags" style="margin-bottom:4px">${types}${g.cs.some(x=>x.go)?`<span class="pill warn">Pas encore sur FFE</span>`:""}${g.cs.some(x=>x.eps.some(e=>e.o))?'<span class="pill open">Open</span>':'<span class="pill mute">Non open</span>'}${dls}</div>
-  <div class="btns">${favcBig(g.cs)}<button class="btn" type="button" data-upd1="${esc(g.cs.map(x=>x.k).join(","))}">Actualiser les résultats</button>${inscr}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${ffe}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c).replace('data-egsave="'+c.id+'"','data-egsave="'+c.id+'" data-eggrp="'+gi+'"').replace('data-egdel="'+c.id+'"','data-egdel="'+c.id+'" data-eggrp="'+gi+'"')}
+  <div class="btns">${favcBig(g.cs)}<button class="btn" type="button" data-upd1="${esc(g.cs.map(x=>x.k).join(","))}">Actualiser les résultats</button>${inscr}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${ffe}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c).replace('data-egsave="'+c.id+'"','data-egsave="'+c.id+'" data-eggrp="'+gi+'"').replace('data-egdel="'+c.id+'"','data-egdel="'+c.id+'" data-eggrp="'+gi+'"')}
   <dl class="kv">
     <dt>Dates</dt><dd>${esc(fd(g.d))}${g.f!==g.d?" → "+esc(fd(g.f)):""}</dd>
     ${names.length?`<dt>Nom</dt><dd>${names.map(esc).join("<br>")}</dd>`:""}
@@ -860,8 +865,9 @@ function renderHero(){
   const av2=fi.slice(0,4).map(t=>`<i style="--h:${hue(t[2])}">${esc((t[0][0]||"")+(t[1][0]||""))}</i>`).join("");
   const names=[...new Set(g.cs.map(x=>x.n))].join(" · ");
   const date=fd(g.d)+(g.f!==g.d?" → "+fd(g.f):"");
+  const mp=(g.cs.find(x=>x.mp)||{}).mp||"";
   const act=g.cs.length>1?`data-hero-g="${GRP.push(g)-1}"`:`data-hero="${c.id}"`;
-  h.innerHTML=`<div class="hero"><span class="hl">Prochaine suivie · ${when}</span><h2>${esc(c.v)}</h2><div class="hs">${esc(names)} · ${esc(date)}</div>${fi.length?`<div class="hf"><span class="hav">${av2}</span><span>${fi.length} favori${fi.length>1?"s":""} inscrit${fi.length>1?"s":""}</span></div>`:""}<button type="button" ${act}>Voir la fiche</button></div>`;
+  h.innerHTML=`<div class="hero"><span class="hl">Prochaine suivie · ${when}</span><h2>${esc(c.v)}</h2><div class="hs">${esc(names)} · ${esc(date)}</div>${fi.length?`<div class="hf"><span class="hav">${av2}</span><span>${fi.length} favori${fi.length>1?"s":""} inscrit${fi.length>1?"s":""}</span></div>`:""}<div class="hb"><button type="button" ${act}>Voir la fiche</button>${mp?`<a href="${esc(mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}</div></div>`;
 }
 function renderComps(){
   const q=S.q.trim().toLowerCase();
