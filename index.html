@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794765173";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794768387";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -407,8 +407,8 @@ body.scr .screen>.lt .stamp{display:none}
 .screen>.bar{top:calc(env(safe-area-inset-top,0px) + var(--lth,0px))}
 .btn svg.rt,.hero svg.rt{width:19px;height:19px;fill:currentColor;stroke:none;flex:none}
 .hero .hb{margin-top:14px;display:flex;gap:8px}
-.hero .hb button{margin-top:0;flex:1;width:auto}
-.hero .hb a{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:46px;padding:0 16px;border-radius:16px;background:rgba(255,255,255,.22);color:#fff;font:700 15px var(--font-body);text-decoration:none}
+.hero{cursor:pointer}.hero .hb{flex-wrap:wrap}.hero .hb button{margin-top:0;width:auto}
+.hero .hb a,.hero .hb button.rs{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;padding:0 14px;border:0;border-radius:14px;background:rgba(255,255,255,.22);color:#fff;font:700 14px var(--font-body);text-decoration:none;white-space:nowrap}.hero .hb button.rs svg{width:17px;height:17px}
 .adet{margin-top:8px}.adet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent)}.adet .kv{margin-top:6px}
 .card.ty-open{background:var(--c-op)}.pill.ty-open{color:var(--t-op)}
 :root{--c-op:#DDEEEC;--t-op:#0F6B63}
@@ -866,8 +866,10 @@ function renderHero(){
   const names=[...new Set(g.cs.map(x=>x.n))].join(" · ");
   const date=fd(g.d)+(g.f!==g.d?" → "+fd(g.f):"");
   const mp=(g.cs.find(x=>x.mp)||{}).mp||"";
-  const act=g.cs.length>1?`data-hero-g="${GRP.push(g)-1}"`:`data-hero="${c.id}"`;
-  h.innerHTML=`<div class="hero"><span class="hl">Prochaine suivie · ${when}</span><h2>${esc(c.v)}</h2><div class="hs">${esc(names)} · ${esc(date)}</div>${fi.length?`<div class="hf"><span class="hav">${av2}</span><span>${fi.length} favori${fi.length>1?"s":""} inscrit${fi.length>1?"s":""}</span></div>`:""}<div class="hb"><button type="button" ${act}>Voir la fiche</button>${mp?`<a href="${esc(mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}</div></div>`;
+  const act=g.cs.length>1?`data-grp="${GRP.push(g)-1}"`:`data-comp="${c.id}"`;
+  const nt=(g.cs.find(x=>x.nt)||{}).nt||"";
+  let rs="";for(const x of g.cs){const ei=x.eps.findIndex(e=>resOf(x,e));if(ei>=0){rs=`${x.id}:${ei}::0`;break}}
+  h.innerHTML=`<div class="hero" ${act} tabindex="0" role="button" aria-label="Fiche ${esc(c.v)}"><span class="hl">Prochaine suivie · ${when}</span><h2>${esc(c.v)}</h2><div class="hs">${esc(names)} · ${esc(date)}</div>${fi.length?`<div class="hf"><span class="hav">${av2}</span><span>${fi.length} favori${fi.length>1?"s":""} inscrit${fi.length>1?"s":""}</span></div>`:""}<div class="hb">${mp?`<a href="${esc(mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${nt?`<a href="${esc(nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${rs?`<button type="button" class="rs" data-res="${rs}" aria-label="Résultats">${ICON.trophy}Résultats</button>`:""}</div></div>`;
 }
 function renderComps(){
   const q=S.q.trim().toLowerCase();
