@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794762326";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794762653";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -399,6 +399,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 :root{--c-gr:#F8DCE6;--t-gr:#9B2457;--t-gr-bg:#F8DCE6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}}
 :root[data-theme="dark"]{--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}
+.adet{margin-top:8px}.adet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent)}.adet .kv{margin-top:6px}
 .card.ty-open{background:var(--c-op)}.pill.ty-open{color:var(--t-op)}
 :root{--c-op:#DDEEEC;--t-op:#0F6B63}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-op:#12312E;--t-op:#8AD8CF}}
@@ -472,9 +473,13 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 
 
 <section id="v-a" class="screen" hidden>
-  <div class="lt"><div><h1>Plus</h1><span class="stamp">Nouveautés, rapprochements Greg et classifications</span></div></div>
+  <div class="lt"><div><h1>Plus</h1><span class="stamp">Nouveautés, synchro et administration</span></div></div>
   <button class="trow" data-f="news" style="grid-template-columns:42px minmax(0,1fr) auto;margin-bottom:12px"><span class="av" style="--h:20">🔔</span><div><div class="nm">Nouveautés</div><div class="sub">Changements depuis la dernière mise à jour</div></div><span class="badge2" id="chgn"></span></button>
   <button class="trow" data-f="sync" style="grid-template-columns:42px minmax(0,1fr) auto;margin-bottom:12px"><span class="av" style="--h:170">☁</span><div><div class="nm">Sauvegarde et synchro</div><div class="sub" id="sy-sub"></div></div><span></span></button>
+  <button class="trow" data-f="adm" id="adm-row" hidden style="grid-template-columns:42px minmax(0,1fr) auto;margin-bottom:12px"><span class="av" style="--h:260">🛡</span><div><div class="nm">Administration</div><div class="sub">Rapprochements Greg et classifications à revoir</div></div><span class="badge2" id="adm-n"></span></button>
+</section>
+<section id="v-m" class="screen" hidden>
+  <div class="lt"><div><h1>Administration</h1><span class="stamp">Réservé aux administrateurs</span></div><button class="rfb" data-f="admback" aria-label="Retour" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
   <div class="seg" id="a-seg" style="margin:0 0 12px"></div>
   <div class="note" id="a-intro"></div>
   <div class="list" id="a-list"></div>
@@ -508,7 +513,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 (function(){
 "use strict";
 var URL_="https://okkzynlffoqudwhmlvpm.supabase.co",KEY="sb_publishable_Xdd1NkkEM4CcfbrRIk8QKg_LORL8ld8";
-var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k","ffe-tyo"];
+var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k","ffe-tyo","ffe-admin"];
 var CK="ffe-sync-code",TK="ffe-sync-t",LK="ffe-sync-last";
 var ON=/(^|\.)github\.io$/.test(location.hostname)||location.hostname==="localhost"||location.hostname==="127.0.0.1";
 function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -1024,6 +1029,20 @@ function applyTypes(){for(const c of D.comps){if(c._t0===undefined){c._t0=c.ty;c
   const o=TYO[c.k];if(o&&TYL[o]){c.ty=o;c.tw="choisi par toi"}else{c.ty=c._t0;c.tw=c._w0}}}
 const tyDoubt=c=>!c.go&&!TYO[c.k]&&/défaut|vérifier|même note/i.test(c._w0||c.tw||"");
 let AT="rap",ACF="chk",AQ="";
+/* Accès admin : pour l'instant un simple réglage (?admin=0 le masque, ?admin=1 le réaffiche). Une vraie restriction par compte viendra plus tard. */
+function isAdmin(){try{const q=new URLSearchParams(location.search).get("admin");if(q==="0"||q==="1")localStorage.setItem("ffe-admin",q)}catch(e){}try{return localStorage.getItem("ffe-admin")!=="0"}catch(e){return true}}
+function admTodo(){return (CAND?CAND.pend.map(pendInfo).filter(Boolean).filter(x=>DEC[x.p.key]===undefined).length:0)+D.comps.filter(c=>inSeason(c)&&tyDoubt(c)).length}
+function admBadge(){const r=$("#adm-row");if(!r)return;r.hidden=!isAdmin();const n=admTodo();$("#adm-n").textContent=n?String(n):""}
+function admLinks(c){return `<div class="btns" style="margin-top:8px">${c.go?"":`<a class="btn sm" href="https://www.ffescrime.fr/competition/${esc(c.k)}" target="_blank" rel="noopener">Fiche FFE</a>`}${c.nt?`<a class="btn sm" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:`<span class="tag">Pas de note</span>`}${c.mp?`<a class="btn sm" href="${esc(c.mp)}" target="_blank" rel="noopener">Lieu</a>`:""}</div>`}
+function admInfo(c){const ne=c.eps.reduce((n,e)=>n+(e.n||0),0);return `<details class="adet"><summary>Toutes les infos</summary><dl class="kv">
+  <dt>Dates</dt><dd>${esc(fd(c.d))}${c.f!==c.d?" → "+esc(fd(c.f)):""}</dd>
+  ${c.nn?`<dt>Titre de la note</dt><dd>${esc(c.nn)}</dd>`:""}
+  ${c.ad?`<dt>Adresse</dt><dd>${esc(c.ad)}</dd>`:""}
+  <dt>Région</dt><dd>${esc([c.dt,c.rg,c.gr].filter(Boolean).join(" · ")||"–")}</dd>
+  ${c.dl?`<dt>Limite d'inscription</dt><dd>${esc(fd(c.dl))}${c.dp?" · "+esc(c.dp):""}</dd>`:""}
+  <dt>Épreuves</dt><dd>${esc(c.eps.map(epLabel).join(" · "))} · ${ne} inscrits FFE</dd>
+  <dt>Source des données</dt><dd>${esc(c.src||"–")}</dd>
+  <dt>Mon classement auto</dt><dd>${esc(TYL[c._t0||c.ty]||"–")} · ${esc(c._w0||c.tw||"–")}</dd></dl></details>`}
 let CAND=null,DEC={},SEL={};
 try{DEC=JSON.parse(localStorage.getItem("ffe-dec")||"{}")}catch(e){}
 const saveDec=()=>{try{localStorage.setItem("ffe-dec",JSON.stringify(DEC))}catch(e){}};
@@ -1052,7 +1071,7 @@ function renderAdmin(){
   const ord=L.slice().sort((a,b)=>(DEC[a.p.key]!==undefined)-(DEC[b.p.key]!==undefined)||a.c.d.localeCompare(b.c.d));
   A.innerHTML=ord.map(x=>{
     const {p,c,e,ci,ei}=x,key=p.key,d=DEC[key];const i=CAND.pend.indexOf(p);
-    const head=`<div><b>${esc(c.v)}</b> · ${esc(fd(c.d))}<div class="sub">${esc(c.n)}</div><div class="sub">${esc(epLabel(e))} · ${e.n} inscrits FFE</div></div>`;
+    const head=`<div><b>${esc(c.v)}</b> · ${esc(fd(c.d))}<div class="sub">${esc(c.n)}</div><div class="sub">${esc(epLabel(e))} · ${e.n} inscrits FFE</div></div>${admLinks(c)}${admInfo(c)}`;
     if(d!==undefined)return `<div class="acard">${head}<div class="adone">${d.length?"Validé : "+d.length+" épreuve"+(d.length>1?"s":"")+" Greg":"Aucune épreuve Greg ne correspond"}</div><div class="btns"><button class="btn" data-adm="edit:${i}">Modifier</button>${d.length?`<button class="btn" data-adm="show:${i}">Voir les résultats</button>`:""}</div></div>`;
     const sel=SEL[key]||(SEL[key]=new Set());
     const cands=p.cand.map(g=>{const R=CAND.res[g.id];const on=sel.has(g.id);
@@ -1070,7 +1089,7 @@ function renderCls(){
   const tot=L.length;L=L.slice(0,60);
   $("#a-list").innerHTML=`<div class="wrapchips" style="margin-bottom:10px">${chip("À vérifier ("+nd+")",ACF==="chk",'data-acf="chk"')}${chip("Mes choix ("+no+")",ACF==="mine",'data-acf="mine"')}${chip("Toutes",ACF==="all",'data-acf="all"')}</div>
    <label class="search" style="margin-bottom:10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg><input type="search" id="a-q" placeholder="Ville ou compétition" value="${esc(AQ)}" autocomplete="off"></label>`+
-  (L.length?L.map(c=>`<div class="acard"><div><b>${esc(c.v)}</b> · ${esc(fd(c.d))}<div class="sub">${esc(c.n)}</div><div class="sub">Raison : ${esc(c.tw||"–")}</div></div><div class="row" style="margin-top:8px"><span class="pill ty-${TYC[c.ty]||""}" style="background:var(--surface)">Actuel : ${esc(TYL[c.ty]||c.ty||"–")}</span></div>
+  (L.length?L.map(c=>`<div class="acard"><div><b>${esc(c.v)}</b> · ${esc(fd(c.d))}<div class="sub">${esc(c.n)}</div><div class="sub">Raison : ${esc(c.tw||"–")}</div></div>${admLinks(c)}${admInfo(c)}<div class="row" style="margin-top:8px"><span class="pill ty-${TYC[c.ty]||""}" style="background:var(--surface)">Actuel : ${esc(TYL[c.ty]||c.ty||"–")}</span></div>
     <div class="wrapchips" style="margin-top:8px">${TYPES.map(t=>chip(TYL[t],c.ty===t&&!!TYO[c.k],`data-aty="${c.id}|${t}"`)).join("")}</div>
     <div class="btns">${TYO[c.k]?`<button class="btn" data-aty="${c.id}|">Revenir au classement automatique</button>`:`<button class="btn primary" data-aty="${c.id}|${c.ty}">Confirmer « ${esc(TYL[c.ty]||c.ty)} »</button>`}</div></div>`).join("")+(tot>L.length?`<div class="empty">${tot-L.length} autres. Utilise la recherche.</div>`:""):`<div class="empty">${ACF==="chk"?"Rien à vérifier pour le moment.":"Aucune compétition."}</div>`)+
   `<div class="acard"><b>Mes classifications</b><div class="sub">À copier et me transmettre pour qu'elles soient reprises à chaque mise à jour.</div><textarea id="a-json" readonly>${esc(JSON.stringify(TYO))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button></div></div>`;
@@ -1224,9 +1243,10 @@ document.addEventListener("change",ev=>{const k=ev.target.dataset&&ev.target.dat
 const SCR={};
 function setTab(t){
   SCR[S.tab]=window.scrollY;S.tab=t;
-  for(const k of["c","p","t","k","h","a"]){$("#v-"+k).hidden=k!==t;if(k!=="h")$("#tab-"+k).setAttribute("aria-selected",k===t||(k==="a"&&t==="h"))}
+  if(t==="m"&&!isAdmin())t="a";
+  for(const k of["c","p","t","k","h","a","m"]){$("#v-"+k).hidden=k!==t;if(k!=="h"&&k!=="m")$("#tab-"+k).setAttribute("aria-selected",k===t||(k==="a"&&(t==="h"||t==="m")))}
   if(t==="h")markRead();
-  if(t==="a")renderAdmin();if(t==="k")renderKlass();
+  if(t==="a")admBadge();if(t==="m")renderAdmin();if(t==="k")renderKlass();
   window.scrollTo(0,SCR[t]||0);
 }
 document.addEventListener("click",ev=>{
@@ -1443,6 +1463,8 @@ function syncSheet(msg){
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
 function xclick(b){
+  if(b.dataset.f==="adm"){setTab("m");return true}
+  if(b.dataset.f==="admback"){setTab("a");return true}
   if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();return true}
   if(b.dataset.acf){ACF=b.dataset.acf;renderAdmin();return true}
   if(b.dataset.aty!==undefined){const [id,t]=b.dataset.aty.split("|");const c=D.comps.find(x=>x.id===+id);if(!c)return true;if(t)TYO[c.k]=t;else delete TYO[c.k];saveTyo();applyTypes();renderAdmin();renderComps();return true}
@@ -1462,9 +1484,9 @@ newsScan();buildNewC();
 document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend",'<button type="button" class="sclr" aria-label="Effacer la recherche">×</button>'));
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".sclr");if(!b)return;e.stopPropagation();const i=b.parentElement.querySelector("input");i.value="";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()},true);
 applyTypes();applySeason();
-renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();
+renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
 fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
-fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();if(S.tab==="a")renderAdmin()}}).catch(()=>{});
+fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();admBadge();if(S.tab==="m")renderAdmin()}}).catch(()=>{});
 setInterval(()=>{
   if(document.hidden||$("#sheet").hidden||RS.ci==null||!RES||!$("#sheet").querySelector(".rtabs"))return;
   const c=D.comps[RS.ci],e=c&&c.eps[RS.ei],X=e&&resOf(c,e);if(!X||X.done)return;
