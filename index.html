@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770766";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770996";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -534,17 +534,10 @@ body.scr .screen>.lt .stamp{display:none}
 (function(){
 "use strict";
 var URL_="https://okkzynlffoqudwhmlvpm.supabase.co",KEY="sb_publishable_Xdd1NkkEM4CcfbrRIk8QKg_LORL8ld8";
-var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k","ffe-tyo","ffe-admin","ffe-grpo","ffe-grpn","ffe-ign"];
-var CK="ffe-sync-code",TK="ffe-sync-t",LK="ffe-sync-last";
 var ON=/(^|\.)github\.io$/.test(location.hostname)||location.hostname==="localhost"||location.hostname==="127.0.0.1";
 function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
 var _set=null;try{_set=Storage.prototype.setItem}catch(e){}
 function put(k,v){try{_set.call(localStorage,k,v)}catch(e){}}
-var T={};try{T=JSON.parse(get(TK)||"{}")||{}}catch(e){}
-var S={on:ON,code:get(CK)||"",state:"idle",last:+get(LK)||0,err:""};
-var listeners=[];function emit(){listeners.forEach(function(f){try{f()}catch(e){}})}
-var applying=false,timer=null,busy=false,again=false;
-function saveT(){put(TK,JSON.stringify(T))}
 function norm(c){return String(c||"").toUpperCase().replace(/[^A-Z0-9]/g,"")}
 function gen(){var A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",o="",a=new Uint8Array(24);crypto.getRandomValues(a);for(var i=0;i<24;i++)o+=A[a[i]%32];return o}
 function rpc(fn,body){
@@ -552,11 +545,18 @@ function rpc(fn,body){
   return fetch(URL_+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify(body),signal:ac?ac.signal:undefined})
    .then(function(r){clearTimeout(tm);if(!r.ok)throw new Error("Erreur "+r.status);return r.text()})
    .then(function(t){return t?JSON.parse(t):null},function(e){clearTimeout(tm);throw e})}
-function local(){var o={};KEYS.forEach(function(k){var v=get(k);if(v!=null)o[k]={v:v,t:T[k]||0}});return o}
 function reload(force){
   if(!force&&document.body&&document.body.classList.contains("lock"))return;
   try{var n=+sessionStorage.getItem("ffe-sync-rl")||0;if(n>=2)return;sessionStorage.setItem("ffe-sync-rl",String(n+1))}catch(e){}
   location.reload()}
+var ENG=[];
+function mk(KEYS,CK,TK,LK,tag){
+var T={};try{T=JSON.parse(get(TK)||"{}")||{}}catch(e){}
+var S={on:ON,code:get(CK)||"",state:"idle",last:+get(LK)||0,err:""};
+var listeners=[];function emit(){listeners.forEach(function(f){try{f()}catch(e){}})}
+var timer=null,busy=false,again=false;
+function saveT(){put(TK,JSON.stringify(T))}
+function local(){var o={};KEYS.forEach(function(k){var v=get(k);if(v!=null)o[k]={v:v,t:T[k]||0}});return o}
 function schedule(){clearTimeout(timer);timer=setTimeout(function(){sync(false)},1500)}
 function sync(boot){
   if(!ON||!S.code)return Promise.resolve();
@@ -566,7 +566,7 @@ function sync(boot){
     var R=(rem&&rem.k)||{},L=local(),M={},changed=false,push=false;
     KEYS.forEach(function(k){
       var r=R[k],l=L[k];
-      if(r&&(!l||r.t>l.t)){M[k]=r;if(!l||l.v!==r.v){applying=true;put(k,r.v);applying=false;changed=true}T[k]=r.t}
+      if(r&&(!l||r.t>l.t)){M[k]=r;if(!l||l.v!==r.v){E.applying=true;put(k,r.v);E.applying=false;changed=true}T[k]=r.t}
       else if(l){M[k]=l;if(!r||l.t>r.t||(l.t===r.t&&l.v!==r.v))push=true}
       else if(r){M[k]=r}
     });
@@ -593,13 +593,19 @@ function join(c){
   },function(){throw new Error("Impossible de joindre le serveur. Réessaie avec du réseau.")})
 }
 function leave(){S.code="";S.state="idle";try{localStorage.removeItem(CK)}catch(e){}emit()}
+var E={applying:false,KEYS:KEYS,onset:function(k){T[k]=Date.now();saveT();if(ON){if(S.code)schedule();else create()}},visible:function(){if(S.code&&Date.now()-S.last>60000)sync(true)},
+ api:{st:S,on:function(f){listeners.push(f)},create:create,join:join,leave:leave,now:function(){return sync(false)},fmt:function(c){return String(c).replace(/(.{4})(?=.)/g,"$1 ")}},
+ boot:function(){if(ON){if(S.code)sync(true);else if(KEYS.some(function(k){return get(k)!=null}))create()}}};
+ENG.push(E);return E}
+var PERS=mk(["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-dec","ffe-coef","ffe-k"],"ffe-sync-code","ffe-sync-t","ffe-sync-last");
+var SHR=mk(["ffe-engarde","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign"],"ffe-shr-code","ffe-shr-t","ffe-shr-last");
 if(_set)Storage.prototype.setItem=function(k,v){
   _set.call(this,k,v);
-  try{if(this===localStorage&&!applying&&KEYS.indexOf(k)>-1){T[k]=Date.now();saveT();if(ON){if(S.code)schedule();else create()}}}catch(e){}
+  try{if(this===localStorage)ENG.forEach(function(E){if(!E.applying&&E.KEYS.indexOf(k)>-1)E.onset(k)})}catch(e){}
 };
-document.addEventListener("visibilitychange",function(){if(!document.hidden&&S.code&&Date.now()-S.last>60000)sync(true)});
-window.SYNC={st:S,on:function(f){listeners.push(f)},create:create,join:join,leave:leave,now:function(){return sync(false)},fmt:function(c){return String(c).replace(/(.{4})(?=.)/g,"$1 ")}};
-if(ON){if(S.code)sync(true);else if(KEYS.some(function(k){return get(k)!=null}))create()}
+document.addEventListener("visibilitychange",function(){if(!document.hidden)ENG.forEach(function(E){E.visible()})});
+window.SYNC=PERS.api;window.SHARED=SHR.api;
+PERS.boot();SHR.boot();
 })();
 </script>
 <script>
@@ -1552,6 +1558,7 @@ function syncSheet(msg){
   <div class="sec">Utiliser un code existant</div>
   <div class="row" style="flex-wrap:nowrap"><input id="sy-in" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Code de l'autre appareil" style="flex:1;min-width:0;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0 10px;font:600 16px var(--font-body)"><button class="btn sm primary" data-sy="join">Valider</button></div>
   ${msg||""}${s.code?`<div style="margin-top:8px"><button class="btn" data-sy="leave">Se déconnecter de ce code</button></div>`:""}`;
+  if(s.on&&window.SHARED){const x=SHARED.st;h+=`<div class="sec">Réglages partagés (admin)</div><div class="note">Liens En Garde, classifications, regroupements et compétitions ignorées. Le même code sur plusieurs appareils (le tien, celui de ta femme) leur donne les mêmes réglages, sans partager les favoris.</div>${x.code?`<div class="er"><div class="er-m">Code des réglages</div><div style="font:700 19px ui-monospace,Menlo,monospace;letter-spacing:.03em;overflow-wrap:anywhere">${esc(SHARED.fmt(x.code))}</div><div class="row"><button class="btn sm" data-sh="copy">Copier le code</button><button class="btn sm" data-sh="now">Synchroniser</button><button class="btn sm" data-sh="leave">Quitter</button></div><div class="mini">${x.state==="err"?"Hors ligne ("+esc(x.err)+")":x.state==="sync"?"Synchronisation…":"Synchronisés "+syAgo(x.last)}</div></div>`:`<div class="row"><button class="btn sm primary" data-sh="create">Activer le partage</button></div>`}<div class="row" style="flex-wrap:nowrap;margin-top:8px"><input id="sh-in" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Code des réglages d'un autre appareil" style="flex:1;min-width:0;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0 10px;font:600 16px var(--font-body)"><button class="btn sm primary" data-sh="join">Valider</button></div>`}
   sheet("Sauvegarde et synchro",h);
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
@@ -1580,6 +1587,13 @@ function xclick(b){
   if(b.dataset.heroG!==undefined){grpSheet(Number(b.dataset.heroG));return true}
   if(b.dataset.favc!==undefined){toggleFavc(b.dataset.favc.split(",").map(Number));return true}
   if(b.dataset.f==="sync"){if(window.SYNC)syncSheet();return true}
+  if(b.dataset.sh&&window.SHARED){const a=b.dataset.sh,X=SHARED,m=t=>syncSheet(`<div class="note">${t}</div>`);
+    if(a==="copy"){(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(X.st.code):Promise.reject()).then(()=>m("Code copié."),()=>m("Appuie longuement sur le code pour le copier."))}
+    else if(a==="create")X.create().then(()=>syncSheet());
+    else if(a==="now")X.now().then(()=>syncSheet());
+    else if(a==="leave"){X.leave();m("Partage arrêté. Les réglages restent sur cet appareil.")}
+    else if(a==="join"){X.join($("#sh-in").value).then(()=>m("Code accepté : les réglages sont chargés."),e=>syncSheet(syErr(e.message)))}
+    return true}
   const a=b.dataset.sy;if(!a||!window.SYNC)return false;
   if(a==="copy"){const c=SYNC.st.code;(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(c):Promise.reject()).then(()=>syncSheet(`<div class="note">Code copié.</div>`),()=>syncSheet(`<div class="note">Appuie longuement sur le code pour le copier.</div>`))}
   else if(a==="create")SYNC.create().then(()=>syncSheet());
@@ -1587,6 +1601,7 @@ function xclick(b){
   else if(a==="leave"){SYNC.leave();syncSheet(`<div class="note">Déconnecté. Les données restent sur cet appareil.</div>`)}
   else if(a==="join"){const v=$("#sy-in").value;SYNC.join(v).then(()=>{syncSheet(`<div class="note">Code accepté : tes favoris sont chargés.</div>`);renderSyncRow()},e=>syncSheet(syErr(e.message)))}
   return true}
+if(window.SHARED)SHARED.on(()=>{if(!$("#sheet").hidden&&$("#sheet").querySelector("[data-sh]")&&document.activeElement&&document.activeElement.id!=="sh-in")syncSheet()});
 if(window.SYNC)SYNC.on(()=>{renderSyncRow();if(!$("#sheet").hidden&&$("#sheet").querySelector("#sy-code")&&document.activeElement&&document.activeElement.id!=="sy-in")syncSheet()});
 newsScan();buildNewC();
 document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend",'<button type="button" class="sclr" aria-label="Effacer la recherche">×</button>'));
