@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794769580";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794769738";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -410,6 +410,7 @@ body.scr .screen>.lt .stamp{display:none}
 .hero{cursor:pointer}.hero .hb{flex-wrap:wrap}.hero .hb button{margin-top:0;width:auto}
 .hero .hb a,.hero .hb button.rs{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;padding:0 14px;border:0;border-radius:14px;background:rgba(255,255,255,.22);color:#fff;font:700 14px var(--font-body);text-decoration:none;white-space:nowrap}.hero .hb button.rs svg{width:17px;height:17px}
 .btns.act .btn{flex:1 1 auto}
+.btn.eg{background:var(--tab-bg);color:#fff;box-shadow:none}
 .btns.lk{gap:6px;margin-top:-2px}
 .btns.lk .btn.sm{height:34px;padding:0 12px;font-size:13.5px;background:var(--fill);box-shadow:none;border-radius:12px}
 .btns.lk .btn.ico{padding:0 10px}
@@ -770,7 +771,7 @@ function actHTML(cs,gi){
   const c=cs[0],multi=cs.length>1;
   const lb=x=>{const sh=cs.filter(y=>y.d===x.d).length>1;const n=(x.n||"").replace(/\s*\(e\)/gi,"");return sh?(n.replace(/^Epreuve\s+/i,"").length>22?n.replace(/^Epreuve\s+/i,"").slice(0,21)+"…":n.replace(/^Epreuve\s+/i,"")):fd(x.d)};
   const inscr=cs.filter(x=>x.eps.some(e=>e.n)).map(x=>`<button class="btn primary" data-eng="${x.id}:all">${multi?"Inscrits · "+esc(lb(x)):"Voir les inscrits"}</button>`).join("");
-  const eg=EGL[c.k]?`<a class="btn" href="${esc(EGL[c.k])}" target="_blank" rel="noopener">${EGI}En Garde</a>`:"";
+  const eg=EGL[c.k]?`<a class="btn eg" href="${esc(EGL[c.k])}" target="_blank" rel="noopener">${EGI}En Garde</a>`:"";
   const ffe=cs.filter(x=>!x.go).map(x=>`<a class="btn sm" href="https://www.ffescrime.fr/competition/${esc(x.k)}" target="_blank" rel="noopener">${multi?"FFE · "+esc(lb(x)):"Page FFE"}</a>`).join("");
   const nts=[...new Map(cs.filter(x=>x.nt).map(x=>[x.nt,x])).values()].map(x=>`<a class="btn sm" href="${esc(x.nt)}" target="_blank" rel="noopener">${cs.filter(y=>y.nt).length>1?"Note · "+esc(lb(x)):"Note d'organisation"}</a>`).join("");
   const mp=(cs.find(x=>x.mp)||{}).mp;
