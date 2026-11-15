@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794762653";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794763316";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -399,7 +399,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 :root{--c-gr:#F8DCE6;--t-gr:#9B2457;--t-gr-bg:#F8DCE6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}}
 :root[data-theme="dark"]{--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}
-.adet{margin-top:8px}.adet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent)}.adet .kv{margin-top:6px}
+#a-seg button{font-size:12.5px;padding:9px 2px}.adet{margin-top:8px}.adet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent)}.adet .kv{margin-top:6px}
 .card.ty-open{background:var(--c-op)}.pill.ty-open{color:var(--t-op)}
 :root{--c-op:#DDEEEC;--t-op:#0F6B63}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-op:#12312E;--t-op:#8AD8CF}}
@@ -513,7 +513,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 (function(){
 "use strict";
 var URL_="https://okkzynlffoqudwhmlvpm.supabase.co",KEY="sb_publishable_Xdd1NkkEM4CcfbrRIk8QKg_LORL8ld8";
-var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k","ffe-tyo","ffe-admin"];
+var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k","ffe-tyo","ffe-admin","ffe-grpo","ffe-grpn"];
 var CK="ffe-sync-code",TK="ffe-sync-t",LK="ffe-sync-last";
 var ON=/(^|\.)github\.io$/.test(location.hostname)||location.hostname==="localhost"||location.hostname==="127.0.0.1";
 function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -784,10 +784,14 @@ function bodyHTML(c){
 function compSheet(ci){CUR.g=null;const c=D.comps[ci];sheet(`${esc(c.v)}<div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
 function addDay(s){const d=new Date(s+"T12:00:00");d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
 function noteKey(c){return c.nh||c.nt||""}
+let GRPO={},GRPN=[];try{GRPO=JSON.parse(localStorage.getItem("ffe-grpo")||"{}");GRPN=JSON.parse(localStorage.getItem("ffe-grpn")||"[]")}catch(e){}
+const saveGrp=()=>{try{localStorage.setItem("ffe-grpo",JSON.stringify(GRPO));localStorage.setItem("ffe-grpn",JSON.stringify(GRPN))}catch(e){}};
 function groupComps(L){
-  const by=new Map();for(const c of L){const nk=noteKey(c);const k=c.v.toLowerCase().trim()+"|"+(nk||("#"+c.id));if(!by.has(k))by.set(k,[]);by.get(k).push(c)}
+  const by=new Map();for(const c of L){const nk=noteKey(c);const k=GRPO[c.k]?"M|"+GRPO[c.k]:c.v.toLowerCase().trim()+"|"+(nk||("#"+c.id));if(!by.has(k))by.set(k,[]);by.get(k).push(c)}
   const G=[];
-  for(const arr of by.values()){arr.sort((a,b)=>a.d.localeCompare(b.d));let cur=null;
+  for(const [key,arr] of by){arr.sort((a,b)=>a.d.localeCompare(b.d));
+    if(key.startsWith("M|")){G.push({d:arr[0].d,f:arr.reduce((m,c)=>c.f>m?c.f:m,arr[0].f),cs:arr});continue}
+    let cur=null;
     for(const c of arr){if(cur&&c.d<=addDay(cur.f)){cur.cs.push(c);if(c.f>cur.f)cur.f=c.f}else{cur={d:c.d,f:c.f,cs:[c]};G.push(cur)}}}
   return G;
 }
@@ -1061,8 +1065,10 @@ function pendInfo(p,idx){
 }
 function renderAdmin(){
   const ndc=D.comps.filter(tyDoubt).length;
-  $("#a-seg").innerHTML=seg("Rapprochements Greg",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"');
+  const ngr=grpClusters().length;
+  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"');
   if(AT==="cls")return renderCls();
+  if(AT==="grp")return renderGrp();
   const A=$("#a-list");
   if(!CAND){$("#a-intro").textContent="Chargement…";A.innerHTML="";return}
   const L=CAND.pend.map(pendInfo).filter(Boolean);
@@ -1078,6 +1084,30 @@ function renderAdmin(){
       return `<div class="acand ${on?"on":""}"><button class="achk" data-adm="tog:${i}:${g.id}" aria-pressed="${on}" aria-label="Choisir">${on?"✓":""}</button><div><b>${g.lab?`<span class="tag n">${esc(g.lab)}</span> `:""}${esc(g.lib)}</b><div class="sub">${esc(g.lieu)} · catégorie ${esc(g.cat)}${R?" · "+R.ins.length+" inscrits Greg":""}</div><div class="row2"><button class="btn sm" style="margin:0" data-adm="prev:${i}:${g.id}">Aperçu</button>${R&&R.url?`<a class="btn sm" style="margin:0" href="${esc(R.url)}" target="_blank" rel="noopener">Page Greg</a>`:""}</div></div></div>`}).join("");
     return `<div class="acard">${head}${cands}<div class="btns"><button class="btn primary" data-adm="ok:${i}">Valider la sélection</button><button class="btn" data-adm="non:${i}">Aucune ne convient</button></div></div>`;
   }).join("")+`<div class="acard"><b>Mes décisions</b><div class="sub">À copier et me transmettre.</div><textarea id="a-json" readonly>${esc(JSON.stringify(DEC))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button><button class="btn" data-adm="reset">Tout effacer</button></div></div>`;
+}
+let GSEL={};
+function grpClusters(){
+  const L=D.comps.filter(c=>inSeason(c)&&!c.go&&c.f>=TODAY);
+  const by=new Map();for(const g of groupComps(L)){const k=g.cs[0].v.toLowerCase().trim();if(!by.has(k))by.set(k,[]);by.get(k).push(g)}
+  const out=[];
+  for(const gs of by.values()){if(gs.length<2)continue;gs.sort((a,b)=>a.d.localeCompare(b.d));
+    let cl=null;const cls=[];
+    for(const g of gs){if(cl&&g.d<=addDay(cl.f)){cl.gs.push(g);if(g.f>cl.f)cl.f=g.f}else{cl={f:g.f,gs:[g]};cls.push(cl)}}
+    for(const x of cls){if(x.gs.length<2)continue;const cs=x.gs.flatMap(g=>g.cs);if(cs.every(c=>c.nh))continue;const key=cs.map(c=>c.k).sort().join("|");if(GRPN.includes(key))continue;out.push({key,cs})}}
+  return out.sort((a,b)=>a.cs[0].d.localeCompare(b.cs[0].d));
+}
+function renderGrp(){
+  $("#a-intro").innerHTML="Je regroupe automatiquement les épreuves d'un même lieu qui ont la même note d'organisation. Quand ce n'est pas le cas, elles apparaissent ici : coche celles qui vont ensemble et regroupe-les, ou dis-moi qu'elles sont bien séparées.";
+  const cl=grpClusters();
+  const mine={};for(const [k,g] of Object.entries(GRPO))(mine[g]=mine[g]||[]).push(k);
+  const mg=Object.entries(mine).map(([g,ks])=>[g,ks.map(k=>D.comps.find(c=>c.k===k)).filter(Boolean)]).filter(x=>x[1].length);
+  const line=c=>`<div class="sub"><b>${esc(fd(c.d))}${c.f!==c.d?" → "+esc(fd(c.f)):""}</b> · ${esc(c.n)} · ${esc([...new Set(c.eps.map(e=>e.c))].join(", "))}</div>`;
+  $("#a-list").innerHTML=(cl.length?cl.map((x,i)=>{const sel=GSEL[x.key]||(GSEL[x.key]=new Set(x.cs.map(c=>c.k)));
+    return `<div class="acard"><b>${esc(x.cs[0].v)}</b><div class="sub">Même lieu, jours qui se touchent, mais pas la même note.</div>`+
+      x.cs.map(c=>`<div class="acand ${sel.has(c.k)?"on":""}"><button class="achk" data-grp9="tog|${i}|${c.id}" aria-pressed="${sel.has(c.k)}" aria-label="Choisir">${sel.has(c.k)?"✓":""}</button><div>${line(c)}${admLinks(c)}</div></div>`).join("")+
+      `<div class="btns"><button class="btn primary" data-grp9="ok|${i}">Regrouper la sélection</button><button class="btn" data-grp9="no|${i}">Bien séparées</button></div></div>`}).join(""):`<div class="empty">Aucun regroupement à vérifier.</div>`)+
+    (mg.length?`<div class="sec">Mes regroupements</div>`+mg.map(([g,cs])=>`<div class="acard"><b>${esc(cs[0].v)}</b>${cs.map(line).join("")}<div class="btns"><button class="btn" data-grp9="un|${esc(g)}">Séparer</button></div></div>`).join(""):"")+
+    `<div class="acard"><b>Mes regroupements (à me transmettre)</b><div class="sub">À copier et me transmettre pour qu'ils soient repris à chaque mise à jour.</div><textarea id="a-json" readonly>${esc(JSON.stringify({regroupes:GRPO,separes:GRPN}))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button></div></div>`;
 }
 function renderCls(){
   const L0=D.comps.filter(c=>inSeason(c)&&!c.go);
@@ -1463,6 +1493,13 @@ function syncSheet(msg){
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
 function xclick(b){
+  if(b.dataset.grp9){const [a,x,y]=b.dataset.grp9.split("|");const cl=grpClusters();
+    if(a==="un"){for(const k of Object.keys(GRPO))if(GRPO[k]===x)delete GRPO[k]}
+    else{const c=cl[+x];if(!c)return true;const sel=GSEL[c.key]||new Set();
+      if(a==="tog"){const k=D.comps.find(z=>z.id===+y).k;sel.has(k)?sel.delete(k):sel.add(k);GSEL[c.key]=sel;renderAdmin();return true}
+      if(a==="ok"){if(sel.size<2)return true;const ks=[...sel].sort();const gid=ks[0];for(const k of ks)GRPO[k]=gid}
+      if(a==="no"){GRPN.push(c.key)}}
+    saveGrp();GSEL={};renderAdmin();renderComps();return true}
   if(b.dataset.f==="adm"){setTab("m");return true}
   if(b.dataset.f==="admback"){setTab("a");return true}
   if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();return true}
