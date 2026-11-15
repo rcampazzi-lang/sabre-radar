@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770996";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794771108";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -131,7 +131,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.c
 .sheet>.panel{background:var(--bg);width:100%;max-width:700px;max-height:92%;border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom,0px)}
 .grab{flex:none;width:40px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 0}
 .panel header{flex:none;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:10px max(16px,env(safe-area-inset-left,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
-.panel header h2{font:700 21px/1.2 var(--font-head);letter-spacing:-.015em;margin:0;overflow-wrap:anywhere;min-width:0}
+.panel header h2{flex:1;font:700 21px/1.2 var(--font-head);letter-spacing:-.015em;margin:0;overflow-wrap:anywhere;min-width:0}
 .panel header h2 .sub{font:400 13px/1.35 var(--font-body);letter-spacing:0;margin-top:3px}
 .x{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:var(--fill);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
 .x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
@@ -789,7 +789,7 @@ function actHTML(cs,gi){
   const nts=nC.length>1?`<button class="btn sm" data-pick="note:${ids(nC)}">Note d'organisation</button>`:nC.length?`<a class="btn sm" href="${esc(nC[0].nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:"";
   const mp=(cs.find(x=>x.mp)||{}).mp;
   return `${eg?`<div class="btns act">${eg}</div>`:""}
-  <div class="btns lk">${mp?`<a class="btn sm" href="${esc(mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${ffe}${nts}<button class="btn sm" type="button" data-upd1="${esc(cs.map(x=>x.k).join(","))}">${REF}Actualiser</button><button class="btn sm ico" type="button" data-egset="${c.id}${gi!=null?":"+gi:""}" aria-label="Réglages (lien En Garde)">${GEAR}</button></div>`;
+  <div class="btns lk">${mp?`<a class="btn sm" href="${esc(mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${ffe}${nts}<button class="btn sm ico" type="button" data-egset="${c.id}${gi!=null?":"+gi:""}" aria-label="Réglages (lien En Garde)">${GEAR}</button></div>`;
 }
 function pickSheet(kind,cs){
   const T={eng:"Quels inscrits ?",ffe:"Quelle page FFE ?",note:"Quelle note d'organisation ?"}[kind];
@@ -823,7 +823,8 @@ function bodyHTML(c){
   <div class="sec">Épreuves</div>${rows}
   <div class="mini">${c.src?esc(c.src)+". ":"Pas de note sur la fiche. "}Horaires et tarifs à confirmer dans la note.</div>`;
 }
-function compSheet(ci){CUR.g=null;CUR.ci=ci;const c=D.comps[ci];sheet(`${esc(c.v)}<span class="favt">${favcBtn([c])}</span><div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
+const updB=cs=>`<button class="x" type="button" data-upd1="${esc(cs.map(x=>x.k).join(","))}" aria-label="Actualiser">${REF}</button>`;
+function compSheet(ci){CUR.g=null;CUR.ci=ci;const c=D.comps[ci];HX=updB([c]);sheet(`${esc(c.v)}<span class="favt">${favcBtn([c])}</span><div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
 function addDay(s){const d=new Date(s+"T12:00:00");d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
 function noteKey(c){return c.nh||c.nt||""}
 let GRPO={},GRPN=[];try{GRPO=JSON.parse(localStorage.getItem("ffe-grpo")||"{}");GRPN=JSON.parse(localStorage.getItem("ffe-grpn")||"[]")}catch(e){}
@@ -875,7 +876,7 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
     ${dl?`<dt>Inscription</dt><dd>avant le ${dl}</dd>`:""}
   </dl>${sections}
   <div class="mini">${c.src?esc(c.src)+". ":""}Horaires et tarifs à confirmer dans la note.</div>`}
-function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;CUR.ci=D.comps.indexOf(g.cs[0]);const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<span class="favt">${favcBtn(g.cs)}</span><div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
+function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;CUR.ci=D.comps.indexOf(g.cs[0]);const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;HX=updB(g.cs);sheet(`${esc(c.v)}<span class="favt">${favcBtn(g.cs)}</span><div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
 let LIM=80,LIMSIG="";
 (function(){let io=null;
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("#c-more");if(!b)return;e.stopPropagation();const y=window.scrollY;LIM+=80;renderComps();window.scrollTo(0,y)},true);
@@ -938,10 +939,10 @@ function renderTir(){
   $("#t-count").textContent=L.length+" tireur"+(L.length>1?"s":"");
   $("#t-list").innerHTML=L.length?L.slice(0,TLIM).map(([t,i])=>`<button class="trow" data-t="${i}">${av(t)}<div style="min-width:0"><div class="nm">${FAV.has(t[2])?"★ ":""}${esc(t[0])} ${esc(t[1])}</div><div class="sub">${esc(t[6])}</div><div class="cats">${t[3]?`<span class="tag n">${CATL[t[3]]}</span>`:""}${t[4]?`<span class="tag">↑ ${CATL[t[4]]}</span>`:""}<span class="tag">${t[5]} participation${t[5]>1?"s":""}</span></div></div>${ICON.chev}</button>`).join("")+(L.length>TLIM?`<button class="btn" id="t-more" type="button" style="width:100%;margin:6px 0 12px">Afficher la suite · ${L.length-TLIM} restants</button>`:""):`<div class="empty">Aucun tireur.</div>`;
 }
-let BACK=null;
+let BACK=null,HX="";
 function sheet(title,inner){
-  BACK=null;const s=$("#sheet");s.hidden=false;document.body.classList.add("lock");
-  s.innerHTML=`<div class="panel" role="dialog" aria-modal="true"><div class="grab"></div><header><h2>${title}</h2><button class="x" data-close="1" aria-label="Fermer">${ICON.x}</button></header><div class="inner">${inner}</div></div>`;
+  const hx=HX;HX="";BACK=null;const s=$("#sheet");s.hidden=false;document.body.classList.add("lock");
+  s.innerHTML=`<div class="panel" role="dialog" aria-modal="true"><div class="grab"></div><header><h2>${title}</h2>${hx}<button class="x" data-close="1" aria-label="Fermer">${ICON.x}</button></header><div class="inner">${inner}</div></div>`;
 }
 let PREV=null;
 function closeSheet(){if(BACK){const f=BACK;BACK=null;f();return}PREV=null;$("#sheet").hidden=true;$("#sheet").innerHTML="";$("#fsheet").hidden=true;document.body.classList.remove("lock")}
