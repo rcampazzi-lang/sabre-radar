@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794757276";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794762315";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -399,6 +399,10 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 :root{--c-gr:#F8DCE6;--t-gr:#9B2457;--t-gr-bg:#F8DCE6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}}
 :root[data-theme="dark"]{--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}
+.card.ty-open{background:var(--c-op)}.pill.ty-open{color:var(--t-op)}
+:root{--c-op:#DDEEEC;--t-op:#0F6B63}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-op:#12312E;--t-op:#8AD8CF}}
+:root[data-theme="dark"]{--c-op:#12312E;--t-op:#8AD8CF}
 .card.ty-grandreg{background:var(--c-gr)}.pill.ty-grandreg{color:var(--t-gr)}:not(.card)>.tags .pill.ty-grandreg,.sheet .pill.ty-grandreg,#sheet .pill.ty-grandreg{background:var(--t-gr-bg)}
 </style>
 <div id="app">
@@ -471,6 +475,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
   <div class="lt"><div><h1>Plus</h1><span class="stamp">Nouveautés et rapprochements Greg</span></div></div>
   <button class="trow" data-f="news" style="grid-template-columns:42px minmax(0,1fr) auto;margin-bottom:12px"><span class="av" style="--h:20">🔔</span><div><div class="nm">Nouveautés</div><div class="sub">Changements depuis la dernière mise à jour</div></div><span class="badge2" id="chgn"></span></button>
   <button class="trow" data-f="sync" style="grid-template-columns:42px minmax(0,1fr) auto;margin-bottom:12px"><span class="av" style="--h:170">☁</span><div><div class="nm">Sauvegarde et synchro</div><div class="sub" id="sy-sub"></div></div><span></span></button>
+  <div class="seg" id="a-seg" style="margin:0 0 12px"></div>
   <div class="note" id="a-intro"></div>
   <div class="list" id="a-list"></div>
 </section>
@@ -503,7 +508,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 (function(){
 "use strict";
 var URL_="https://okkzynlffoqudwhmlvpm.supabase.co",KEY="sb_publishable_Xdd1NkkEM4CcfbrRIk8QKg_LORL8ld8";
-var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k"];
+var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k","ffe-tyo"];
 var CK="ffe-sync-code",TK="ffe-sync-t",LK="ffe-sync-last";
 var ON=/(^|\.)github\.io$/.test(location.hostname)||location.hostname==="localhost"||location.hostname==="127.0.0.1";
 function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -632,9 +637,9 @@ const ICON={x:'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>',
  chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>'};
 const hue=s=>{let h=0;for(const ch of String(s))h=(h*31+ch.charCodeAt(0))%360;return h};
 const av=(t,cls)=>`<span class="av ${cls||""}" style="--h:${hue(t[2])}">${esc((t[0][0]||"")+(t[1][0]||""))}</span>`;
-const TYC={"international":"international","national":"national","grande régional":"grandreg","régional":"regional","départemental":"departemental","formation":"formation","stage":"stage"};
-const TYPES=["international","national","grande régional","régional","départemental","formation","stage"];
-const TYL={"international":"International","national":"National","grande régional":"Grande régional","régional":"Régional","départemental":"Départemental","formation":"Formation","stage":"Stage"};
+const TYC={"international":"international","national":"national","grande régional":"grandreg","régional":"regional","départemental":"departemental","formation":"formation","stage":"stage","open":"open"};
+const TYPES=["international","national","grande régional","régional","départemental","open","formation","stage"];
+const TYL={"international":"International","national":"National","grande régional":"Grande régional","régional":"Régional","départemental":"Départemental","formation":"Formation","stage":"Stage","open":"Tournoi open"};
 const uniq=a=>[...new Set(a.filter(Boolean))].sort((x,y)=>x.localeCompare(y,"fr"));
 function sel(id,label,opts,val){return `<select class="sel" data-sel="${id}" aria-label="${label}"><option value="">${label}</option>${opts.map(o=>`<option ${o===val?"selected":""}>${esc(o)}</option>`).join("")}</select>`}
 function renderGeo(){
@@ -1013,6 +1018,12 @@ function results(ci,ei,view,gi){
   const q=$("#rsq");if(q)q.addEventListener("input",ev=>{RS.q=ev.target.value;const f=$("#rfin");if(f){const R2=R;const qq=RS.q.toLowerCase();const cnt={};R2.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);f.innerHTML=R2.final.filter(r=>!qq||(pname(R2,r.id)+" "+pclub(R2,r.id)).toLowerCase().includes(qq)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${esc(pname(R2,r.id))}</b><small>${esc(pclub(R2,r.id))}</small></div></div>`).join("")}});
 }
 
+let TYO={};try{TYO=JSON.parse(localStorage.getItem("ffe-tyo")||"{}")}catch(e){}
+const saveTyo=()=>{try{localStorage.setItem("ffe-tyo",JSON.stringify(TYO))}catch(e){}};
+function applyTypes(){for(const c of D.comps){if(c._t0===undefined){c._t0=c.ty;c._w0=c.tw}
+  const o=TYO[c.k];if(o&&TYL[o]){c.ty=o;c.tw="choisi par toi"}else{c.ty=c._t0;c.tw=c._w0}}}
+const tyDoubt=c=>!c.go&&!TYO[c.k]&&/défaut|vérifier|même note/i.test(c._w0||c.tw||"");
+let AT="rap",ACF="chk",AQ="";
 let CAND=null,DEC={},SEL={};
 try{DEC=JSON.parse(localStorage.getItem("ffe-dec")||"{}")}catch(e){}
 const saveDec=()=>{try{localStorage.setItem("ffe-dec",JSON.stringify(DEC))}catch(e){}};
@@ -1030,6 +1041,9 @@ function pendInfo(p,idx){
   return {ci,ei,c:D.comps[ci],e:D.comps[ci].eps[ei],p,idx};
 }
 function renderAdmin(){
+  const ndc=D.comps.filter(tyDoubt).length;
+  $("#a-seg").innerHTML=seg("Rapprochements Greg",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"');
+  if(AT==="cls")return renderCls();
   const A=$("#a-list");
   if(!CAND){$("#a-intro").textContent="Chargement…";A.innerHTML="";return}
   const L=CAND.pend.map(pendInfo).filter(Boolean);
@@ -1045,6 +1059,22 @@ function renderAdmin(){
       return `<div class="acand ${on?"on":""}"><button class="achk" data-adm="tog:${i}:${g.id}" aria-pressed="${on}" aria-label="Choisir">${on?"✓":""}</button><div><b>${g.lab?`<span class="tag n">${esc(g.lab)}</span> `:""}${esc(g.lib)}</b><div class="sub">${esc(g.lieu)} · catégorie ${esc(g.cat)}${R?" · "+R.ins.length+" inscrits Greg":""}</div><div class="row2"><button class="btn sm" style="margin:0" data-adm="prev:${i}:${g.id}">Aperçu</button>${R&&R.url?`<a class="btn sm" style="margin:0" href="${esc(R.url)}" target="_blank" rel="noopener">Page Greg</a>`:""}</div></div></div>`}).join("");
     return `<div class="acard">${head}${cands}<div class="btns"><button class="btn primary" data-adm="ok:${i}">Valider la sélection</button><button class="btn" data-adm="non:${i}">Aucune ne convient</button></div></div>`;
   }).join("")+`<div class="acard"><b>Mes décisions</b><div class="sub">À copier et me transmettre.</div><textarea id="a-json" readonly>${esc(JSON.stringify(DEC))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button><button class="btn" data-adm="reset">Tout effacer</button></div></div>`;
+}
+function renderCls(){
+  const L0=D.comps.filter(c=>inSeason(c)&&!c.go);
+  const nd=L0.filter(tyDoubt).length,no=Object.keys(TYO).length;
+  $("#a-intro").innerHTML=`Je classe chaque compétition (international, national, grande régional…). Quand je ne suis pas sûr, elle apparaît ici : tu confirmes ou tu choisis le bon type. Ton choix remplace le mien partout, il est synchronisé avec tes autres appareils. « Tournoi open » = ouvert à tous, hors classement.`;
+  const q=AQ.trim().toLowerCase();
+  let L=L0.filter(c=>ACF==="chk"?tyDoubt(c):ACF==="mine"?!!TYO[c.k]:true).filter(c=>!q||(c.v+" "+c.n).toLowerCase().includes(q));
+  L.sort((a,b)=>a.d.localeCompare(b.d));
+  const tot=L.length;L=L.slice(0,60);
+  $("#a-list").innerHTML=`<div class="wrapchips" style="margin-bottom:10px">${chip("À vérifier ("+nd+")",ACF==="chk",'data-acf="chk"')}${chip("Mes choix ("+no+")",ACF==="mine",'data-acf="mine"')}${chip("Toutes",ACF==="all",'data-acf="all"')}</div>
+   <label class="search" style="margin-bottom:10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg><input type="search" id="a-q" placeholder="Ville ou compétition" value="${esc(AQ)}" autocomplete="off"></label>`+
+  (L.length?L.map(c=>`<div class="acard"><div><b>${esc(c.v)}</b> · ${esc(fd(c.d))}<div class="sub">${esc(c.n)}</div><div class="sub">Raison : ${esc(c.tw||"–")}</div></div><div class="row" style="margin-top:8px"><span class="pill ty-${TYC[c.ty]||""}" style="background:var(--surface)">Actuel : ${esc(TYL[c.ty]||c.ty||"–")}</span></div>
+    <div class="wrapchips" style="margin-top:8px">${TYPES.map(t=>chip(TYL[t],c.ty===t&&!!TYO[c.k],`data-aty="${c.id}|${t}"`)).join("")}</div>
+    <div class="btns">${TYO[c.k]?`<button class="btn" data-aty="${c.id}|">Revenir à mon choix automatique</button>`:`<button class="btn primary" data-aty="${c.id}|${c.ty}">Confirmer « ${esc(TYL[c.ty]||c.ty)} »</button>`}</div></div>`).join("")+(tot>L.length?`<div class="empty">${tot-L.length} autres. Utilise la recherche.</div>`:""):`<div class="empty">${ACF==="chk"?"Rien à vérifier pour le moment.":"Aucune compétition."}</div>`)+
+  `<div class="acard"><b>Mes classifications</b><div class="sub">À copier et me transmettre pour qu'elles soient reprises à chaque mise à jour.</div><textarea id="a-json" readonly>${esc(JSON.stringify(TYO))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button></div></div>`;
+  const i=$("#a-q");if(i)i.addEventListener("input",()=>{AQ=i.value;const p=i.selectionStart;renderCls();const j=$("#a-q");j.focus();try{j.setSelectionRange(p,p)}catch(e){}});
 }
 function admin(a){
   const [act,i,g]=a.split(":");const p=CAND&&CAND.pend[+i];
@@ -1104,7 +1134,7 @@ const pcat=s=>{s=String(s||"");let m;if(m=s.match(/^M\d+/))return m[0];if(/s[ée
 const nkey=(n,p)=>(n+" "+p).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z]+/g," ").trim();
 const ptsOf=p=>p>512?0:Math.max(0,100-10*Math.ceil(Math.log2(p)));
 function levelOf(c){
-  if(c.ty==="formation"||c.ty==="stage")return null;
+  if(c.ty==="formation"||c.ty==="stage"||c.ty==="open")return null;
   const nm=((c.n||"")+" "+(c.nn||"")).toUpperCase();
   if(/H2036|HORIZON/.test(nm)){
     const f=/8\s?(E|È|EME|ÈME)|HUITI/.test(nm)?.5:/QUART|4\s?(E|È|EME|ÈME)/.test(nm)?1:/DEMI|1\/2/.test(nm)?1.5:/FINALE/.test(nm)?2:1;
@@ -1307,7 +1337,7 @@ function renderParcours(){
     if(c.ty==="international")why="International";
     else if(c.ty==="national")why="National";
     else if(P.gr&&c.gr===P.gr)why="Ma grande région";
-    else if(P.open&&eps.some(e=>e.o))why="Open";
+    else if(P.open&&(c.ty==="open"||eps.some(e=>e.o)))why="Open";
     if(!why)continue;
     out.push([c,eps,why]);
   }
@@ -1413,6 +1443,9 @@ function syncSheet(msg){
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
 function xclick(b){
+  if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();return true}
+  if(b.dataset.acf){ACF=b.dataset.acf;renderAdmin();return true}
+  if(b.dataset.aty!==undefined){const [id,t]=b.dataset.aty.split("|");const c=D.comps.find(x=>x.id===+id);if(!c)return true;if(t)TYO[c.k]=t;else delete TYO[c.k];saveTyo();applyTypes();renderAdmin();renderComps();return true}
   if(b.dataset.hero!==undefined){compSheet(Number(b.dataset.hero));return true}
   if(b.dataset.heroG!==undefined){grpSheet(Number(b.dataset.heroG));return true}
   if(b.dataset.favc!==undefined){toggleFavc(b.dataset.favc.split(",").map(Number));return true}
@@ -1428,7 +1461,7 @@ if(window.SYNC)SYNC.on(()=>{renderSyncRow();if(!$("#sheet").hidden&&$("#sheet").
 newsScan();buildNewC();
 document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend",'<button type="button" class="sclr" aria-label="Effacer la recherche">×</button>'));
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".sclr");if(!b)return;e.stopPropagation();const i=b.parentElement.querySelector("input");i.value="";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()},true);
-applySeason();
+applyTypes();applySeason();
 renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();
 fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
 fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();if(S.tab==="a")renderAdmin()}}).catch(()=>{});
