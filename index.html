@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794763316";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794763531";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -513,7 +513,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 (function(){
 "use strict";
 var URL_="https://okkzynlffoqudwhmlvpm.supabase.co",KEY="sb_publishable_Xdd1NkkEM4CcfbrRIk8QKg_LORL8ld8";
-var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k","ffe-tyo","ffe-admin","ffe-grpo","ffe-grpn"];
+var KEYS=["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-engarde","ffe-engarde-ep","ffe-dec","ffe-coef","ffe-k","ffe-tyo","ffe-admin","ffe-grpo","ffe-grpn","ffe-ign"];
 var CK="ffe-sync-code",TK="ffe-sync-t",LK="ffe-sync-last";
 var ON=/(^|\.)github\.io$/.test(location.hostname)||location.hostname==="localhost"||location.hostname==="127.0.0.1";
 function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -603,7 +603,9 @@ const seasonLbl=y=>y+"/"+(y+1);
 const SEAS=[...new Set(D.comps.map(c=>seasonOf(c.d)))].sort((a,b)=>a-b);
 let SEASON=SEAS.includes(seasonOf(TODAY))?seasonOf(TODAY):SEAS[SEAS.length-1];
 try{const v=Number(localStorage.getItem("ffe-season"));if(SEAS.includes(v))SEASON=v}catch(e){}
-const inSeason=c=>seasonOf(c.d)===SEASON;
+let IGN={};try{IGN=JSON.parse(localStorage.getItem("ffe-ign")||"{}")}catch(e){}
+const saveIgn=()=>{try{localStorage.setItem("ffe-ign",JSON.stringify(IGN))}catch(e){}};
+const inSeason=c=>!IGN[c.k]&&seasonOf(c.d)===SEASON;
 const RXC=/M9|M11|M13|M15|M17|M20|SENIOR|VET/g;
 function applySeason(){
   const per=D.tir.map(()=>({s:new Set(),n:0}));
@@ -766,7 +768,7 @@ function bodyHTML(c){
     const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
     return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}).join("");
   return `<div class="tags" style="margin-bottom:4px">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${c.f<TODAY?"":dlInfo(c)}</div>
-  <div class="btns">${favcBig([c])}<button class="btn" type="button" data-upd1="${esc(c.k)}">Actualiser les résultats</button>${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${c.go?"":`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(c.k)}" target="_blank" rel="noopener">Page FFE</a>`}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c)}
+  <div class="btns">${favcBig([c])}${isAdmin()?`<button class="btn" type="button" data-ign="${esc(c.k)}|1">Ignorer (admin)</button>`:""}<button class="btn" type="button" data-upd1="${esc(c.k)}">Actualiser les résultats</button>${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${c.go?"":`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(c.k)}" target="_blank" rel="noopener">Page FFE</a>`}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c)}
   <dl class="kv">
     <dt>Dates</dt><dd>${esc(fd(c.d))}${c.f!==c.d?" → "+esc(fd(c.f)):""}</dd>
     ${c.nn?`<dt>Nom</dt><dd>${esc(c.nn)}</dd>`:""}
@@ -820,7 +822,7 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
   const types=[...new Set(g.cs.map(x=>x.ty).filter(Boolean))].map(t=>`<span class="pill ty-${TYC[t]||""}">${esc(TYL[t]||t)}</span>`).join("");
   const dls=[...new Set(g.cs.filter(x=>x.f>=TODAY).map(dlInfo).filter(Boolean))].join("");
   const inscr=g.cs.filter(x=>x.eps.some(e=>e.n)).map(x=>`<button class="btn primary" data-eng="${x.id}:all">Inscrits${multi?" · "+esc(fd(x.d)):""}</button>`).join("");
-  const ffe=g.cs.filter(x=>!x.go).map(x=>`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(x.k)}" target="_blank" rel="noopener">Page FFE${multi?" · "+esc(fd(x.d)):""}</a>`).join("");
+  const ffe=g.cs.filter(x=>!x.go).map(x=>`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(x.k)}" target="_blank" rel="noopener">Page FFE${multi?" · "+esc(fd(x.d)):""}</a>`).join("")+(isAdmin()?g.cs.map(x=>`<button class="btn" type="button" data-ign="${esc(x.k)}|1">Ignorer${multi?" · "+esc(x.n.slice(0,22)):""} (admin)</button>`).join(""):"");
   const sections=g.cs.map(x=>{const show=x.eps;return (multi?`<div class="sec">${esc(fd(x.d))}${x.f!==x.d?" → "+esc(fd(x.f)):""}</div>`:`<div class="sec">Épreuves</div>`)+show.map(e=>epRowHTML(x,e)).join("")}).join("");
   const names=[...new Set(g.cs.map(x=>x.nn||x.n).filter(Boolean))];
   const dl=[...new Set(g.cs.filter(x=>x.dl).map(x=>fdy(x.dl)))].join(", ");
@@ -839,7 +841,7 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
 function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
 function renderHero(){
   const h=$("#hero");if(!h)return;
-  const g=!S.q.trim()&&groupComps(D.comps.filter(c=>c.f>=TODAY)).filter(g=>g.cs.some(followed)).sort((a,b)=>a.d.localeCompare(b.d))[0];
+  const g=!S.q.trim()&&groupComps(D.comps.filter(c=>c.f>=TODAY&&!IGN[c.k])).filter(g=>g.cs.some(followed)).sort((a,b)=>a.d.localeCompare(b.d))[0];
   if(!g){h.innerHTML="";return}
   const c=g.cs[0];
   const dd=Math.round((new Date(g.d+"T12:00:00")-new Date(TODAY+"T12:00:00"))/864e5);
@@ -1031,7 +1033,7 @@ let TYO={};try{TYO=JSON.parse(localStorage.getItem("ffe-tyo")||"{}")}catch(e){}
 const saveTyo=()=>{try{localStorage.setItem("ffe-tyo",JSON.stringify(TYO))}catch(e){}};
 function applyTypes(){for(const c of D.comps){if(c._t0===undefined){c._t0=c.ty;c._w0=c.tw}
   const o=TYO[c.k];if(o&&TYL[o]){c.ty=o;c.tw="choisi par toi"}else{c.ty=c._t0;c.tw=c._w0}}}
-const tyDoubt=c=>!c.go&&!TYO[c.k]&&/défaut|vérifier|même note/i.test(c._w0||c.tw||"");
+const tyDoubt=c=>!c.go&&!IGN[c.k]&&!TYO[c.k]&&/défaut|vérifier|même note/i.test(c._w0||c.tw||"");
 let AT="rap",ACF="chk",AQ="";
 /* Accès admin : pour l'instant un simple réglage (?admin=0 le masque, ?admin=1 le réaffiche). Une vraie restriction par compte viendra plus tard. */
 function isAdmin(){try{const q=new URLSearchParams(location.search).get("admin");if(q==="0"||q==="1")localStorage.setItem("ffe-admin",q)}catch(e){}try{return localStorage.getItem("ffe-admin")!=="0"}catch(e){return true}}
@@ -1110,19 +1112,19 @@ function renderGrp(){
     `<div class="acard"><b>Mes regroupements (à me transmettre)</b><div class="sub">À copier et me transmettre pour qu'ils soient repris à chaque mise à jour.</div><textarea id="a-json" readonly>${esc(JSON.stringify({regroupes:GRPO,separes:GRPN}))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button></div></div>`;
 }
 function renderCls(){
-  const L0=D.comps.filter(c=>inSeason(c)&&!c.go);
+  const L0=ACF==="ign"?D.comps.filter(c=>IGN[c.k]):D.comps.filter(c=>inSeason(c)&&!c.go);
   const nd=L0.filter(tyDoubt).length,no=Object.keys(TYO).length;
   $("#a-intro").innerHTML=`Je classe chaque compétition (international, national, grande régional…). Quand je ne suis pas sûr, elle apparaît ici : tu confirmes ou tu choisis le bon type. Ton choix remplace le mien partout, il est synchronisé avec tes autres appareils. « Tournoi open » = ouvert à tous, hors classement.`;
   const q=AQ.trim().toLowerCase();
   let L=L0.filter(c=>ACF==="chk"?tyDoubt(c):ACF==="mine"?!!TYO[c.k]:true).filter(c=>!q||(c.v+" "+c.n).toLowerCase().includes(q));
   L.sort((a,b)=>a.d.localeCompare(b.d));
   const tot=L.length;L=L.slice(0,60);
-  $("#a-list").innerHTML=`<div class="wrapchips" style="margin-bottom:10px">${chip("À vérifier ("+nd+")",ACF==="chk",'data-acf="chk"')}${chip("Mes choix ("+no+")",ACF==="mine",'data-acf="mine"')}${chip("Toutes",ACF==="all",'data-acf="all"')}</div>
+  $("#a-list").innerHTML=`<div class="wrapchips" style="margin-bottom:10px">${chip("À vérifier ("+nd+")",ACF==="chk",'data-acf="chk"')}${chip("Mes choix ("+no+")",ACF==="mine",'data-acf="mine"')}${chip("Toutes",ACF==="all",'data-acf="all"')}${chip("Ignorées ("+Object.keys(IGN).length+")",ACF==="ign",'data-acf="ign"')}</div>
    <label class="search" style="margin-bottom:10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg><input type="search" id="a-q" placeholder="Ville ou compétition" value="${esc(AQ)}" autocomplete="off"></label>`+
   (L.length?L.map(c=>`<div class="acard"><div><b>${esc(c.v)}</b> · ${esc(fd(c.d))}<div class="sub">${esc(c.n)}</div><div class="sub">Raison : ${esc(c.tw||"–")}</div></div>${admLinks(c)}${admInfo(c)}<div class="row" style="margin-top:8px"><span class="pill ty-${TYC[c.ty]||""}" style="background:var(--surface)">Actuel : ${esc(TYL[c.ty]||c.ty||"–")}</span></div>
     <div class="wrapchips" style="margin-top:8px">${TYPES.map(t=>chip(TYL[t],c.ty===t&&!!TYO[c.k],`data-aty="${c.id}|${t}"`)).join("")}</div>
-    <div class="btns">${TYO[c.k]?`<button class="btn" data-aty="${c.id}|">Revenir au classement automatique</button>`:`<button class="btn primary" data-aty="${c.id}|${c.ty}">Confirmer « ${esc(TYL[c.ty]||c.ty)} »</button>`}</div></div>`).join("")+(tot>L.length?`<div class="empty">${tot-L.length} autres. Utilise la recherche.</div>`:""):`<div class="empty">${ACF==="chk"?"Rien à vérifier pour le moment.":"Aucune compétition."}</div>`)+
-  `<div class="acard"><b>Mes classifications</b><div class="sub">À copier et me transmettre pour qu'elles soient reprises à chaque mise à jour.</div><textarea id="a-json" readonly>${esc(JSON.stringify(TYO))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button></div></div>`;
+    <div class="btns">${IGN[c.k]?`<button class="btn primary" data-ign="${esc(c.k)}|0">Ne plus ignorer</button>`:(TYO[c.k]?`<button class="btn" data-aty="${c.id}|">Revenir au classement automatique</button>`:`<button class="btn primary" data-aty="${c.id}|${c.ty}">Confirmer « ${esc(TYL[c.ty]||c.ty)} »</button>`)+`<button class="btn" data-ign="${esc(c.k)}|1">Ignorer cette compétition</button>`}</div></div>`).join("")+(tot>L.length?`<div class="empty">${tot-L.length} autres. Utilise la recherche.</div>`:""):`<div class="empty">${ACF==="chk"?"Rien à vérifier pour le moment.":"Aucune compétition."}</div>`)+
+  `<div class="acard"><b>Mes classifications</b><div class="sub">À copier et me transmettre pour qu'elles soient reprises à chaque mise à jour.</div><textarea id="a-json" readonly>${esc(JSON.stringify({types:TYO,ignorees:IGN}))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button></div></div>`;
   const i=$("#a-q");if(i)i.addEventListener("input",()=>{AQ=i.value;const p=i.selectionStart;renderCls();const j=$("#a-q");j.focus();try{j.setSelectionRange(p,p)}catch(e){}});
 }
 function admin(a){
@@ -1427,7 +1429,7 @@ function favN(c,e){return favTI().filter(i=>e.l.includes(i)).length}
 function favEp(c,e){const n=favTI().filter(i=>e.l.includes(i)).map(i=>esc(D.tir[i][1]));return n.length?`<div class="fvl sm"><i>★</i><span>${n.join(", ")} inscrit${n.length>1?"s":""}</span></div>`:""}
 function newsScan(){
   const now=Date.now(),added=new Map();let dirty=false;
-  for(const c of D.comps){if(!followed(c))continue;
+  for(const c of D.comps){if(IGN[c.k]||!followed(c))continue;
     const cur=compLics(c),old=SEEN.c[c.k],arr=[...cur.keys()];
     if(old&&c.f>=TODAY){const nw=arr.filter(l=>!old.includes(l));if(nw.length){SEEN.log.push({ts:now,y:"c",ck:c.k,l:nw});added.set(c.k,new Set(nw));dirty=true}}
     if(!old||old.length!==arr.length||arr.some(l=>!old.includes(l))){SEEN.c[c.k]=arr;dirty=true}
@@ -1493,6 +1495,7 @@ function syncSheet(msg){
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
 function xclick(b){
+  if(b.dataset.ign){const [k,v]=b.dataset.ign.split("|");if(v==="1")IGN[k]=1;else delete IGN[k];saveIgn();closeSheet();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass();admBadge();if(S.tab==="m")renderAdmin();return true}
   if(b.dataset.grp9){const [a,x,y]=b.dataset.grp9.split("|");const cl=grpClusters();
     if(a==="un"){for(const k of Object.keys(GRPO))if(GRPO[k]===x)delete GRPO[k]}
     else{const c=cl[+x];if(!c)return true;const sel=GSEL[c.key]||new Set();
