@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794771197";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794771327";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -550,9 +550,9 @@ function reload(force){
   try{var n=+sessionStorage.getItem("ffe-sync-rl")||0;if(n>=2)return;sessionStorage.setItem("ffe-sync-rl",String(n+1))}catch(e){}
   location.reload()}
 var ENG=[];
-function mk(KEYS,CK,TK,LK,tag){
+function mk(KEYS,CK,TK,LK,fixed,canPush){
 var T={};try{T=JSON.parse(get(TK)||"{}")||{}}catch(e){}
-var S={on:ON,code:get(CK)||"",state:"idle",last:+get(LK)||0,err:""};
+var S={on:ON,code:fixed||get(CK)||"",state:"idle",last:+get(LK)||0,err:""};
 var listeners=[];function emit(){listeners.forEach(function(f){try{f()}catch(e){}})}
 var timer=null,busy=false,again=false;
 function saveT(){put(TK,JSON.stringify(T))}
@@ -571,7 +571,7 @@ function sync(boot){
       else if(r){M[k]=r}
     });
     saveT();
-    var p=push&&Object.keys(M).length?rpc("set_prefs",{p_code:S.code,p_data:{v:1,k:M}}):Promise.resolve();
+    var p=push&&(!canPush||canPush())&&Object.keys(M).length?rpc("set_prefs",{p_code:S.code,p_data:{v:1,k:M}}):Promise.resolve();
     return p.then(function(){
       S.last=Date.now();put(LK,String(S.last));S.state="ok";S.err="";
       if(changed&&boot)reload(boot==="force");else if(!changed){try{sessionStorage.removeItem("ffe-sync-rl")}catch(e){}}
@@ -598,7 +598,7 @@ var E={applying:false,KEYS:KEYS,onset:function(k){T[k]=Date.now();saveT();if(ON)
  boot:function(){if(ON){if(S.code)sync(true);else if(KEYS.some(function(k){return get(k)!=null}))create()}}};
 ENG.push(E);return E}
 var PERS=mk(["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-dec","ffe-coef","ffe-k"],"ffe-sync-code","ffe-sync-t","ffe-sync-last");
-var SHR=mk(["ffe-engarde","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign"],"ffe-shr-code","ffe-shr-t","ffe-shr-last");
+var SHR=mk(["ffe-engarde","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
 if(_set)Storage.prototype.setItem=function(k,v){
   _set.call(this,k,v);
   try{if(this===localStorage)ENG.forEach(function(E){if(!E.applying&&E.KEYS.indexOf(k)>-1)E.onset(k)})}catch(e){}
@@ -1559,7 +1559,7 @@ function syncSheet(msg){
   <div class="sec">Utiliser un code existant</div>
   <div class="row" style="flex-wrap:nowrap"><input id="sy-in" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Code de l'autre appareil" style="flex:1;min-width:0;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0 10px;font:600 16px var(--font-body)"><button class="btn sm primary" data-sy="join">Valider</button></div>
   ${msg||""}${s.code?`<div style="margin-top:8px"><button class="btn" data-sy="leave">Se déconnecter de ce code</button></div>`:""}`;
-  if(s.on&&window.SHARED){const x=SHARED.st;h+=`<div class="sec">Réglages partagés (admin)</div><div class="note">Liens En Garde, classifications, regroupements et compétitions ignorées. Le même code sur plusieurs appareils (le tien, celui de ta femme) leur donne les mêmes réglages, sans partager les favoris.</div>${x.code?`<div class="er"><div class="er-m">Code des réglages</div><div style="font:700 19px ui-monospace,Menlo,monospace;letter-spacing:.03em;overflow-wrap:anywhere">${esc(SHARED.fmt(x.code))}</div><div class="row"><button class="btn sm" data-sh="copy">Copier le code</button><button class="btn sm" data-sh="now">Synchroniser</button><button class="btn sm" data-sh="leave">Quitter</button></div><div class="mini">${x.state==="err"?"Hors ligne ("+esc(x.err)+")":x.state==="sync"?"Synchronisation…":"Synchronisés "+syAgo(x.last)}</div></div>`:`<div class="row"><button class="btn sm primary" data-sh="create">Activer le partage</button></div>`}<div class="row" style="flex-wrap:nowrap;margin-top:8px"><input id="sh-in" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Code des réglages d'un autre appareil" style="flex:1;min-width:0;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0 10px;font:600 16px var(--font-body)"><button class="btn sm primary" data-sh="join">Valider</button></div>`}
+  if(s.on&&window.SHARED){const x=SHARED.st;h+=`<div class="sec">Réglages partagés (admin)</div><div class="note">Liens En Garde, classifications, regroupements et compétitions ignorées sont envoyés sur le serveur et profitent automatiquement à tous les appareils. ${x.state==="err"?"Hors ligne ("+esc(x.err)+").":x.state==="sync"?"Synchronisation…":"Dernière synchro : "+syAgo(x.last)+"."}</div><div class="row"><button class="btn sm" data-sh="now">Synchroniser maintenant</button></div>`}
   sheet("Sauvegarde et synchro",h);
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
@@ -1588,13 +1588,7 @@ function xclick(b){
   if(b.dataset.heroG!==undefined){grpSheet(Number(b.dataset.heroG));return true}
   if(b.dataset.favc!==undefined){toggleFavc(b.dataset.favc.split(",").map(Number));return true}
   if(b.dataset.f==="sync"){if(window.SYNC)syncSheet();return true}
-  if(b.dataset.sh&&window.SHARED){const a=b.dataset.sh,X=SHARED,m=t=>syncSheet(`<div class="note">${t}</div>`);
-    if(a==="copy"){(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(X.st.code):Promise.reject()).then(()=>m("Code copié."),()=>m("Appuie longuement sur le code pour le copier."))}
-    else if(a==="create")X.create().then(()=>syncSheet());
-    else if(a==="now")X.now().then(()=>syncSheet());
-    else if(a==="leave"){X.leave();m("Partage arrêté. Les réglages restent sur cet appareil.")}
-    else if(a==="join"){X.join($("#sh-in").value).then(()=>m("Code accepté : les réglages sont chargés."),e=>syncSheet(syErr(e.message)))}
-    return true}
+  if(b.dataset.sh&&window.SHARED){SHARED.now().then(()=>syncSheet());return true}
   const a=b.dataset.sy;if(!a||!window.SYNC)return false;
   if(a==="copy"){const c=SYNC.st.code;(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(c):Promise.reject()).then(()=>syncSheet(`<div class="note">Code copié.</div>`),()=>syncSheet(`<div class="note">Appuie longuement sur le code pour le copier.</div>`))}
   else if(a==="create")SYNC.create().then(()=>syncSheet());
