@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794768387";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794769421";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -409,6 +409,11 @@ body.scr .screen>.lt .stamp{display:none}
 .hero .hb{margin-top:14px;display:flex;gap:8px}
 .hero{cursor:pointer}.hero .hb{flex-wrap:wrap}.hero .hb button{margin-top:0;width:auto}
 .hero .hb a,.hero .hb button.rs{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;padding:0 14px;border:0;border-radius:14px;background:rgba(255,255,255,.22);color:#fff;font:700 14px var(--font-body);text-decoration:none;white-space:nowrap}.hero .hb button.rs svg{width:17px;height:17px}
+.btns.act .btn{flex:1 1 auto}
+.btns.lk{gap:6px;margin-top:-2px}
+.btns.lk .btn.sm{height:34px;padding:0 12px;font-size:13.5px;background:var(--fill);box-shadow:none;border-radius:12px}
+.btns.lk .btn.ico{padding:0 10px}
+.btn svg.ri{width:17px;height:17px;fill:none;stroke:currentColor;flex:none}
 .adet{margin-top:8px}.adet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent)}.adet .kv{margin-top:6px}
 .card.ty-open{background:var(--c-op)}.pill.ty-open{color:var(--t-op)}
 :root{--c-op:#DDEEEC;--t-op:#0F6B63}
@@ -756,30 +761,32 @@ function cardHTML(c,eps,open,extra){
 const EGK="ffe-engarde";let EGL={};try{EGL=JSON.parse(localStorage.getItem(EGK)||"{}")}catch(e){}
 const saveEG=()=>{try{localStorage.setItem(EGK,JSON.stringify(EGL))}catch(e){}};
 const egSearch=c=>"https://www.google.com/search?q="+encodeURIComponent("site:engarde-service.com "+c.v+" sabre "+c.d.slice(0,4));
-const egBtns=c=>EGL[c.k]?`<a class="btn primary" href="${esc(EGL[c.k])}" target="_blank" rel="noopener">Page En Garde</a>`:`<a class="btn" href="${esc(egSearch(c))}" target="_blank" rel="noopener">Chercher sur En Garde</a>`;
-const egForm=c=>`<div class="row" style="margin:0 0 8px"><input id="eg-in" type="url" inputmode="url" placeholder="Coller l'adresse En Garde" value="${esc(EGL[c.k]||"")}" style="flex:1;min-width:0;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0 10px;font:400 14px var(--font-body)"><button class="btn sm" data-egsave="${c.id}">Enregistrer</button>${EGL[c.k]?`<button class="btn sm" data-egdel="${c.id}">Retirer</button>`:""}</div>`;
-const EGP=[["tireurs","Inscrits","tireurs.htm"],["poules","Poules","poules1.htm"],["clpoules","Class. poules","claspoules1.htm"],["tab16","Tableau","tableau16.htm"],["final","Classement","clasfinal.htm"]];
-function egBase(u){const m=/^https?:\/\/(?:www\.)?engarde-service\.com\/(?:tournament|competition)\/([^\/?#]+)\/([^\/?#]+)(?:\/([^\/?#]+))?/i.exec(u||"");return m?{base:`https://engarde-service.com/competition/${m[1]}/${m[2]}/`,tpl:m[3]&&!/\.htm/i.test(m[3])?m[3].toLowerCase():""}:null}
-function egCode(c,e){const b=egBase(EGL[c.k]);if(!b)return null;const m=/^M(9|11|13|15|17|20)$/.exec(e.c.trim());if(!m||(e.s!=="Hommes"&&e.s!=="Dames"))return null;const t=/^([a-z])[hd]m\d+(.*)$/.exec(b.tpl);return(t?t[1]:"s")+(e.s==="Hommes"?"h":"d")+"m"+m[1]+(t?t[2]:"")}
-const EEK="ffe-engarde-ep";let EGE={};try{EGE=JSON.parse(localStorage.getItem(EEK)||"{}")}catch(e){}
-const saveEE=()=>{try{localStorage.setItem(EEK,JSON.stringify(EGE))}catch(e){}};
-const epKey=(c,e)=>c.k+"|"+e.c+"|"+e.s;
-function egEpBase(c,e){const m=/^https?:\/\/(?:www\.)?engarde-service\.com\/competition\/([^\/?#]+)\/([^\/?#]+)\/([^\/?#]+)/i.exec(EGE[epKey(c,e)]||"");return m?`https://engarde-service.com/competition/${m[1]}/${m[2]}/${m[3]}/`:null}
-function egDerived(c,e){const b=egBase(EGL[c.k]),code=egCode(c,e);return b&&code?b.base+code+"/":""}
-function egUrl(c,e,pg){const b=egEpBase(c,e)||egDerived(c,e);return b?b+pg:null}
-function egView(ci,ei,key){const c=D.comps[ci],e=c.eps[ei];
-  const L=EGP.map(p=>{const u=egUrl(c,e,p[2]);return u?`<a class="btn${p[0]==="tireurs"?" primary":""}" href="${esc(u)}" target="_blank" rel="noopener">${p[1]}</a>`:""}).join("");
-  sheet(`${esc(c.v)}<div class="sub">${esc(epLabel(e))} · En Garde</div>`,L?`<div class="note">Ouvrir la page dans le navigateur :</div><div class="btns">${L}</div><div class="btns"><button class="btn" data-ega="${ci}:${ei}">Modifier le lien</button></div><div class="mini">Source : En-Garde. Le site refuse l'affichage à l'intérieur de l'appli.</div>`:`<div class="empty">Pas de page En Garde déductible pour cette épreuve.</div>`)}
-function egAdd(ci,ei){const c=D.comps[ci],e=c.eps[ei],cur=EGE[epKey(c,e)]||egDerived(c,e);
-  sheet(`${esc(c.v)}<div class="sub">${esc(epLabel(e))} · lien En Garde</div>`,`<div class="note">Collez l'adresse de cette épreuve sur En Garde (idéalement la page des inscrits, <b>tireurs.htm</b>).</div><input id="ega-in" type="url" inputmode="url" placeholder="…/code-épreuve/tireurs.htm" value="${esc(cur)}" style="width:100%;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:0 12px;font:400 15px var(--font-body)"><div class="btns"><button class="btn primary" data-egsv="${ci}:${ei}">Enregistrer</button>${EGE[epKey(c,e)]?`<button class="btn" data-egrm="${ci}:${ei}">Retirer</button>`:""}<button class="btn" data-egback="${ci}">Annuler</button></div>`)}
+const EGI='<svg class="ri" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>';
+const GEAR='<svg class="ri" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
+const REF='<svg class="ri" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg>';
+const egForm=(c,gi)=>`<div class="row" style="margin:0 0 8px"><input id="eg-in" type="url" inputmode="url" placeholder="Coller l'adresse En Garde" value="${esc(EGL[c.k]||"")}" style="flex:1;min-width:0;height:40px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:0 12px;font:400 14px var(--font-body)"></div><div class="btns"><button class="btn primary" data-egsave="${c.id}"${gi!=null?` data-eggrp="${gi}"`:""}>Enregistrer</button>${EGL[c.k]?`<button class="btn" data-egdel="${c.id}"${gi!=null?` data-eggrp="${gi}"`:""}>Retirer le lien</button>`:""}</div>`;
+/* Fiche : actions regroupées (principales en haut, liens en petits boutons, réglages derrière l'engrenage) */
+function actHTML(cs,gi){
+  const c=cs[0],multi=cs.length>1;
+  const lb=x=>{const sh=cs.filter(y=>y.d===x.d).length>1;const n=(x.n||"").replace(/\s*\(e\)/gi,"");return sh?(n.replace(/^Epreuve\s+/i,"").length>22?n.replace(/^Epreuve\s+/i,"").slice(0,21)+"…":n.replace(/^Epreuve\s+/i,"")):fd(x.d)};
+  const inscr=cs.filter(x=>x.eps.some(e=>e.n)).map(x=>`<button class="btn primary" data-eng="${x.id}:all">${multi?"Inscrits · "+esc(lb(x)):"Voir les inscrits"}</button>`).join("");
+  const eg=EGL[c.k]?`<a class="btn" href="${esc(EGL[c.k])}" target="_blank" rel="noopener">${EGI}En Garde</a>`:"";
+  const ffe=cs.filter(x=>!x.go).map(x=>`<a class="btn sm" href="https://www.ffescrime.fr/competition/${esc(x.k)}" target="_blank" rel="noopener">${multi?"FFE · "+esc(lb(x)):"Page FFE"}</a>`).join("");
+  const nts=[...new Map(cs.filter(x=>x.nt).map(x=>[x.nt,x])).values()].map(x=>`<a class="btn sm" href="${esc(x.nt)}" target="_blank" rel="noopener">${cs.filter(y=>y.nt).length>1?"Note · "+esc(lb(x)):"Note d'organisation"}</a>`).join("");
+  const mp=(cs.find(x=>x.mp)||{}).mp;
+  return `<div class="btns act">${favcBig(cs)}${inscr}${eg}</div>
+  <div class="btns lk">${mp?`<a class="btn sm" href="${esc(mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${ffe}${nts}<button class="btn sm" type="button" data-upd1="${esc(cs.map(x=>x.k).join(","))}">${REF}Actualiser</button><button class="btn sm ico" type="button" data-egset="${c.id}${gi!=null?":"+gi:""}" aria-label="Réglages (lien En Garde)">${GEAR}</button></div>`;
+}
+function egSet(ci,gi){const c=D.comps[ci];CUR.g=gi!=null?gi:null;
+  sheet(`Réglages<div class="sub">${esc(c.v)}</div>`,`<div class="sec" style="margin-top:0">Lien En Garde</div><div class="note">Colle l'adresse En Garde de la compétition : un bouton « En Garde » apparaîtra à côté des inscrits.</div>${egForm(c,gi)}<div class="btns"><a class="btn" href="${esc(egSearch(c))}" target="_blank" rel="noopener">Chercher sur En Garde</a><button class="btn" data-egback="${ci}">Retour à la fiche</button></div>`)}
 function bodyHTML(c){
   const eps=c.eps.filter(epMatch);const show=eps.length?eps:c.eps;
   const rows=show.map(e=>{
     const i=c.eps.indexOf(e);
     const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
-    return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}).join("");
+    return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}).join("");
   return `<div class="tags" style="margin-bottom:4px">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${c.f<TODAY?"":dlInfo(c)}</div>
-  <div class="btns">${favcBig([c])}<button class="btn" type="button" data-upd1="${esc(c.k)}">Actualiser les résultats</button>${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${c.go?"":`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(c.k)}" target="_blank" rel="noopener">Page FFE</a>`}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c)}
+  ${actHTML([c])}
   <dl class="kv">
     <dt>Dates</dt><dd>${esc(fd(c.d))}${c.f!==c.d?" → "+esc(fd(c.f)):""}</dd>
     ${c.nn?`<dt>Nom</dt><dd>${esc(c.nn)}</dd>`:""}
@@ -828,18 +835,15 @@ let CUR={g:null};
 const reopen=ci=>{if(CUR.g!=null&&GRP[CUR.g])grpSheet(CUR.g);else compSheet(ci)};
 function epRowHTML(c,e){const i=c.eps.indexOf(e);
   const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
-  return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}
+  return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}
 function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
   const types=[...new Set(g.cs.map(x=>x.ty).filter(Boolean))].map(t=>`<span class="pill ty-${TYC[t]||""}">${esc(TYL[t]||t)}</span>`).join("");
   const dls=[...new Set(g.cs.filter(x=>x.f>=TODAY).map(dlInfo).filter(Boolean))].join("");
-  const inscr=g.cs.filter(x=>x.eps.some(e=>e.n)).map(x=>`<button class="btn primary" data-eng="${x.id}:all">Inscrits${multi?" · "+esc(fd(x.d)):""}</button>`).join("");
-  const ffe=g.cs.filter(x=>!x.go).map(x=>`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(x.k)}" target="_blank" rel="noopener">Page FFE${multi?" · "+esc(fd(x.d)):""}</a>`).join("");
   const sections=g.cs.map(x=>{const show=x.eps;return (multi?`<div class="sec">${esc(fd(x.d))}${x.f!==x.d?" → "+esc(fd(x.f)):""}</div>`:`<div class="sec">Épreuves</div>`)+show.map(e=>epRowHTML(x,e)).join("")}).join("");
   const names=[...new Set(g.cs.map(x=>x.nn||x.n).filter(Boolean))];
   const dl=[...new Set(g.cs.filter(x=>x.dl).map(x=>fdy(x.dl)))].join(", ");
-  const link=EGL[c.k]?"":"";
   return `<div class="tags" style="margin-bottom:4px">${types}${g.cs.some(x=>x.go)?`<span class="pill warn">Pas encore sur FFE</span>`:""}${g.cs.some(x=>x.eps.some(e=>e.o))?'<span class="pill open">Open</span>':'<span class="pill mute">Non open</span>'}${dls}</div>
-  <div class="btns">${favcBig(g.cs)}<button class="btn" type="button" data-upd1="${esc(g.cs.map(x=>x.k).join(","))}">Actualiser les résultats</button>${inscr}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${ffe}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c).replace('data-egsave="'+c.id+'"','data-egsave="'+c.id+'" data-eggrp="'+gi+'"').replace('data-egdel="'+c.id+'"','data-egdel="'+c.id+'" data-eggrp="'+gi+'"')}
+  ${actHTML(g.cs,gi)}
   <dl class="kv">
     <dt>Dates</dt><dd>${esc(fd(g.d))}${g.f!==g.d?" → "+esc(fd(g.f)):""}</dd>
     ${names.length?`<dt>Nom</dt><dd>${names.map(esc).join("<br>")}</dd>`:""}
@@ -1321,15 +1325,6 @@ document.addEventListener("click",ev=>{
   if(!b){const cg=ev.target.closest("[data-grp]");if(cg&&!ev.target.closest("a")){grpSheet(Number(cg.dataset.grp));return}const cd=ev.target.closest("[data-comp]");if(cd&&!ev.target.closest("a"))compSheet(Number(cd.dataset.comp));return}
   if(b.dataset.close){closeSheet();return}
   if(xclick(b))return;
-  if(b.dataset.ega||b.dataset.egsv||b.dataset.egrm||b.dataset.egback){const [ci0,ei0]=(b.dataset.ega||b.dataset.egsv||b.dataset.egrm||b.dataset.egback).split(":");const ci=D.comps.findIndex(x=>String(x.id)===ci0);
-    if(b.dataset.egback){reopen(ci);return}
-    if(b.dataset.ega){egAdd(ci,Number(ei0));return}
-    const c=D.comps[ci],e=c.eps[Number(ei0)];
-    if(b.dataset.egrm){delete EGE[epKey(c,e)];saveEE();reopen(ci);return}
-    const v=($("#ega-in")?.value||"").trim();
-    if(/^https?:\/\/(www\.)?engarde-service\.com\/competition\/[^\/]+\/[^\/]+\/[^\/]+/i.test(v)){EGE[epKey(c,e)]=v;saveEE();egView(ci,Number(ei0),"tireurs")}else{$("#ega-in").style.borderColor="var(--bad)"}
-    return}
-  if(b.dataset.egv){const [ci,ei,k]=b.dataset.egv.split(":");const ix=D.comps.findIndex(x=>String(x.id)===ci);egView(ix,Number(ei),k);return}
   if(b.dataset.egsave||b.dataset.egdel){const id=Number(b.dataset.egsave||b.dataset.egdel),c=D.comps.find(x=>x.id===id);if(c){const gg=b.dataset.eggrp!=null?GRP[Number(b.dataset.eggrp)]:null,cs=gg?gg.cs:[c];const v=($("#eg-in")?.value||"").trim();if(b.dataset.egdel)cs.forEach(x=>delete EGL[x.k]);else if(/^https?:\/\/([a-z0-9-]+\.)*engarde-service\.com\//i.test(v))cs.forEach(x=>EGL[x.k]=v);else{$("#eg-in").style.borderColor="var(--bad)";return}saveEG();reopen(D.comps.indexOf(c))}return}
   if(b.dataset.eng){const [c,e]=b.dataset.eng.split(":");engages(Number(c),e==="all"?"all":Number(e));return}
   if(b.dataset.fav!==undefined){const i=+b.dataset.fav,l=D.tir[i][2];FAV.has(l)?FAV.delete(l):FAV.add(l);saveFav();if(FAV.has(l))SEEN.t[l]=[...tirComps(l).keys()];else delete SEEN.t[l];saveSeen();tireur(i);renderTir();renderComps();return}
@@ -1530,6 +1525,8 @@ function syncSheet(msg){
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
 function xclick(b){
+  if(b.dataset.egset){const [id,gi]=b.dataset.egset.split(":");egSet(Number(id),gi!==undefined?Number(gi):null);return true}
+  if(b.dataset.egback){reopen(Number(b.dataset.egback));return true}
   if(b.dataset.ign){const [k,v]=b.dataset.ign.split("|");if(v==="1")IGN[k]=1;else delete IGN[k];saveIgn();closeSheet();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass();admBadge();if(S.tab==="m")renderAdmin();return true}
   if(b.dataset.grp9){const [a,x,y]=b.dataset.grp9.split("|");const cl=grpClusters();
     if(a==="un"){for(const k of Object.keys(GRPO))if(GRPO[k]===x)delete GRPO[k]}
