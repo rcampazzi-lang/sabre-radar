@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794741214";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794741565";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
@@ -488,11 +488,14 @@ let FAV=new Set();try{FAV=new Set(JSON.parse(localStorage.getItem("ffe-fav")||"[
 const saveFav=()=>{try{localStorage.setItem("ffe-fav",JSON.stringify([...FAV]))}catch(e){}};
 let FAVC=new Set();try{FAVC=new Set(JSON.parse(localStorage.getItem("ffe-favc")||"[]"))}catch(e){}
 const saveFavc=()=>{try{localStorage.setItem("ffe-favc",JSON.stringify([...FAVC]))}catch(e){}};
-const favcOn=cs=>cs.length>0&&cs.every(c=>FAVC.has(c.k));
+const followed=c=>FAVC.has(c.k)||favIn([c]).size>0;
+const favcOn=cs=>cs.length>0&&cs.every(followed);
+const favcAuto=cs=>cs.length>0&&cs.every(c=>!FAVC.has(c.k)&&favIn([c]).size>0);
+const favcLbl=(cs,on)=>on?(favcAuto(cs)?"★ Suivie (favori inscrit)":"★ Suivie"):"☆ Suivre cette compétition";
 const favcBtn=cs=>{const on=favcOn(cs);return `<button class="star ${on?"on":""}" data-favc="${cs.map(c=>c.id).join(",")}" aria-pressed="${on}" aria-label="Suivre cette compétition">${on?"★":"☆"}</button>`};
-const favcBig=cs=>{const on=favcOn(cs);return `<button class="btn ${on?"primary":""}" data-favc="${cs.map(c=>c.id).join(",")}" aria-pressed="${on}">${on?"★ Suivie":"☆ Suivre cette compétition"}</button>`};
+const favcBig=cs=>{const on=favcOn(cs);return `<button class="btn ${on?"primary":""}" data-favc="${cs.map(c=>c.id).join(",")}" aria-pressed="${on}">${favcLbl(cs,on)}</button>`};
 const starChev=cs=>`<span style="display:flex;align-items:center;gap:6px">${favcBtn(cs)}${ICON.chev}</span>`;
-const S={fav:false,tab:"c",st:"avenir",cats:new Set(),sx:"",open:false,inscrits:false,q:"",tq:"",tcats:new Set(),surcl:false,sort:"nom",ty:new Set(),gr:"",rg:"",dt:"",go:false,ord:"",favc:false,favi:false};
+const S={fav:false,tab:"c",st:"avenir",cats:new Set(),sx:"",open:false,inscrits:false,q:"",tq:"",tcats:new Set(),surcl:false,sort:"nom",ty:new Set(),gr:"",rg:"",dt:"",go:false,ord:"",favc:false};
 const P={t:-1,cat:"",sx:"",gr:"",surcl:true,open:true,avenir:true,form:false};
 try{Object.assign(P,JSON.parse(localStorage.getItem("ffe-profil")||"{}"))}catch(e){}
 const saveP=()=>{try{localStorage.setItem("ffe-profil",JSON.stringify(P))}catch(e){}};
@@ -531,27 +534,26 @@ function actChips(){
   if(S.inscrits)a.push(["Avec inscrits",'data-f="ins"']);
   if(S.go)a.push(["Pas encore sur FFE",'data-f="go"']);
   if(S.favc)a.push(["Suivies",'data-f="favc"']);
-  if(S.favi)a.push(["Favoris inscrits",'data-f="favi"']);
   return a;
 }
 function renderFilters(){
   $("#f-ty").innerHTML=TYPES.map(t=>chip(TYL[t],S.ty.has(t),`data-f="ty" data-v="${t}"`)).join("");
   renderGeo();
   $("#f-st").innerHTML=[["cours","En cours"],["avenir","À venir"],["passe","Passées"],["tout","Toutes"]].map(([k,l])=>seg(l,S.st===k,`data-f="st" data-v="${k}"`)).join("");
-  $("#f-cat").innerHTML=chip("★ Suivies",S.favc,'data-f="favc"')+chip("★ Favoris inscrits",S.favi,'data-f="favi"')+'<span class="vsep"></span>'+CATS.map(c=>chip(CATL[c],S.cats.has(c),`data-f="cat" data-v="${c}"`)).join("");
+  $("#f-cat").innerHTML=chip("★ Suivies",S.favc,'data-f="favc"')+'<span class="vsep"></span>'+CATS.map(c=>chip(CATL[c],S.cats.has(c),`data-f="cat" data-v="${c}"`)).join("");
   {const o=S.ord||(S.st==="passe"?"desc":"asc");$("#fs-ord").innerHTML=[["asc","Plus anciennes d’abord"],["desc","Plus récentes d’abord"]].map(([k,l])=>seg(l,o===k,`data-f="ord" data-v="${k}"`)).join("")}
   $("#fs-sx").innerHTML=[["","Tous"],["Hommes","Hommes"],["Dames","Dames"]].map(([k,l])=>seg(l,S.sx===k,`data-f="sx" data-v="${k}"`)).join("");
-  $("#f-op").innerHTML=sw("Open",S.open,'data-f="open"')+sw("Avec inscrits",S.inscrits,'data-f="ins"')+sw("Pas encore sur FFE",S.go,'data-f="go"')+sw("Compétitions suivies",S.favc,'data-f="favc"')+sw("Avec mes favoris inscrits",S.favi,'data-f="favi"');
+  $("#f-op").innerHTML=sw("Open",S.open,'data-f="open"')+sw("Avec inscrits",S.inscrits,'data-f="ins"')+sw("Pas encore sur FFE",S.go,'data-f="go"')+sw("Compétitions suivies",S.favc,'data-f="favc"');
   const a=actChips();
   $("#f-act").innerHTML=a.map(([l,at])=>`<button class="chip act" ${at}>${esc(l)}</button>`).join("");
   $("#f-n").textContent=a.length||"";
+  $("#f-cat").querySelectorAll('[data-f="cat"]').forEach(b=>b.style.opacity=S.favc?".4":"");
   $("#tf-row").innerHTML=chip("★ Favoris",S.fav,'data-f="fav"')+chip("Surclassés",S.surcl,'data-f="surcl"')+'<span class="vsep"></span>'+CATS.map(c=>chip(CATL[c],S.tcats.has(c),`data-f="tcat" data-v="${c}"`)).join("");
   $("#tf-sort").innerHTML=[["nom","Par nom"],["part","Par participations"]].map(([k,l])=>seg(l,S.sort===k,`data-f="sort" data-v="${k}"`)).join("");
 }
 function compMatch(c){
+  if(S.favc)return followed(c);
   if(S.go&&!c.go)return false;
-  if(S.favc&&!FAVC.has(c.k))return false;
-  if(S.favi&&!favIn([c]).size)return false;
   if(S.ty.size&&!S.ty.has(c.ty))return false;
   if(S.gr&&c.gr!==S.gr)return false;
   if(S.rg&&c.rg!==S.rg)return false;
@@ -559,6 +561,7 @@ function compMatch(c){
   return true;
 }
 function epMatch(e){
+  if(S.favc)return true;
   if(S.cats.size){const cs=catsOf(e);if(!cs.some(c=>S.cats.has(c)))return false}
   if(S.sx&&e.s!==S.sx&&e.s!=="Mixte")return false;
   if(S.open&&!e.o)return false;
@@ -1086,7 +1089,8 @@ document.addEventListener("click",ev=>{
   if(f==="pset"){P.set=!pSetOpen();saveP();renderParcours();return}
   if(f){
     const v=b.dataset.v;
-    if(f==="reset"){S.sx="";S.ty.clear();S.gr="";S.rg="";S.dt="";S.open=false;S.inscrits=false;S.go=false;S.favc=false;S.favi=false;S.ord=""}
+    if(S.favc&&["cat","sx","ty","open","ins","go","geo"].includes(f))S.favc=false;
+    if(f==="reset"){S.sx="";S.ty.clear();S.gr="";S.rg="";S.dt="";S.open=false;S.inscrits=false;S.go=false;S.favc=false;S.ord=""}
     else if(f==="geo"){S[v]="";if(v==="gr"){S.rg="";S.dt=""}if(v==="rg")S.dt=""}
     else if(f==="st")S.st=v;
     else if(f==="cat"){S.cats.has(v)?S.cats.delete(v):S.cats.add(v)}
@@ -1095,8 +1099,7 @@ document.addEventListener("click",ev=>{
     else if(f==="open")S.open=!S.open;
     else if(f==="ins")S.inscrits=!S.inscrits;
     else if(f==="go")S.go=!S.go;
-    else if(f==="favc")S.favc=!S.favc;
-    else if(f==="favi")S.favi=!S.favi;
+    else if(f==="favc"){S.favc=!S.favc;if(S.favc){S.cats.clear();S.sx="";S.ty.clear();S.gr="";S.rg="";S.dt="";S.open=false;S.inscrits=false;S.go=false}}
     else if(f==="pcat"){P.cat=P.cat===v?"":v;saveP();renderParcours();return}
     else if(f==="psx"){P.sx=P.sx===v?"":v;saveP();renderParcours();return}
     else if(f==="pop"){P[v]=!P[v];saveP();renderParcours();return}
@@ -1202,7 +1205,7 @@ function favN(c,e){return favTI().filter(i=>e.l.includes(i)).length}
 function favEp(c,e){const n=favTI().filter(i=>e.l.includes(i)).map(i=>esc(D.tir[i][1]));return n.length?`<div class="fvl sm"><i>★</i><span>${n.join(", ")} inscrit${n.length>1?"s":""}</span></div>`:""}
 function newsScan(){
   const now=Date.now(),added=new Map();let dirty=false;
-  for(const c of D.comps){if(!FAVC.has(c.k))continue;
+  for(const c of D.comps){if(!followed(c))continue;
     const cur=compLics(c),old=SEEN.c[c.k],arr=[...cur.keys()];
     if(old&&c.f>=TODAY){const nw=arr.filter(l=>!old.includes(l));if(nw.length){SEEN.log.push({ts:now,y:"c",ck:c.k,l:nw});added.set(c.k,new Set(nw));dirty=true}}
     if(!old||old.length!==arr.length||arr.some(l=>!old.includes(l))){SEEN.c[c.k]=arr;dirty=true}
@@ -1243,9 +1246,11 @@ function favNewsHTML(){
 }
 function syncStars(){document.querySelectorAll("[data-favc]").forEach(b=>{const cs=b.dataset.favc.split(",").map(x=>D.comps[+x]).filter(Boolean),on=favcOn(cs);
   b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);
-  if(b.classList.contains("star"))b.textContent=on?"★":"☆";else{b.classList.toggle("primary",on);b.textContent=on?"★ Suivie":"☆ Suivre cette compétition"}})}
+  if(b.classList.contains("star"))b.textContent=on?"★":"☆";else{b.classList.toggle("primary",on);b.textContent=favcLbl(cs,on)}})}
 function toggleFavc(ids){
-  const cs=ids.map(id=>D.comps[id]).filter(Boolean),on=favcOn(cs);
+  const cs=ids.map(id=>D.comps[id]).filter(Boolean);
+  if(favcAuto(cs))return;
+  const on=favcOn(cs);
   for(const c of cs){if(on){FAVC.delete(c.k);delete SEEN.c[c.k];delete SEEN.n[c.k];delete SEEN.gone[c.k]}
     else{FAVC.add(c.k);SEEN.c[c.k]=[...compLics(c).keys()];SEEN.n[c.k]=c.v+" · "+fd(c.d);delete SEEN.gone[c.k]}}
   saveFavc();saveSeen();syncStars();renderFilters();if(S.favc)renderComps();if(S.tab==="p")renderParcours();
