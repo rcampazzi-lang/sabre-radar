@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794764280";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794764373";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -399,7 +399,13 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 :root{--c-gr:#F8DCE6;--t-gr:#9B2457;--t-gr-bg:#F8DCE6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}}
 :root[data-theme="dark"]{--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}
-#a-seg button{font-size:12.5px;padding:9px 2px}.adet{margin-top:8px}.adet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent)}.adet .kv{margin-top:6px}
+#a-seg button{font-size:12.5px;padding:9px 2px}/* bandeau de titre fixe */
+.screen>.lt{position:sticky;top:env(safe-area-inset-top,0px);z-index:21;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px)}
+body.scr .screen>.lt{padding-top:8px;padding-bottom:8px;align-items:center}
+body.scr .screen>.lt h1{font-size:24px}
+body.scr .screen>.lt .stamp{display:none}
+.screen>.bar{top:calc(env(safe-area-inset-top,0px) + var(--lth,0px))}
+.adet{margin-top:8px}.adet summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--accent)}.adet .kv{margin-top:6px}
 .card.ty-open{background:var(--c-op)}.pill.ty-open{color:var(--t-op)}
 :root{--c-op:#DDEEEC;--t-op:#0F6B63}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-op:#12312E;--t-op:#8AD8CF}}
@@ -1279,6 +1285,19 @@ function kSettings(){
 }
 document.addEventListener("change",ev=>{const k=ev.target.dataset&&ev.target.dataset.coef;if(!k)return;const v=parseFloat(String(ev.target.value).replace(",","."));if(isNaN(v)||v<0)return;COEF[k]=v;saveCoef();renderKlass()});
 
+(function(){
+  const setLth=()=>document.querySelectorAll(".screen>.lt").forEach(l=>{if(l.offsetParent)l.parentElement.style.setProperty("--lth",l.offsetHeight+"px")});
+  window.setLth=setLth;
+  const lt=()=>[...document.querySelectorAll(".screen>.lt")].find(l=>l.offsetParent);
+  let on=false;
+  const tick=()=>{const y=window.scrollY;const want=on?y>20:y>60;if(want===on)return;const l=lt(),b=l?l.offsetHeight:0;on=want;document.body.classList.toggle("scr",on);const a=l?l.offsetHeight:0;setLth();if(a!==b)window.scrollBy(0,a-b)};
+  window.addEventListener("scroll",tick,{passive:true});
+  window.addEventListener("resize",setLth);
+  if(window.ResizeObserver){const ro=new ResizeObserver(setLth);document.querySelectorAll(".screen>.lt").forEach(l=>ro.observe(l))}
+  window.addEventListener("load",setLth);setLth();
+  const st=window.setTab;
+})();
+
 const SCR={};
 function setTab(t){
   SCR[S.tab]=window.scrollY;S.tab=t;
@@ -1287,6 +1306,7 @@ function setTab(t){
   if(t==="h")markRead();
   if(t==="a")admBadge();if(t==="m")renderAdmin();if(t==="k")renderKlass();
   window.scrollTo(0,SCR[t]||0);
+  document.body.classList.remove("scr");if(window.setLth)setLth();
 }
 document.addEventListener("click",ev=>{
   const b=ev.target.closest("button");
