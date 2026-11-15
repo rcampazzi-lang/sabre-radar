@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770522";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770766";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -414,7 +414,7 @@ body.scr .screen>.lt .stamp{display:none}
 .pks{display:flex;flex-direction:column;gap:8px}
 .pk{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:12px 14px;border:0;border-radius:16px;background:var(--surface);color:var(--ink);box-shadow:var(--sh);text-decoration:none;font:inherit;cursor:pointer}
 .pk b{font-size:15px}.pk span{font-size:22px;color:var(--muted)}
-.btn.eg .egi{height:20px;width:auto;flex:none}
+.favt .star{width:auto;height:auto;min-width:0;background:none;border:0;box-shadow:none;font-size:24px;line-height:1;padding:0 8px;vertical-align:middle;color:var(--mute,#8a7f78)}.favt .star.on{color:var(--accent,#C85F2F)}.er-h .cnt::after{content:" inscrits";font-size:.72em;font-weight:500;opacity:.8}.btn.eg .egi{height:20px;width:auto;flex:none}
 .egb{display:inline-flex;align-items:center;justify-content:center;height:30px;min-width:34px;padding:0 8px;border-radius:10px;background:var(--tab-bg);text-decoration:none}.egb .egi{height:15px;width:auto}
 .btns.lk{gap:6px;margin-top:-2px}
 .btns.lk .btn.sm{height:34px;padding:0 12px;font-size:13.5px;background:var(--fill);box-shadow:none;border-radius:12px}
@@ -782,7 +782,7 @@ function actHTML(cs,gi){
   const nC=[...new Map(cs.filter(x=>x.nt).map(x=>[x.nt,x])).values()];
   const nts=nC.length>1?`<button class="btn sm" data-pick="note:${ids(nC)}">Note d'organisation</button>`:nC.length?`<a class="btn sm" href="${esc(nC[0].nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:"";
   const mp=(cs.find(x=>x.mp)||{}).mp;
-  return `<div class="btns act">${favcBig(cs)}${inscr}${eg}</div>
+  return `${eg?`<div class="btns act">${eg}</div>`:""}
   <div class="btns lk">${mp?`<a class="btn sm" href="${esc(mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${ffe}${nts}<button class="btn sm" type="button" data-upd1="${esc(cs.map(x=>x.k).join(","))}">${REF}Actualiser</button><button class="btn sm ico" type="button" data-egset="${c.id}${gi!=null?":"+gi:""}" aria-label="Réglages (lien En Garde)">${GEAR}</button></div>`;
 }
 function pickSheet(kind,cs){
@@ -817,7 +817,7 @@ function bodyHTML(c){
   <div class="sec">Épreuves</div>${rows}
   <div class="mini">${c.src?esc(c.src)+". ":"Pas de note sur la fiche. "}Horaires et tarifs à confirmer dans la note.</div>`;
 }
-function compSheet(ci){CUR.g=null;CUR.ci=ci;const c=D.comps[ci];sheet(`${esc(c.v)}<div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
+function compSheet(ci){CUR.g=null;CUR.ci=ci;const c=D.comps[ci];sheet(`${esc(c.v)}<span class="favt">${favcBtn([c])}</span><div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
 function addDay(s){const d=new Date(s+"T12:00:00");d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
 function noteKey(c){return c.nh||c.nt||""}
 let GRPO={},GRPN=[];try{GRPO=JSON.parse(localStorage.getItem("ffe-grpo")||"{}");GRPN=JSON.parse(localStorage.getItem("ffe-grpn")||"[]")}catch(e){}
@@ -869,7 +869,7 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
     ${dl?`<dt>Inscription</dt><dd>avant le ${dl}</dd>`:""}
   </dl>${sections}
   <div class="mini">${c.src?esc(c.src)+". ":""}Horaires et tarifs à confirmer dans la note.</div>`}
-function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;CUR.ci=D.comps.indexOf(g.cs[0]);const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
+function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;CUR.ci=D.comps.indexOf(g.cs[0]);const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<span class="favt">${favcBtn(g.cs)}</span><div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
 let LIM=80,LIMSIG="";
 (function(){let io=null;
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("#c-more");if(!b)return;e.stopPropagation();const y=window.scrollY;LIM+=80;renderComps();window.scrollTo(0,y)},true);
