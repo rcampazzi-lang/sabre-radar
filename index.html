@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794781500";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794781807";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -981,7 +981,7 @@ function engages(ci,ei){
   const withN=c.eps.map((e,i)=>[e,i]).filter(([e])=>e.n);
   const all=ei==="all";
   let ids=all?[...new Set(withN.flatMap(([e])=>e.l))]:c.eps[ei].l.slice();
-  const egE=all?withN.map(([e])=>e):[c.eps[ei]];const egR=egE.filter(e=>e&&e._egl).flatMap(e=>e._egl.map(t=>{const a=[t.nom,t.pre,"","","","",t.nat];a.eg=true;return a}));
+  const egE=all?withN.map(([e])=>e):[c.eps[ei]];const egR=egE.filter(e=>e&&e._egl).flatMap(e=>e._egl.map(t=>{const a=[t.nom,t.pre,"","","","",t.club||t.nat];a.eg=true;return a}));
   const rows=ids.map(i=>D.tir[i]).concat(egR).sort((a,b)=>a[0].localeCompare(b[0]));
   const title=all?"Tous les inscrits":epLabel(c.eps[ei]);
   const hn=!all&&c.eps[ei].hn;
@@ -1037,18 +1037,23 @@ function egParse(html){
   }
   const lt=doc.querySelector("table.liste");
   if(lt){
-    const rows=[...lt.rows],nh=rows[0].cells.length,body=rows.slice(1).map(r=>[...r.cells].map(egTx));
-    if(nh===5)return {kind:"ins",data:body.map(c=>({n:c[0],serie:c[1],nom:c[2],pre:c[3],nat:c[4]}))};
-    if(nh===8)return {kind:"cls",data:body.map(c=>({rg:parseInt(c[0]),nom:c[1],pre:c[2],nat:c[3],vm:parseFloat(c[4])||0,ind:parseInt(c[5])||0,td:parseInt(c[6])||0}))};
-    if(nh===4)return {kind:"fin",data:body.map(c=>({rg:parseInt(c[0]),nom:c[1],pre:c[2],nat:c[3]}))};
+    const rows=[...lt.rows],hd=[...rows[0].cells].map(x=>egN(egTx(x))),body=rows.slice(1).map(r=>[...r.cells].map(egTx));
+    const ix=re=>hd.findIndex(h=>re.test(h));
+    const I={rg:ix(/^(rg|rk|cl|rang)/),n:ix(/^n(#|°|o)/),serie:ix(/serie|seed/),nom:ix(/^(nom|name|last)/),pre:ix(/^(prenom|first)/),nat:ix(/nation|pays|country/),club:ix(/club|structure/),vm:ix(/vic|v\/m/),ind:ix(/^ind/),td:ix(/^td/)};
+    if(I.nom<0||I.pre<0)throw new Error("Colonnes Nom / Prénom introuvables dans cette page.");
+    const g=(c,k)=>I[k]>=0?(c[I[k]]||""):"";
+    const base=c=>({nom:g(c,"nom"),pre:g(c,"pre"),nat:g(c,"nat"),club:g(c,"club")});
+    if(I.rg>=0&&I.vm>=0)return {kind:"cls",data:body.map(c=>({...base(c),rg:parseInt(g(c,"rg")),vm:parseFloat(g(c,"vm"))||0,ind:parseInt(g(c,"ind"))||0,td:parseInt(g(c,"td"))||0}))};
+    if(I.rg>=0)return {kind:"fin",data:body.map(c=>({...base(c),rg:parseInt(g(c,"rg"))}))};
+    return {kind:"ins",data:body.map((c,k)=>({...base(c),n:g(c,"n")||String(k+1),serie:g(c,"serie")}))};
   }
   throw new Error("Page non reconnue : colle la page En Garde complète (HTML).");
 }
 function egBuild(z){
   const players={},idx={};let nx=0;
-  const add=(nom,pre,nat,id)=>{const k=egN(nom+" "+pre);if(idx[k])return idx[k];const i=id||("x"+(++nx));idx[k]=i;players[i]=[nom,pre,nat||"",""];return i};
-  (z.ins||[]).forEach(t=>add(t.nom,t.pre,t.nat,"e"+t.n));
-  (z.cls||[]).forEach(t=>add(t.nom,t.pre,t.nat));(z.fin||[]).forEach(t=>add(t.nom,t.pre,t.nat));
+  const add=(nom,pre,nat,id,club)=>{const k=egN(nom+" "+pre);if(idx[k]){if(club&&!players[idx[k]][2])players[idx[k]][2]=club;return idx[k]}const i=id||("x"+(++nx));idx[k]=i;players[i]=[nom,pre,club||nat||"",""];return i};
+  (z.ins||[]).forEach(t=>add(t.nom,t.pre,t.nat,"e"+t.n,t.club));
+  (z.cls||[]).forEach(t=>add(t.nom,t.pre,t.nat,null,t.club));(z.fin||[]).forEach(t=>add(t.nom,t.pre,t.nat,null,t.club));
   const byName=(full,nat)=>{const k=egN(full);if(idx[k])return idx[k];const [n,p]=egSplit(full);return add(n,p,nat)};
   const nm=id=>{const p=players[id];return p?p[1]+" "+p[0]:id};
   const R={gid:"eg",url:"",players,ins:(z.ins||[]).map(t=>"e"+t.n),poules:[],classement_poules:[],tableau:[],final:[]};
