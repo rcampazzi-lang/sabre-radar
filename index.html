@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794763685";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794764280";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -839,6 +839,10 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
   </dl>${sections}
   <div class="mini">${c.src?esc(c.src)+". ":""}Horaires et tarifs à confirmer dans la note.</div>`}
 function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
+let LIM=80,LIMSIG="";
+(function(){let io=null;
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("#c-more");if(!b)return;e.stopPropagation();const y=window.scrollY;LIM+=80;renderComps();window.scrollTo(0,y)},true);
+})();
 function renderHero(){
   const h=$("#hero");if(!h)return;
   const g=!S.q.trim()&&groupComps(D.comps.filter(c=>c.f>=TODAY&&!IGN[c.k])).filter(g=>g.cs.some(followed)).sort((a,b)=>a.d.localeCompare(b.d))[0];
@@ -869,8 +873,9 @@ function renderComps(){
   const _g=GR0.length;$("#c-count").textContent=L.length+" compétition"+(L.length>1?"s":"")+(_g<L.length?" · "+_g+" tournois/lieux":"")+" · "+nE+" épreuve"+(nE>1?"s":"");
   $("#fs-show").textContent=L.length?"Voir "+L.length+" compétition"+(L.length>1?"s":""):"Aucune compétition";
   GRP=[];DIM=true;const GR=GR0;GR.sort((a,b)=>ORD==="desc"?b.d.localeCompare(a.d):a.d.localeCompare(b.d));
-  const shown=GR.slice(0,80);
-  $("#c-list").innerHTML=shown.length?shown.map(groupHTML).join("")+(GR.length>shown.length?`<div class="empty">${GR.length-shown.length} autres. Affinez avec les filtres ou la recherche.</div>`:""):`<div class="empty">Aucune compétition avec ces filtres.</div>`;DIM=false;
+  const sig=JSON.stringify([S.q,S.st,[...S.cats],S.sx,[...S.ty],S.gr,S.rg,S.dt,S.ord,S.favc]);if(sig!==LIMSIG){LIMSIG=sig;LIM=80}
+  const shown=GR.slice(0,LIM);
+  $("#c-list").innerHTML=shown.length?shown.map(groupHTML).join("")+(GR.length>shown.length?`<button class="btn more" id="c-more" type="button" style="width:100%;margin:6px 0 12px">Afficher la suite · ${GR.length-shown.length} restantes</button>`:""):`<div class="empty">Aucune compétition avec ces filtres.</div>`;DIM=false;
   renderHero();
 }
 function tirQ(){
@@ -886,10 +891,12 @@ function tirQ(){
   L.sort((a,b)=>FAV.has(b[0][2])-FAV.has(a[0][2]));
   return L;
 }
+let TLIM=100,TSIG="";
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("#t-more");if(!b)return;e.stopPropagation();const y=window.scrollY;TLIM+=100;renderTir();window.scrollTo(0,y)},true);
 function renderTir(){
-  const L=tirQ();
+  const L=tirQ();const _s=JSON.stringify([S.tq,[...S.tcats],S.fav,S.surcl,S.sort]);if(_s!==TSIG){TSIG=_s;TLIM=100}
   $("#t-count").textContent=L.length+" tireur"+(L.length>1?"s":"");
-  $("#t-list").innerHTML=L.length?L.slice(0,100).map(([t,i])=>`<button class="trow" data-t="${i}">${av(t)}<div style="min-width:0"><div class="nm">${FAV.has(t[2])?"★ ":""}${esc(t[0])} ${esc(t[1])}</div><div class="sub">${esc(t[6])}</div><div class="cats">${t[3]?`<span class="tag n">${CATL[t[3]]}</span>`:""}${t[4]?`<span class="tag">↑ ${CATL[t[4]]}</span>`:""}<span class="tag">${t[5]} participation${t[5]>1?"s":""}</span></div></div>${ICON.chev}</button>`).join("")+(L.length>100?`<div class="empty">${L.length-100} autres. Affinez la recherche.</div>`:""):`<div class="empty">Aucun tireur.</div>`;
+  $("#t-list").innerHTML=L.length?L.slice(0,TLIM).map(([t,i])=>`<button class="trow" data-t="${i}">${av(t)}<div style="min-width:0"><div class="nm">${FAV.has(t[2])?"★ ":""}${esc(t[0])} ${esc(t[1])}</div><div class="sub">${esc(t[6])}</div><div class="cats">${t[3]?`<span class="tag n">${CATL[t[3]]}</span>`:""}${t[4]?`<span class="tag">↑ ${CATL[t[4]]}</span>`:""}<span class="tag">${t[5]} participation${t[5]>1?"s":""}</span></div></div>${ICON.chev}</button>`).join("")+(L.length>TLIM?`<button class="btn" id="t-more" type="button" style="width:100%;margin:6px 0 12px">Afficher la suite · ${L.length-TLIM} restants</button>`:""):`<div class="empty">Aucun tireur.</div>`;
 }
 function sheet(title,inner){
   const s=$("#sheet");s.hidden=false;document.body.classList.add("lock");
