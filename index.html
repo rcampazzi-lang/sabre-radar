@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794740832";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794741214";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
@@ -260,6 +260,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.c
 .nban span{flex:1}.nban b{min-width:22px;height:22px;border-radius:11px;background:#fff;color:var(--accent);display:grid;place-items:center;font-size:12.5px;padding:0 6px}
 .rk{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:10px;background:var(--fill);color:var(--ink);font:700 13.5px var(--font-body);white-space:nowrap}
 .rk.g1{background:#f3d77a;color:#3a2d00}.rk.g2{background:#dfe3e8;color:#22262b}.rk.g3{background:#e8bd94;color:#3a2108}
+.fvl{display:flex;gap:8px;align-items:flex-start;padding:8px 11px;border-radius:12px;background:var(--warn-soft);color:var(--warn);font-size:13px;line-height:1.35}
+.fvl i{font-style:normal;flex:none}.fvl span{min-width:0;overflow-wrap:anywhere}.fvl b{font-weight:700}
+.fvl.sm{padding:5px 9px;font-size:12.5px;border-radius:10px}
+.cnt.fv{background:var(--warn-soft);color:var(--warn);box-shadow:inset 0 0 0 1.5px var(--warn)}
+.fst{font-style:normal;margin-left:3px;font-weight:700}
+.search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.sclr{flex:none;width:22px;height:22px;border-radius:50%;border:0;background:var(--muted);color:var(--surface);font-size:15px;line-height:1;display:grid;place-items:center;padding:0;cursor:pointer;opacity:.75}
+.search input:placeholder-shown~.sclr{display:none}
 .nf{cursor:pointer}.nf.un{border-color:var(--accent);background:var(--accent-soft)}
 .card .star{margin:0}
 .grp{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh)}
@@ -484,7 +492,7 @@ const favcOn=cs=>cs.length>0&&cs.every(c=>FAVC.has(c.k));
 const favcBtn=cs=>{const on=favcOn(cs);return `<button class="star ${on?"on":""}" data-favc="${cs.map(c=>c.id).join(",")}" aria-pressed="${on}" aria-label="Suivre cette compétition">${on?"★":"☆"}</button>`};
 const favcBig=cs=>{const on=favcOn(cs);return `<button class="btn ${on?"primary":""}" data-favc="${cs.map(c=>c.id).join(",")}" aria-pressed="${on}">${on?"★ Suivie":"☆ Suivre cette compétition"}</button>`};
 const starChev=cs=>`<span style="display:flex;align-items:center;gap:6px">${favcBtn(cs)}${ICON.chev}</span>`;
-const S={fav:false,tab:"c",st:"avenir",cats:new Set(),sx:"",open:false,inscrits:false,q:"",tq:"",tcats:new Set(),surcl:false,sort:"nom",ty:new Set(),gr:"",rg:"",dt:"",go:false,ord:"",favc:false};
+const S={fav:false,tab:"c",st:"avenir",cats:new Set(),sx:"",open:false,inscrits:false,q:"",tq:"",tcats:new Set(),surcl:false,sort:"nom",ty:new Set(),gr:"",rg:"",dt:"",go:false,ord:"",favc:false,favi:false};
 const P={t:-1,cat:"",sx:"",gr:"",surcl:true,open:true,avenir:true,form:false};
 try{Object.assign(P,JSON.parse(localStorage.getItem("ffe-profil")||"{}"))}catch(e){}
 const saveP=()=>{try{localStorage.setItem("ffe-profil",JSON.stringify(P))}catch(e){}};
@@ -523,16 +531,17 @@ function actChips(){
   if(S.inscrits)a.push(["Avec inscrits",'data-f="ins"']);
   if(S.go)a.push(["Pas encore sur FFE",'data-f="go"']);
   if(S.favc)a.push(["Suivies",'data-f="favc"']);
+  if(S.favi)a.push(["Favoris inscrits",'data-f="favi"']);
   return a;
 }
 function renderFilters(){
   $("#f-ty").innerHTML=TYPES.map(t=>chip(TYL[t],S.ty.has(t),`data-f="ty" data-v="${t}"`)).join("");
   renderGeo();
   $("#f-st").innerHTML=[["cours","En cours"],["avenir","À venir"],["passe","Passées"],["tout","Toutes"]].map(([k,l])=>seg(l,S.st===k,`data-f="st" data-v="${k}"`)).join("");
-  $("#f-cat").innerHTML=chip("★ Suivies",S.favc,'data-f="favc"')+'<span class="vsep"></span>'+CATS.map(c=>chip(CATL[c],S.cats.has(c),`data-f="cat" data-v="${c}"`)).join("");
+  $("#f-cat").innerHTML=chip("★ Suivies",S.favc,'data-f="favc"')+chip("★ Favoris inscrits",S.favi,'data-f="favi"')+'<span class="vsep"></span>'+CATS.map(c=>chip(CATL[c],S.cats.has(c),`data-f="cat" data-v="${c}"`)).join("");
   {const o=S.ord||(S.st==="passe"?"desc":"asc");$("#fs-ord").innerHTML=[["asc","Plus anciennes d’abord"],["desc","Plus récentes d’abord"]].map(([k,l])=>seg(l,o===k,`data-f="ord" data-v="${k}"`)).join("")}
   $("#fs-sx").innerHTML=[["","Tous"],["Hommes","Hommes"],["Dames","Dames"]].map(([k,l])=>seg(l,S.sx===k,`data-f="sx" data-v="${k}"`)).join("");
-  $("#f-op").innerHTML=sw("Open",S.open,'data-f="open"')+sw("Avec inscrits",S.inscrits,'data-f="ins"')+sw("Pas encore sur FFE",S.go,'data-f="go"')+sw("Compétitions suivies",S.favc,'data-f="favc"');
+  $("#f-op").innerHTML=sw("Open",S.open,'data-f="open"')+sw("Avec inscrits",S.inscrits,'data-f="ins"')+sw("Pas encore sur FFE",S.go,'data-f="go"')+sw("Compétitions suivies",S.favc,'data-f="favc"')+sw("Avec mes favoris inscrits",S.favi,'data-f="favi"');
   const a=actChips();
   $("#f-act").innerHTML=a.map(([l,at])=>`<button class="chip act" ${at}>${esc(l)}</button>`).join("");
   $("#f-n").textContent=a.length||"";
@@ -542,6 +551,7 @@ function renderFilters(){
 function compMatch(c){
   if(S.go&&!c.go)return false;
   if(S.favc&&!FAVC.has(c.k))return false;
+  if(S.favi&&!favIn([c]).size)return false;
   if(S.ty.size&&!S.ty.has(c.ty))return false;
   if(S.gr&&c.gr!==S.gr)return false;
   if(S.rg&&c.rg!==S.rg)return false;
@@ -574,7 +584,7 @@ function epBtn(c,e){
   const i=c.eps.indexOf(e);const l=e.s==="Hommes"?"H":e.s==="Dames"?"D":"Mixte";
   const r=resOf(c,e)?`<button class="rs" data-res="${c.id}:${i}::0" aria-label="Résultats ${esc(epLabel(e))}">${ICON.trophy}Résultats</button>`:"";
   const dim=DIM&&(S.cats.size||S.sx||S.open||S.inscrits)&&!epMatch(e);
-  return `<span class="eg"${dim?' style="opacity:.42"':""}>${e.n?`<button class="cnt" data-eng="${c.id}:${i}" aria-label="Voir les ${e.n} inscrits ${esc(epLabel(e))}"><b>${l}</b> ${e.n}</button>`:`<span class="cnt z"><b>${l}</b> 0</span>`}${r}</span>`;
+  return `<span class="eg"${dim?' style="opacity:.42"':""}>${e.n?`<button class="cnt${favN(c,e)?" fv":""}" data-eng="${c.id}:${i}" aria-label="Voir les ${e.n} inscrits ${esc(epLabel(e))}"><b>${l}</b> ${e.n}${favN(c,e)?`<i class="fst">★${favN(c,e)>1?favN(c,e):""}</i>`:""}</button>`:`<span class="cnt z"><b>${l}</b> 0</span>`}${r}</span>`;
 }
 function epRows(c,eps){
   const g=new Map();for(const e of eps){if(!g.has(e.c))g.set(e.c,[]);g.get(e.c).push(e)}
@@ -593,6 +603,7 @@ function cardHTML(c,eps,open,extra){
     <div class="c-top">${dateBlock(c.d,c.f,past)}
     <div style="min-width:0"><div class="ttl">${esc(c.v)}</div><div class="sub">${esc(c.n)}</div><div class="sub">${esc(when)}${c.dt?" · "+esc(c.dt):c.gr?" · "+esc(c.gr):""}</div></div>${starChev([c])}</div>
     <div class="tags">${tyPill(c)}${newPill([c])}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${extra||""}${past?"":dlInfo(c)}</div>
+    ${favLine([c])}
     <div class="eps">${epRows(c,eps)}</div></article>`;
 }
 const EGK="ffe-engarde";let EGL={};try{EGL=JSON.parse(localStorage.getItem(EGK)||"{}")}catch(e){}
@@ -619,7 +630,7 @@ function bodyHTML(c){
   const rows=show.map(e=>{
     const i=c.eps.indexOf(e);
     const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
-    return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div></div>`}).join("");
+    return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}).join("");
   return `<div class="tags" style="margin-bottom:4px">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${c.f<TODAY?"":dlInfo(c)}</div>
   <div class="btns">${favcBig([c])}<button class="btn" type="button" data-upd1="${esc(c.k)}">Actualiser les résultats</button>${c.eps.some(e=>e.n)?`<button class="btn primary" data-eng="${c.id}:all">Voir les inscrits</button>`:""}${c.mp?`<a class="btn" href="${esc(c.mp)}" target="_blank" rel="noopener">Itinéraire</a>`:""}${c.go?"":`<a class="btn" href="https://www.ffescrime.fr/competition/${esc(c.k)}" target="_blank" rel="noopener">Page FFE</a>`}${c.nt?`<a class="btn" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:""}${egBtns(c)}</div>${egForm(c)}
   <dl class="kv">
@@ -660,13 +671,13 @@ function groupHTML(g){
     <div class="c-top">${dateBlock(g.d,g.f,past)}
     <div style="min-width:0"><div class="ttl">${esc(c0.v)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(names)}</div><div class="sub">${esc(when)}${c0.dt?" · "+esc(c0.dt):c0.gr?" · "+esc(c0.gr):""}</div></div>${starChev(g.cs)}</div>
     <div class="tags">${types}${newPill(g.cs)}${g.cs.some(c=>c.go)?`<span class="pill warn">Pas encore sur FFE</span>`:""}${g.cs.some(c=>c.eps.some(e=>e.o))?'<span class="pill open">Open</span>':g.cs.some(c=>c.nt)?'<span class="pill mute">Non open</span>':'<span class="pill mute">Open : inconnu</span>'}${dls}</div>
-    <div class="eps">${rows}</div></article>`;
+    ${favLine(g.cs)}<div class="eps">${rows}</div></article>`;
 }
 let CUR={g:null};
 const reopen=ci=>{if(CUR.g!=null&&GRP[CUR.g])grpSheet(CUR.g);else compSheet(ci)};
 function epRowHTML(c,e){const i=c.eps.indexOf(e);
   const m=[["Appel",e.a],["Scratch",e.sc],["Début",e.b],["Tarif",e.t]].filter(x=>x[1]).map(([k,v])=>`<span>${k} <b>${esc(v)}</b></span>`).join("");
-  return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div></div>`}
+  return `<div class="er"><div class="er-h"><b>${esc(epLabel(e))}</b>${epBtn(c,e)}${EGE[epKey(c,e)]?`<a class="btn sm primary" href="${esc(egUrl(c,e,"tireurs.htm"))}" target="_blank" rel="noopener">En Garde</a><button class="btn sm" data-egv="${c.id}:${i}:tireurs">Pages</button>`:`<button class="btn sm" data-ega="${c.id}:${i}">+ Lien</button>`}</div><div class="er-m">${m||"<span>Horaires non indiqués</span>"}${e.o?'<span><b>Open</b></span>':""}</div>${favEp(c,e)}</div>`}
 function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
   const types=[...new Set(g.cs.map(x=>x.ty).filter(Boolean))].map(t=>`<span class="pill ty-${TYC[t]||""}">${esc(TYL[t]||t)}</span>`).join("");
   const dls=[...new Set(g.cs.filter(x=>x.f>=TODAY).map(dlInfo).filter(Boolean))].join("");
@@ -1059,7 +1070,7 @@ document.addEventListener("click",ev=>{
   if(b.dataset.egv){const [ci,ei,k]=b.dataset.egv.split(":");const ix=D.comps.findIndex(x=>String(x.id)===ci);egView(ix,Number(ei),k);return}
   if(b.dataset.egsave||b.dataset.egdel){const id=Number(b.dataset.egsave||b.dataset.egdel),c=D.comps.find(x=>x.id===id);if(c){const gg=b.dataset.eggrp!=null?GRP[Number(b.dataset.eggrp)]:null,cs=gg?gg.cs:[c];const v=($("#eg-in")?.value||"").trim();if(b.dataset.egdel)cs.forEach(x=>delete EGL[x.k]);else if(/^https?:\/\/([a-z0-9-]+\.)*engarde-service\.com\//i.test(v))cs.forEach(x=>EGL[x.k]=v);else{$("#eg-in").style.borderColor="var(--bad)";return}saveEG();reopen(D.comps.indexOf(c))}return}
   if(b.dataset.eng){const [c,e]=b.dataset.eng.split(":");engages(Number(c),e==="all"?"all":Number(e));return}
-  if(b.dataset.fav!==undefined){const i=+b.dataset.fav,l=D.tir[i][2];FAV.has(l)?FAV.delete(l):FAV.add(l);saveFav();if(FAV.has(l))SEEN.t[l]=[...tirComps(l).keys()];else delete SEEN.t[l];saveSeen();tireur(i);renderTir();return}
+  if(b.dataset.fav!==undefined){const i=+b.dataset.fav,l=D.tir[i][2];FAV.has(l)?FAV.delete(l):FAV.add(l);saveFav();if(FAV.has(l))SEEN.t[l]=[...tirComps(l).keys()];else delete SEEN.t[l];saveSeen();tireur(i);renderTir();renderComps();return}
   if(b.dataset.adm){admin(b.dataset.adm);return}
   if(b.dataset.res){const [c,e,v,g]=b.dataset.res.split(":");results(+c,+e,v,+g);return}
   if(b.dataset.rs){const [k,v]=b.dataset.rs.split(":");RS[k]=+v;results(RS.ci,RS.ei,RS.view,RS.gi);return}
@@ -1075,7 +1086,7 @@ document.addEventListener("click",ev=>{
   if(f==="pset"){P.set=!pSetOpen();saveP();renderParcours();return}
   if(f){
     const v=b.dataset.v;
-    if(f==="reset"){S.sx="";S.ty.clear();S.gr="";S.rg="";S.dt="";S.open=false;S.inscrits=false;S.go=false;S.favc=false;S.ord=""}
+    if(f==="reset"){S.sx="";S.ty.clear();S.gr="";S.rg="";S.dt="";S.open=false;S.inscrits=false;S.go=false;S.favc=false;S.favi=false;S.ord=""}
     else if(f==="geo"){S[v]="";if(v==="gr"){S.rg="";S.dt=""}if(v==="rg")S.dt=""}
     else if(f==="st")S.st=v;
     else if(f==="cat"){S.cats.has(v)?S.cats.delete(v):S.cats.add(v)}
@@ -1085,6 +1096,7 @@ document.addEventListener("click",ev=>{
     else if(f==="ins")S.inscrits=!S.inscrits;
     else if(f==="go")S.go=!S.go;
     else if(f==="favc")S.favc=!S.favc;
+    else if(f==="favi")S.favi=!S.favi;
     else if(f==="pcat"){P.cat=P.cat===v?"":v;saveP();renderParcours();return}
     else if(f==="psx"){P.sx=P.sx===v?"":v;saveP();renderParcours();return}
     else if(f==="pop"){P[v]=!P[v];saveP();renderParcours();return}
@@ -1183,6 +1195,11 @@ const READ0=SEEN.read||0;
 const saveSeen=()=>{try{localStorage.setItem("ffe-seen",JSON.stringify(SEEN))}catch(e){}};
 const compLics=c=>{const m=new Map();for(const e of c.eps)for(const i of e.l){const t=D.tir[i];if(!t)continue;if(!m.has(t[2]))m.set(t[2],[]);m.get(t[2]).push(epLabel(e))}return m};
 const tirComps=lic=>{const i=LICI.get(lic),m=new Map();if(i===undefined)return m;for(const c of D.comps)for(const e of c.eps)if(e.l.includes(i)){if(!m.has(c.k))m.set(c.k,[]);m.get(c.k).push(epLabel(e))}return m};
+const favTI=()=>[...FAV].map(l=>LICI.get(l)).filter(x=>x!==undefined);
+function favIn(cs){const out=new Map();for(const i of favTI())for(const c of cs)for(const e of c.eps)if(e.l.includes(i)){if(!out.has(i))out.set(i,[]);out.get(i).push(epLabel(e))}return out}
+function favLine(cs){const m=favIn(cs);if(!m.size)return"";const it=[...m].map(([i,L])=>`<b>${esc(D.tir[i][1])}</b> ${esc([...new Set(L)].join(", "))}`);return `<div class="fvl"><i>★</i><span>${it.join(" · ")}</span></div>`}
+function favN(c,e){return favTI().filter(i=>e.l.includes(i)).length}
+function favEp(c,e){const n=favTI().filter(i=>e.l.includes(i)).map(i=>esc(D.tir[i][1]));return n.length?`<div class="fvl sm"><i>★</i><span>${n.join(", ")} inscrit${n.length>1?"s":""}</span></div>`:""}
 function newsScan(){
   const now=Date.now(),added=new Map();let dirty=false;
   for(const c of D.comps){if(!FAVC.has(c.k))continue;
@@ -1260,6 +1277,8 @@ function xclick(b){
   return true}
 if(window.SYNC)SYNC.on(()=>{renderSyncRow();if(!$("#sheet").hidden&&$("#sheet").querySelector("#sy-code")&&document.activeElement&&document.activeElement.id!=="sy-in")syncSheet()});
 newsScan();buildNewC();
+document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend",'<button type="button" class="sclr" aria-label="Effacer la recherche">×</button>'));
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".sclr");if(!b)return;e.stopPropagation();const i=b.parentElement.querySelector("input");i.value="";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()},true);
 applySeason();
 renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();
 fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
