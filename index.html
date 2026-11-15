@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794769738";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794769857";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -803,7 +803,7 @@ function bodyHTML(c){
   <div class="sec">Épreuves</div>${rows}
   <div class="mini">${c.src?esc(c.src)+". ":"Pas de note sur la fiche. "}Horaires et tarifs à confirmer dans la note.</div>`;
 }
-function compSheet(ci){CUR.g=null;const c=D.comps[ci];sheet(`${esc(c.v)}<div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
+function compSheet(ci){CUR.g=null;CUR.ci=ci;const c=D.comps[ci];sheet(`${esc(c.v)}<div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
 function addDay(s){const d=new Date(s+"T12:00:00");d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
 function noteKey(c){return c.nh||c.nt||""}
 let GRPO={},GRPN=[];try{GRPO=JSON.parse(localStorage.getItem("ffe-grpo")||"{}");GRPN=JSON.parse(localStorage.getItem("ffe-grpn")||"[]")}catch(e){}
@@ -855,7 +855,7 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
     ${dl?`<dt>Inscription</dt><dd>avant le ${dl}</dd>`:""}
   </dl>${sections}
   <div class="mini">${c.src?esc(c.src)+". ":""}Horaires et tarifs à confirmer dans la note.</div>`}
-function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
+function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;CUR.ci=D.comps.indexOf(g.cs[0]);const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
 let LIM=80,LIMSIG="";
 (function(){let io=null;
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("#c-more");if(!b)return;e.stopPropagation();const y=window.scrollY;LIM+=80;renderComps();window.scrollTo(0,y)},true);
@@ -1313,6 +1313,9 @@ document.addEventListener("change",ev=>{const k=ev.target.dataset&&ev.target.dat
   const st=window.setTab;
 })();
 
+/* Inscrits / Résultats ouverts depuis une fiche : fermer revient à la fiche */
+function withBack(fn){return function(...a){const sh=$("#sheet");const keep=BACK;const fiche=!sh.hidden&&sh.querySelector(".btns.act")&&CUR.ci!=null;const ci=CUR.ci;const r=fn.apply(this,a);BACK=fiche?()=>reopen(ci):keep;return r}}
+engages=withBack(engages);results=withBack(results);
 const SCR={};
 function setTab(t){
   SCR[S.tab]=window.scrollY;S.tab=t;
