@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770205";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770452";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -411,6 +411,9 @@ body.scr .screen>.lt .stamp{display:none}
 .hero .hb a,.hero .hb button.rs{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;padding:0 14px;border:0;border-radius:14px;background:rgba(255,255,255,.22);color:#fff;font:700 14px var(--font-body);text-decoration:none;white-space:nowrap}.hero .hb button.rs svg{width:17px;height:17px}
 .btns.act .btn{flex:1 1 auto}
 .btn.eg{background:var(--tab-bg);color:#fff;box-shadow:none}
+.pks{display:flex;flex-direction:column;gap:8px}
+.pk{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:12px 14px;border:0;border-radius:16px;background:var(--surface);color:var(--ink);box-shadow:var(--sh);text-decoration:none;font:inherit;cursor:pointer}
+.pk b{font-size:15px}.pk span{font-size:22px;color:var(--muted)}
 .btn.eg .egi{height:20px;width:auto;flex:none}
 .egb{display:inline-flex;align-items:center;justify-content:center;height:30px;min-width:34px;padding:0 8px;border-radius:10px;background:var(--tab-bg);text-decoration:none}.egb .egi{height:15px;width:auto}
 .btns.lk{gap:6px;margin-top:-2px}
@@ -770,16 +773,25 @@ const REF='<svg class="ri" viewBox="0 0 24 24" fill="none" stroke="currentColor"
 const egForm=(c,gi)=>`<div class="row" style="margin:0 0 8px"><input id="eg-in" type="url" inputmode="url" placeholder="Coller l'adresse En Garde" value="${esc(EGL[c.k]||"")}" style="flex:1;min-width:0;height:40px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:0 12px;font:400 14px var(--font-body)"></div><div class="btns"><button class="btn primary" data-egsave="${c.id}"${gi!=null?` data-eggrp="${gi}"`:""}>Enregistrer</button>${EGL[c.k]?`<button class="btn" data-egdel="${c.id}"${gi!=null?` data-eggrp="${gi}"`:""}>Retirer le lien</button>`:""}</div>`;
 /* Fiche : actions regroupées (principales en haut, liens en petits boutons, réglages derrière l'engrenage) */
 function actHTML(cs,gi){
-  const c=cs[0],multi=cs.length>1;
-  const lb=x=>{const sh=cs.filter(y=>y.d===x.d).length>1;const n=(x.n||"").replace(/\s*\(e\)/gi,"");return sh?(n.replace(/^Epreuve\s+/i,"").length>22?n.replace(/^Epreuve\s+/i,"").slice(0,21)+"…":n.replace(/^Epreuve\s+/i,"")):fd(x.d)};
-  const inscr=cs.filter(x=>x.eps.some(e=>e.n)).map(x=>`<button class="btn primary" data-eng="${x.id}:all">${multi?"Inscrits · "+esc(lb(x)):"Voir les inscrits"}</button>`).join("");
+  const c=cs[0];const ids=a=>a.map(x=>x.id).join(",");
+  const iC=cs.filter(x=>x.eps.some(e=>e.n));
+  const inscr=iC.length>1?`<button class="btn primary" data-pick="eng:${ids(iC)}">Voir les inscrits</button>`:iC.length?`<button class="btn primary" data-eng="${iC[0].id}:all">Voir les inscrits</button>`:"";
   const eg=EGL[c.k]?`<a class="btn eg" href="${esc(EGL[c.k])}" target="_blank" rel="noopener">${EGI}En Garde</a>`:"";
-  const ffe=cs.filter(x=>!x.go).map(x=>`<a class="btn sm" href="https://www.ffescrime.fr/competition/${esc(x.k)}" target="_blank" rel="noopener">${multi?"FFE · "+esc(lb(x)):"Page FFE"}</a>`).join("");
-  const nts=[...new Map(cs.filter(x=>x.nt).map(x=>[x.nt,x])).values()].map(x=>`<a class="btn sm" href="${esc(x.nt)}" target="_blank" rel="noopener">${cs.filter(y=>y.nt).length>1?"Note · "+esc(lb(x)):"Note d'organisation"}</a>`).join("");
+  const fC=cs.filter(x=>!x.go);
+  const ffe=fC.length>1?`<button class="btn sm" data-pick="ffe:${ids(fC)}">Page FFE</button>`:fC.length?`<a class="btn sm" href="https://www.ffescrime.fr/competition/${esc(fC[0].k)}" target="_blank" rel="noopener">Page FFE</a>`:"";
+  const nC=[...new Map(cs.filter(x=>x.nt).map(x=>[x.nt,x])).values()];
+  const nts=nC.length>1?`<button class="btn sm" data-pick="note:${ids(nC)}">Note d'organisation</button>`:nC.length?`<a class="btn sm" href="${esc(nC[0].nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:"";
   const mp=(cs.find(x=>x.mp)||{}).mp;
   return `<div class="btns act">${favcBig(cs)}${inscr}${eg}</div>
   <div class="btns lk">${mp?`<a class="btn sm" href="${esc(mp)}" target="_blank" rel="noopener">${RT}Itinéraire</a>`:""}${ffe}${nts}<button class="btn sm" type="button" data-upd1="${esc(cs.map(x=>x.k).join(","))}">${REF}Actualiser</button><button class="btn sm ico" type="button" data-egset="${c.id}${gi!=null?":"+gi:""}" aria-label="Réglages (lien En Garde)">${GEAR}</button></div>`;
 }
+function pickSheet(kind,cs){
+  const T={eng:"Quels inscrits ?",ffe:"Quelle page FFE ?",note:"Quelle note d'organisation ?"}[kind];
+  const lab=x=>`<b>${esc(fd(x.d))}${x.f!==x.d?" → "+esc(fd(x.f)):""}</b><div class="sub">${esc(x.n)}${kind==="eng"?" · "+x.eps.reduce((n,e)=>n+(e.n||0),0)+" inscrits":""}</div>`;
+  const row=x=>kind==="eng"?`<button class="pk" data-eng="${x.id}:all">${lab(x)}<span>›</span></button>`:`<a class="pk" href="${kind==="ffe"?"https://www.ffescrime.fr/competition/"+esc(x.k):esc(x.nt)}" target="_blank" rel="noopener">${lab(x)}<span>›</span></a>`;
+  const back=CUR.ci;
+  sheet(`${T}<div class="sub">${esc(cs[0].v)}</div>`,`<div class="pks">${cs.map(row).join("")}</div>`);
+  BACK=()=>reopen(back)}
 function egSet(ci,gi){const c=D.comps[ci];CUR.g=gi!=null?gi:null;const _g=CUR.g;
   sheet(`Réglages<div class="sub">${esc(c.v)}</div>`,`<div class="sec" style="margin-top:0">Lien En Garde</div><div class="note">Colle l'adresse En Garde de la compétition : un bouton « En Garde » apparaîtra à côté des inscrits.</div>${egForm(c,gi)}<div class="btns"><a class="btn" href="${esc(egSearch(c))}" target="_blank" rel="noopener">Chercher sur En Garde</a><button class="btn" data-egback="${ci}">Retour à la fiche</button></div>`);BACK=()=>reopen(ci)}
 
@@ -1544,6 +1556,7 @@ function syncSheet(msg){
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
 function xclick(b){
+  if(b.dataset.pick){const [k,ids]=b.dataset.pick.split(":");pickSheet(k,ids.split(",").map(i=>D.comps[+i]).filter(Boolean));return true}
   if(b.dataset.egset){const [id,gi]=b.dataset.egset.split(":");egSet(Number(id),gi!==undefined?Number(gi):null);return true}
   if(b.dataset.egback){reopen(Number(b.dataset.egback));return true}
   if(b.dataset.ign){const [k,v]=b.dataset.ign.split("|");if(v==="1")IGN[k]=1;else delete IGN[k];saveIgn();closeSheet();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass();admBadge();if(S.tab==="m")renderAdmin();return true}
