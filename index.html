@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770071";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794770205";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1117,7 +1117,7 @@ function renderAdmin(){
     return `<div class="acard">${head}${cands}<div class="btns"><button class="btn primary" data-adm="ok:${i}">Valider la sélection</button><button class="btn" data-adm="non:${i}">Aucune ne convient</button></div></div>`;
   }).join("")+`<div class="acard"><b>Mes décisions</b><div class="sub">À copier et me transmettre.</div><textarea id="a-json" readonly>${esc(JSON.stringify(DEC))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button><button class="btn" data-adm="reset">Tout effacer</button></div></div>`;
 }
-let GSEL={};
+let GSEL={},MSEL=new Set(),MQ="";
 function grpClusters(){
   const L=D.comps.filter(c=>inSeason(c)&&!c.go&&c.f>=TODAY);
   const by=new Map();for(const g of groupComps(L)){const k=g.cs[0].v.toLowerCase().trim();if(!by.has(k))by.set(k,[]);by.get(k).push(g)}
@@ -1134,13 +1134,24 @@ function renderGrp(){
   const mine={};for(const [k,g] of Object.entries(GRPO))(mine[g]=mine[g]||[]).push(k);
   const mg=Object.entries(mine).map(([g,ks])=>[g,ks.map(k=>D.comps.find(c=>c.k===k)).filter(Boolean)]).filter(x=>x[1].length);
   const line=c=>`<div class="sub"><b>${esc(fd(c.d))}${c.f!==c.d?" → "+esc(fd(c.f)):""}</b> · ${esc(c.n)} · ${esc([...new Set(c.eps.map(e=>e.c))].join(", "))}</div>`;
-  $("#a-list").innerHTML=(cl.length?cl.map((x,i)=>{const sel=GSEL[x.key]||(GSEL[x.key]=new Set(x.cs.map(c=>c.k)));
+  const mq=MQ.trim().toLowerCase();
+  const cand=mq?D.comps.filter(c=>inSeason(c)&&!c.go&&c.f>=TODAY&&(c.v+" "+c.n).toLowerCase().includes(mq)).slice(0,30):[];
+  const shown=[...MSEL].map(k=>D.comps.find(c=>c.k===k)).filter(Boolean);
+  const pool=[...shown,...cand.filter(c=>!MSEL.has(c.k))];
+  const mline=c=>`<div class="acand ${MSEL.has(c.k)?"on":""}"><button class="achk" data-grp9="mtog|${c.id}" aria-pressed="${MSEL.has(c.k)}" aria-label="Choisir">${MSEL.has(c.k)?"✓":""}</button><div><b>${esc(c.v)}</b>${line(c)}</div></div>`;
+  const manual=`<div class="acard"><b>Regrouper à la main</b><div class="sub">Cherche une ville ou un nom, coche au moins deux compétitions, puis regroupe-les.</div>
+    <label class="search" style="margin:8px 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg><input type="search" id="g-q" placeholder="Ville ou compétition (ex. Pau)" value="${esc(MQ)}" autocomplete="off"></label>
+    ${pool.map(mline).join("")}${mq&&!cand.length&&!shown.length?'<div class="empty">Aucune compétition à venir trouvée.</div>':""}
+    <div class="btns"><button class="btn primary" data-grp9="mok"${MSEL.size<2?" disabled":""}>Regrouper la sélection (${MSEL.size})</button>${MSEL.size?'<button class="btn" data-grp9="mclr">Vider</button>':""}</div></div>`;
+  $("#a-list").innerHTML=manual+(cl.length?cl.map((x,i)=>{const sel=GSEL[x.key]||(GSEL[x.key]=new Set(x.cs.map(c=>c.k)));
     return `<div class="acard"><b>${esc(x.cs[0].v)}</b><div class="sub">Même lieu, jours qui se touchent, mais pas la même note.</div>`+
       x.cs.map(c=>`<div class="acand ${sel.has(c.k)?"on":""}"><button class="achk" data-grp9="tog|${i}|${c.id}" aria-pressed="${sel.has(c.k)}" aria-label="Choisir">${sel.has(c.k)?"✓":""}</button><div>${line(c)}${admLinks(c)}</div></div>`).join("")+
       `<div class="btns"><button class="btn primary" data-grp9="ok|${i}">Regrouper la sélection</button><button class="btn" data-grp9="no|${i}">Bien séparées</button></div></div>`}).join(""):`<div class="empty">Aucun regroupement à vérifier.</div>`)+
     (mg.length?`<div class="sec">Mes regroupements</div>`+mg.map(([g,cs])=>`<div class="acard"><b>${esc(cs[0].v)}</b>${cs.map(line).join("")}<div class="btns"><button class="btn" data-grp9="un|${esc(g)}">Séparer</button></div></div>`).join(""):"")+
     `<div class="acard"><b>Mes regroupements (à me transmettre)</b><div class="sub">À copier et me transmettre pour qu'ils soient repris à chaque mise à jour.</div><textarea id="a-json" readonly>${esc(JSON.stringify({regroupes:GRPO,separes:GRPN}))}</textarea><div class="btns"><button class="btn" data-adm="copy">Copier</button></div></div>`;
+  bindGq();
 }
+function bindGq(){const i=$("#g-q");if(i)i.addEventListener("input",()=>{MQ=i.value;const p=i.selectionStart;renderGrp();const j=$("#g-q");j.focus();try{j.setSelectionRange(p,p)}catch(e){}})}
 function renderCls(){
   const L0=ACF==="ign"?D.comps.filter(c=>IGN[c.k]):D.comps.filter(c=>inSeason(c)&&!c.go);
   const nd=L0.filter(tyDoubt).length,no=Object.keys(TYO).length;
@@ -1536,6 +1547,10 @@ function xclick(b){
   if(b.dataset.egset){const [id,gi]=b.dataset.egset.split(":");egSet(Number(id),gi!==undefined?Number(gi):null);return true}
   if(b.dataset.egback){reopen(Number(b.dataset.egback));return true}
   if(b.dataset.ign){const [k,v]=b.dataset.ign.split("|");if(v==="1")IGN[k]=1;else delete IGN[k];saveIgn();closeSheet();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass();admBadge();if(S.tab==="m")renderAdmin();return true}
+  if(b.dataset.grp9&&/^m/.test(b.dataset.grp9)){const [a,x]=b.dataset.grp9.split("|");
+    if(a==="mtog"){const c=D.comps.find(z=>z.id===+x);if(c){MSEL.has(c.k)?MSEL.delete(c.k):MSEL.add(c.k)}renderAdmin();return true}
+    if(a==="mclr"){MSEL=new Set();renderAdmin();return true}
+    if(a==="mok"){if(MSEL.size<2)return true;const ks=[...MSEL].sort();for(const k of ks)GRPO[k]=ks[0];saveGrp();MSEL=new Set();MQ="";GSEL={};renderAdmin();renderComps();return true}}
   if(b.dataset.grp9){const [a,x,y]=b.dataset.grp9.split("|");const cl=grpClusters();
     if(a==="un"){for(const k of Object.keys(GRPO))if(GRPO[k]===x)delete GRPO[k]}
     else{const c=cl[+x];if(!c)return true;const sel=GSEL[c.key]||new Set();
