@@ -1,6 +1,6 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794741565";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794755278";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
 /* App mobile : grands titres, barre d'onglets en bas, filtres en panneau, fiche en feuille plein écran */
 :root{
@@ -280,10 +280,126 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.c
 .grp .gt{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 @media (min-width:700px){.sheet{align-items:center}.sheet>.panel{border-radius:22px;max-height:84%}}
 @media (prefers-reduced-motion:no-preference){.sheet>.panel{animation:up .24s cubic-bezier(.2,.8,.2,1)}@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}}
+
+/* ===== Refonte v2 : crème chaud, corail, cartes pastel, barre flottante ===== */
+:root{
+  --bg:#FBF4EE; --surface:#ffffff; --fill:#EDE3DA; --ink:#1F1B18; --muted:#766B64; --line:#EADFD5;
+  --accent:#D9541E; --accent-ink:#ffffff; --accent-soft:#FBE3D8;
+  --warn:#7A4B0E; --warn-soft:#FCE7B2; --bad:#A8321F; --bad-soft:#F9DAD3; --good:#1B7A3A; --good-soft:#DDF1CF;
+  --t-int:#4B34A3; --t-int-bg:#E6DFFB; --t-nat:#1D4FA6; --t-nat-bg:#DCE8FD; --t-rg:#2F6B1A; --t-rg-bg:#DDF1CF; --t-dp:#7A4B0E; --t-dp-bg:#F3E5CF;
+  --c-int:#E6DFFB; --c-nat:#DCE8FD; --c-rg:#DDF1CF; --c-dp:#F3E5CF; --c-fm:#FCE7B2; --c-in:#fff;
+  --sh:0 1px 8px rgba(60,30,10,.06); --bar:rgba(251,244,238,.85);
+  --tab-bg:#1F1B18; --tab-ic:#C9BFB7; --tab-on:#ffffff; --card-pill:#ffffff;
+  --font-body:'Plus Jakarta Sans','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-head:'Outfit','Space Grotesk','Inter',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17110E; --surface:#231A16; --fill:#33261F; --ink:#F4EBE4; --muted:#B5A69C; --line:#3A2C25;
+  --accent:#F28B5E; --accent-ink:#2A0F04; --accent-soft:#4A2515;
+  --warn:#F2C060; --warn-soft:#40300F; --bad:#F28E7C; --bad-soft:#40201A; --good:#72D38F; --good-soft:#143720;
+  --t-int:#C9BAF7; --t-int-bg:#2A2150; --t-nat:#A9C6F7; --t-nat-bg:#162B4F; --t-rg:#A9DC92; --t-rg-bg:#1B3414; --t-dp:#E3C69A; --t-dp-bg:#3A2E1B;
+  --c-int:#2A2150; --c-nat:#162B4F; --c-rg:#1B3414; --c-dp:#3A2E1B; --c-fm:#40300F; --c-in:#2d211b;
+  --sh:none; --bar:rgba(23,17,14,.85); --tab-bg:#2D221C; --tab-ic:#B5A69C; --tab-on:#2A0F04; --card-pill:#33261F}}
+:root[data-theme="dark"]{
+  --bg:#17110E; --surface:#231A16; --fill:#33261F; --ink:#F4EBE4; --muted:#B5A69C; --line:#3A2C25;
+  --accent:#F28B5E; --accent-ink:#2A0F04; --accent-soft:#4A2515;
+  --warn:#F2C060; --warn-soft:#40300F; --bad:#F28E7C; --bad-soft:#40201A; --good:#72D38F; --good-soft:#143720;
+  --t-int:#C9BAF7; --t-int-bg:#2A2150; --t-nat:#A9C6F7; --t-nat-bg:#162B4F; --t-rg:#A9DC92; --t-rg-bg:#1B3414; --t-dp:#E3C69A; --t-dp-bg:#3A2E1B;
+  --c-int:#2A2150; --c-nat:#162B4F; --c-rg:#1B3414; --c-dp:#3A2E1B; --c-fm:#40300F; --c-in:#2d211b;
+  --sh:none; --bar:rgba(23,17,14,.85); --tab-bg:#2D221C; --tab-ic:#B5A69C; --tab-on:#2A0F04; --card-pill:#33261F}
+body{padding-block:0 calc(112px + env(safe-area-inset-bottom,0px))}
+body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-index:24;pointer-events:none;background:linear-gradient(to bottom,transparent,var(--bg) 72%)}
+.lt{padding:16px 0 12px}
+.lt h1{font:700 34px/1.05 var(--font-head);letter-spacing:-.025em}
+.lt .stamp{font-weight:600}
+.rfb{width:40px;height:40px;background:var(--surface);box-shadow:var(--sh)}
+.seas select{height:40px;background:var(--surface);box-shadow:var(--sh)}
+.search{height:46px;border-radius:16px;background:var(--surface);box-shadow:var(--sh)}
+.fbtn{height:46px;border-radius:16px;background:var(--ink);color:var(--bg)}
+.fbtn .n{background:var(--accent);color:var(--accent-ink)}
+.seg{background:var(--fill);border-radius:16px;padding:4px}
+.seg button{padding:9px 4px;border-radius:12px}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 4px rgba(60,30,10,.12)}
+.chip{background:var(--surface);box-shadow:0 1px 4px rgba(60,30,10,.07);font-weight:600}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.wrapchips .chip{box-shadow:none}
+.chip.act{background:var(--accent-soft);color:var(--accent)}
+.btn{border-radius:16px;height:46px;background:var(--surface);box-shadow:var(--sh)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.btn.sm{height:30px;border-radius:10px;box-shadow:none;background:var(--fill)}
+.btn.sm.primary{background:var(--accent)}
+.panel{border-radius:28px 28px 0 0}
+.panel header h2{font-family:var(--font-head)}
+.x{background:var(--surface)}
+/* cartes de compétition : teinte pastel selon le type */
+.card{border:0;border-radius:24px;box-shadow:var(--sh)}
+.card.ty-international{background:var(--c-int)}.card.ty-national{background:var(--c-nat)}.card.ty-regional{background:var(--c-rg)}.card.ty-departemental{background:var(--c-dp)}.card.ty-formation,.card.ty-stage{background:var(--c-fm)}
+.card .date{background:var(--surface);color:var(--ink);border-radius:15px}
+.card .date.past{color:var(--muted)}
+.card .ttl{font-family:var(--font-head);font-weight:600}
+.card .pill{background:var(--card-pill)}
+.card .pill.open{background:var(--accent);color:var(--accent-ink)}
+.card .pill.mute{background:rgba(255,255,255,.55);color:var(--muted)}
+.card .pill.warn{background:var(--warn-soft)}
+.card .cnt{background:var(--surface);color:var(--ink)}
+.card .cnt.z{background:rgba(255,255,255,.5);color:var(--muted)}
+.card .cnt.fv{background:var(--warn-soft);color:var(--warn)}
+.card .eps{border-top:1px solid rgba(0,0,0,.08)}
+.card .star{background:var(--surface);width:38px;height:38px}
+.card .star.on{background:var(--surface);color:#E0A000}
+.fvl{border-radius:14px}
+.grpl .card{background:var(--bg)}
+.er,.li,.kr,.trow,.rrow{border:0;border-radius:20px;box-shadow:var(--sh)}
+.er{border-radius:22px}
+.kv{border:0;border-radius:20px;box-shadow:var(--sh)}
+.chgg,.group,.prof,.acard{border:0;box-shadow:var(--sh);border-radius:22px}
+.er.nf.un{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.tbl,.rgrid{border:0;box-shadow:var(--sh)}
+/* barre d'onglets flottante */
+.tabbar{left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));padding:8px;border:0;border-radius:34px;background:var(--tab-bg);box-shadow:0 10px 28px rgba(31,27,24,.32);-webkit-backdrop-filter:none;backdrop-filter:none;justify-content:space-around}
+.tabbar button{font-size:0;color:var(--tab-ic);gap:0;height:52px;justify-content:center}
+.tabbar .ti{width:48px;height:48px;border-radius:24px}
+.tabbar svg{width:23px;height:23px}
+.tabbar button[aria-selected="true"]{color:var(--tab-on)}
+.tabbar button[aria-selected="true"] .ti{background:var(--accent)}
+.tabbar .badge{top:3px;left:calc(50% + 8px);background:#E5484D;color:#fff;border:2px solid var(--tab-bg)}
+/* carte « prochaine compétition suivie » */
+#hero:empty{display:none}
+.hero{position:relative;overflow:hidden;margin:4px 0 12px;padding:18px 18px 16px;border-radius:28px;background:var(--accent);color:var(--accent-ink)}
+.hero::before{content:"";position:absolute;right:-34px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.14)}
+.hero::after{content:"";position:absolute;right:46px;top:36px;width:54px;height:54px;border-radius:16px;transform:rotate(30deg);background:rgba(255,255,255,.14)}
+.hero>*{position:relative;z-index:1}
+.hero .hl{display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:13px;background:rgba(255,255,255,.22);font-size:12px;font-weight:700}
+.hero h2{margin:10px 0 0;font:700 32px/1.05 var(--font-head);letter-spacing:-.02em}
+.hero .hs{margin-top:3px;font-size:14px;font-weight:500;opacity:.95}
+.hero .hf{margin-top:14px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}
+.hero .hav{display:flex}
+.hero .hav i{width:34px;height:34px;border-radius:50%;border:2px solid var(--accent);margin-right:-8px;display:grid;place-items:center;font:700 12px var(--font-head);font-style:normal;background:hsl(var(--h,30) 70% 90%);color:hsl(var(--h,30) 55% 25%)}
+.hero .hf span{margin-left:8px}
+.hero button{margin-top:14px;width:100%;height:46px;border:0;border-radius:16px;background:#fff;color:#8f3410;font:700 15px var(--font-body);cursor:pointer}
+/* podium des classements */
+.pod{position:relative;overflow:hidden;margin:2px 0 14px;padding:16px 12px 0;border-radius:28px;background:var(--accent);color:var(--accent-ink)}
+.pod::before{content:"";position:absolute;left:-60px;top:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.1)}
+.pod .pc{position:relative;display:flex;align-items:flex-end;gap:8px}
+.pod .pp{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;border:0;background:none;color:inherit;cursor:pointer;padding:0}
+.pod .pa{width:56px;height:56px;border-radius:50%;border:3px solid #fff;display:grid;place-items:center;font:700 18px var(--font-head);background:hsl(var(--h,30) 70% 90%);color:hsl(var(--h,30) 55% 25%)}
+.pod .p1 .pa{width:68px;height:68px;font-size:22px;border-color:#F3D77A}
+.pod .pn{margin-top:6px;max-width:100%;font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .pt{margin-top:4px;height:24px;padding:0 10px;border-radius:12px;background:#fff;color:#8f3410;font-size:12px;font-weight:700;display:inline-flex;align-items:center}
+.pod .pb{margin-top:8px;width:100%;border-radius:20px 20px 0 0;background:rgba(255,255,255,.24);display:grid;place-items:center;font:700 32px var(--font-head)}
+.pod .p1 .pb{height:104px;background:rgba(255,255,255,.34);font-size:40px}.pod .p2 .pb{height:76px}.pod .p3 .pb{height:56px}
+/* fiche tireur : tuiles */
+.tiles{display:flex;gap:10px;margin:2px 0 6px}
+.tiles>div{flex:1;border-radius:20px;background:var(--surface);padding:12px 6px;text-align:center;box-shadow:var(--sh)}
+.tiles b{display:block;font:700 24px/1 var(--font-head)}
+.tiles small{display:block;margin-top:4px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.tiles>div.hi{background:var(--accent-soft)}.tiles>div.hi b,.tiles>div.hi small{color:var(--accent)}
+
 </style>
 <div id="app">
 <section id="v-c" class="screen">
   <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><div style="display:flex;gap:8px;align-items:center;flex:none"><button class="rfb" id="ub" type="button" hidden aria-label="Mettre à jour les données"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></button><button class="rfb" id="rfb" type="button" aria-label="Actualiser l'appli"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><label class="seas"><select id="season" aria-label="Saison"></select></label></div></div>
+  <div id="hero"></div>
   <button class="nban" id="nban" data-f="news" hidden><b id="nban-n"></b><span id="nban-t"></span>›</button>
   <div class="bar">
     <div class="srow">
@@ -602,7 +718,7 @@ function cardHTML(c,eps,open,extra){
   const past=c.f<TODAY;
   const d=dp(c.d);
   const when=fd(c.d)+(c.f!==c.d?" → "+fd(c.f):"");
-  return `<article class="card" data-comp="${c.id}" tabindex="0" role="button" aria-label="${esc(c.v)} ${esc(c.n)}">
+  return `<article class="card ty-${TYC[c.ty]||""}" data-comp="${c.id}" tabindex="0" role="button" aria-label="${esc(c.v)} ${esc(c.n)}">
     <div class="c-top">${dateBlock(c.d,c.f,past)}
     <div style="min-width:0"><div class="ttl">${esc(c.v)}</div><div class="sub">${esc(c.n)}</div><div class="sub">${esc(when)}${c.dt?" · "+esc(c.dt):c.gr?" · "+esc(c.gr):""}</div></div>${starChev([c])}</div>
     <div class="tags">${tyPill(c)}${newPill([c])}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${extra||""}${past?"":dlInfo(c)}</div>
@@ -670,7 +786,7 @@ function groupHTML(g){
   const dls=[...new Set(g.cs.filter(c=>c.f>=TODAY).map(c=>past?"":dlInfo(c)).filter(Boolean))].join("");
   const by=new Map();for(const c of g.cs)for(const e of c.eps){if(!by.has(e.c))by.set(e.c,[]);by.get(e.c).push([c,e])}
   const rows=[...by].sort((a,b)=>(CATS.indexOf(a[0])+1||99)-(CATS.indexOf(b[0])+1||99)).map(([cat,L])=>`<div class="ep"><span class="cat">${esc(catShort(cat))}</span><span class="eb">${L.map(([c,e])=>epBtn(c,e)).join("")}</span></div>`).join("");
-  return `<article class="card" data-grp="${gi}" tabindex="0" role="button" aria-label="${esc(c0.v)}">
+  return `<article class="card ty-${TYC[c0.ty]||""}" data-grp="${gi}" tabindex="0" role="button" aria-label="${esc(c0.v)}">
     <div class="c-top">${dateBlock(g.d,g.f,past)}
     <div style="min-width:0"><div class="ttl">${esc(c0.v)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(names)}</div><div class="sub">${esc(when)}${c0.dt?" · "+esc(c0.dt):c0.gr?" · "+esc(c0.gr):""}</div></div>${starChev(g.cs)}</div>
     <div class="tags">${types}${newPill(g.cs)}${g.cs.some(c=>c.go)?`<span class="pill warn">Pas encore sur FFE</span>`:""}${g.cs.some(c=>c.eps.some(e=>e.o))?'<span class="pill open">Open</span>':g.cs.some(c=>c.nt)?'<span class="pill mute">Non open</span>':'<span class="pill mute">Open : inconnu</span>'}${dls}</div>
@@ -702,6 +818,16 @@ function groupBody(g,gi){const c=g.cs[0],multi=g.cs.length>1;
   </dl>${sections}
   <div class="mini">${c.src?esc(c.src)+". ":""}Horaires et tarifs à confirmer dans la note.</div>`}
 function grpSheet(gi){const g=GRP[gi];if(!g)return;CUR.g=gi;const c=g.cs[0];DIM=true;const _b=groupBody(g,gi);DIM=false;sheet(`${esc(c.v)}<div class="sub">${esc(fd(g.d)+(g.f!==g.d?" → "+fd(g.f):""))}</div>`,_b)}
+function renderHero(){
+  const h=$("#hero");if(!h)return;
+  const c=!S.q.trim()&&D.comps.filter(c=>c.f>=TODAY&&followed(c)).sort((a,b)=>a.d.localeCompare(b.d))[0];
+  if(!c){h.innerHTML="";return}
+  const dd=Math.round((new Date(c.d+"T12:00:00")-new Date(TODAY+"T12:00:00"))/864e5);
+  const when=dd<=0?"en cours":dd===1?"demain":"dans "+dd+" jours";
+  const fi=[...favIn([c]).keys()].map(i=>D.tir[i]);
+  const av2=fi.slice(0,4).map(t=>`<i style="--h:${hue(t[2])}">${esc((t[0][0]||"")+(t[1][0]||""))}</i>`).join("");
+  h.innerHTML=`<div class="hero"><span class="hl">Prochaine suivie · ${when}</span><h2>${esc(c.v)}</h2><div class="hs">${esc(c.n)} · ${esc(fd(c.d))}</div>${fi.length?`<div class="hf"><span class="hav">${av2}</span><span>${fi.length} favori${fi.length>1?"s":""} inscrit${fi.length>1?"s":""}</span></div>`:""}<button type="button" data-hero="${c.id}">Voir la fiche</button></div>`;
+}
 function renderComps(){
   const q=S.q.trim().toLowerCase();
   let L=D.comps.filter(c=>{
@@ -720,6 +846,7 @@ function renderComps(){
   GRP=[];DIM=true;const GR=GR0;GR.sort((a,b)=>ORD==="desc"?b.d.localeCompare(a.d):a.d.localeCompare(b.d));
   const shown=GR.slice(0,80);
   $("#c-list").innerHTML=shown.length?shown.map(groupHTML).join("")+(GR.length>shown.length?`<div class="empty">${GR.length-shown.length} autres. Affinez avec les filtres ou la recherche.</div>`:""):`<div class="empty">Aucune compétition avec ces filtres.</div>`;DIM=false;
+  renderHero();
 }
 function tirQ(){
   const q=S.tq.trim().toLowerCase();
@@ -929,6 +1056,8 @@ function placeOf(c,e,t){const X=resOf(c,e);if(!X||!X.res)return"";const k=nkey(t
     for(const id in r.players){const p=r.players[id];if(nkey(p[0],p[1])!==k)continue;
       const f=r.final.find(x=>String(x.id)===String(id));if(f)return `<span class="rk ${f.pl<=3?"g"+f.pl:""}" title="Classement final">${rkLbl(f.pl)}</span>`}}
   return""}
+function placeN(c,e,t){const X=resOf(c,e);if(!X||!X.res)return 0;const k=nkey(t[0],t[1]);
+  for(const r of X.res){if(!r.final||!r.final.length)continue;for(const id in r.players){const p=r.players[id];if(nkey(p[0],p[1])!==k)continue;const f=r.final.find(x=>String(x.id)===String(id));if(f)return f.pl}}return 0}
 function tireur(i){
   const t=D.tir[i];const ps=[];
   D.comps.forEach(c=>{if(inSeason(c))c.eps.forEach(e=>{if(e.l.includes(i))ps.push([c,e])})});
@@ -936,6 +1065,7 @@ function tireur(i){
   ps.sort((a,b)=>a[0].d.localeCompare(b[0].d));
   sheet(`<div style="display:flex;align-items:center;gap:12px">${av(t,"lg")}<div style="min-width:0">${esc(t[0])} ${esc(t[1])}<div class="sub">${esc(t[6])} · licence ${esc(t[2])}</div></div></div>`,
     `<div class="btns"><button class="btn ${FAV.has(t[2])?"primary":""}" data-fav="${i}" aria-pressed="${FAV.has(t[2])}">${FAV.has(t[2])?"★ Favori":"☆ Ajouter aux favoris"}</button></div>
+    ${(()=>{const pl=ps.map(([c,e])=>placeN(c,e,t)).filter(Boolean);const b=pl.length?Math.min(...pl):0;return `<div class="tiles"><div><b>${t[5]}</b><small>participation${t[5]>1?"s":""}</small></div><div><b>${pl.filter(x=>x<=3).length}</b><small>podium${pl.filter(x=>x<=3).length>1?"s":""}</small></div><div class="hi"><b>${b?rkLbl(b):"–"}</b><small>meilleure place</small></div></div>`})()}
     <div class="row"><span class="tag n">Principale : ${t[3]?CATL[t[3]]:"–"}</span><span class="tag">Surclassé : ${t[4]?CATL[t[4]]:"–"}</span><span class="tag">${t[5]} participation${t[5]>1?"s":""} · saison ${seasonLbl(SEASON)}</span>${autres?`<span class="tag">${autres} autre${autres>1?"s":""} saison${autres>1?"s":""}</span>`:""}</div>`+
     `<div class="sec">Compétitions</div>`+
     ps.map(([c,e])=>`<div class="li"><div><b>${esc(fd(c.d))}</b> · ${esc(c.v)}<br><small>${esc(c.n)} · ${esc(epLabel(e))}</small></div>${resOf(c,e)?`<span style="display:flex;align-items:center;gap:8px">${placeOf(c,e,t)}<button class="rs" data-res="${c.id}:${c.eps.indexOf(e)}::0" aria-label="Résultats">${ICON.trophy}Résultats</button></span>`:""}</div>`).join(""));
@@ -1031,9 +1161,12 @@ function renderKlass(){
   const L=klassList();
   $("#k-intro").textContent="Saison "+seasonLbl(SEASON)+" · "+(RES?Object.keys(RES).length+" épreuves avec résultats":"chargement…");
   $("#k-count").textContent=L.length?L.length+" tireur"+(L.length>1?"s":"")+" classé"+(L.length>1?"s":""):"";
-  $("#k-list").innerHTML=L.length?L.slice(0,150).map((x,i)=>{
+  const POD=L.length>=3?L.slice(0,3):[];
+  const pcell=(x,n)=>{const nm=x.name.split(" ");return `<button type="button" class="pp p${n}" data-kt="${esc(x.k)}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(x.k)}">${esc((nm[0][0]||"")+((nm[1]||"")[0]||""))}</span><span class="pn">${esc(x.name)}</span><span class="pt">${Math.round(x.tot)} pts</span><span class="pb">${x.rk}</span></button>`};
+  const podHTML=POD.length?`<div class="pod"><div class="pc">${pcell(POD[1],2)}${pcell(POD[0],1)}${pcell(POD[2],3)}</div></div>`:"";
+  $("#k-list").innerHTML=podHTML+(L.length?L.slice(POD.length,150).map((x,i)=>{
     const nm=x.name.split(" ");const ini=(nm[0][0]||"")+((nm[1]||"")[0]||"");
-    return `<button class="trow" data-kt="${esc(x.k)}"><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)}</div><div class="sub">${esc(x.club||"")} · ${x.L.length} résultat${x.L.length>1?"s":""}</div></div><div class="kpts">${Math.round(x.tot)}<small>pts</small></div></button>`}).join(""):`<div class="empty">Aucun résultat pour ${esc(K.sx)} ${esc(KL(K.cat))} cette saison.</div>`;
+    return `<button class="trow" data-kt="${esc(x.k)}"><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)}</div><div class="sub">${esc(x.club||"")} · ${x.L.length} résultat${x.L.length>1?"s":""}</div></div><div class="kpts">${Math.round(x.tot)}<small>pts</small></div></button>`}).join(""):`<div class="empty">Aucun résultat pour ${esc(K.sx)} ${esc(KL(K.cat))} cette saison.</div>`);
 }
 function kDetail(k){
   const x=klassList().find(y=>y.k===k);if(!x)return;
@@ -1271,6 +1404,7 @@ function syncSheet(msg){
 }
 const syErr=m=>`<div class="note" style="color:var(--bad)">${esc(m)}</div>`;
 function xclick(b){
+  if(b.dataset.hero!==undefined){compSheet(Number(b.dataset.hero));return true}
   if(b.dataset.favc!==undefined){toggleFavc(b.dataset.favc.split(",").map(Number));return true}
   if(b.dataset.f==="sync"){if(window.SYNC)syncSheet();return true}
   const a=b.dataset.sy;if(!a||!window.SYNC)return false;
