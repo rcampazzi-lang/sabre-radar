@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794740058";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#0a5c50"><script>(function(){var B="1794740710";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
@@ -256,6 +256,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.c
 .tag.res{cursor:pointer}
 
 
+.nban{display:flex;align-items:center;gap:10px;width:100%;margin:2px 0 8px;padding:11px 14px;border:0;border-radius:14px;background:var(--accent);color:var(--accent-ink);font:600 14.5px var(--font-body);text-align:left;cursor:pointer}
+.nban span{flex:1}.nban b{min-width:22px;height:22px;border-radius:11px;background:#fff;color:var(--accent);display:grid;place-items:center;font-size:12.5px;padding:0 6px}
 .nf{cursor:pointer}.nf.un{border-color:var(--accent);background:var(--accent-soft)}
 .card .star{margin:0}
 .grp{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh)}
@@ -272,6 +274,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.c
 <div id="app">
 <section id="v-c" class="screen">
   <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><div style="display:flex;gap:8px;align-items:center;flex:none"><button class="rfb" id="ub" type="button" hidden aria-label="Mettre à jour les données"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></button><button class="rfb" id="rfb" type="button" aria-label="Actualiser l'appli"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><label class="seas"><select id="season" aria-label="Saison"></select></label></div></div>
+  <button class="nban" id="nban" data-f="news" hidden><b id="nban-n"></b><span id="nban-t"></span>›</button>
   <div class="bar">
     <div class="srow">
       <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg><input type="search" id="q" placeholder="Ville ou compétition" autocomplete="off" enterkeyhint="search"></label>
@@ -587,7 +590,7 @@ function cardHTML(c,eps,open,extra){
   return `<article class="card" data-comp="${c.id}" tabindex="0" role="button" aria-label="${esc(c.v)} ${esc(c.n)}">
     <div class="c-top">${dateBlock(c.d,c.f,past)}
     <div style="min-width:0"><div class="ttl">${esc(c.v)}</div><div class="sub">${esc(c.n)}</div><div class="sub">${esc(when)}${c.dt?" · "+esc(c.dt):c.gr?" · "+esc(c.gr):""}</div></div>${starChev([c])}</div>
-    <div class="tags">${tyPill(c)}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${extra||""}${past?"":dlInfo(c)}</div>
+    <div class="tags">${tyPill(c)}${newPill([c])}${c.go?`<span class="pill warn">Pas encore sur FFE</span>`:""}${openPill(c)}${extra||""}${past?"":dlInfo(c)}</div>
     <div class="eps">${epRows(c,eps)}</div></article>`;
 }
 const EGK="ffe-engarde";let EGL={};try{EGL=JSON.parse(localStorage.getItem(EGK)||"{}")}catch(e){}
@@ -654,7 +657,7 @@ function groupHTML(g){
   return `<article class="card" data-grp="${gi}" tabindex="0" role="button" aria-label="${esc(c0.v)}">
     <div class="c-top">${dateBlock(g.d,g.f,past)}
     <div style="min-width:0"><div class="ttl">${esc(c0.v)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(names)}</div><div class="sub">${esc(when)}${c0.dt?" · "+esc(c0.dt):c0.gr?" · "+esc(c0.gr):""}</div></div>${starChev(g.cs)}</div>
-    <div class="tags">${types}${g.cs.some(c=>c.go)?`<span class="pill warn">Pas encore sur FFE</span>`:""}${g.cs.some(c=>c.eps.some(e=>e.o))?'<span class="pill open">Open</span>':g.cs.some(c=>c.nt)?'<span class="pill mute">Non open</span>':'<span class="pill mute">Open : inconnu</span>'}${dls}</div>
+    <div class="tags">${types}${newPill(g.cs)}${g.cs.some(c=>c.go)?`<span class="pill warn">Pas encore sur FFE</span>`:""}${g.cs.some(c=>c.eps.some(e=>e.o))?'<span class="pill open">Open</span>':g.cs.some(c=>c.nt)?'<span class="pill mute">Non open</span>':'<span class="pill mute">Open : inconnu</span>'}${dls}</div>
     <div class="eps">${rows}</div></article>`;
 }
 let CUR={g:null};
@@ -1189,7 +1192,14 @@ function newsScan(){
   if(dirty)saveSeen();
 }
 const unreadN=()=>SEEN.log.filter(x=>x.ts>(SEEN.read||0)).length;
-function badges(){const n=unreadN(),s=n?(n>99?"99+":String(n)):"";const a=$("#chgn"),b=$("#tabn");if(a)a.textContent=s;if(b)b.textContent=s}
+function badges(){const n=unreadN(),s=n?(n>99?"99+":String(n)):"";const a=$("#chgn"),b=$("#tabn");if(a)a.textContent=s;if(b)b.textContent=s;
+  const nb=$("#nban");if(nb){nb.hidden=!n;$("#nban-n").textContent=s;$("#nban-t").textContent=n>1?"nouveautés sur tes favoris":"nouveauté sur tes favoris"}}
+const NEWC=new Map();
+function buildNewC(){NEWC.clear();for(const x of SEEN.log){if(x.ts<=READ0)continue;
+  if(x.y==="c"){const v=NEWC.get(x.ck)||{a:0,b:0};v.a+=x.l.length;NEWC.set(x.ck,v)}
+  else if(x.y==="t")for(const k of x.cks){const v=NEWC.get(k)||{a:0,b:0};v.b++;NEWC.set(k,v)}}}
+function newPill(cs){let a=0,b=0;for(const c of cs){const v=NEWC.get(c.k);if(v){a+=v.a;b+=v.b}}
+  return (a?`<span class="pill open">+${a} inscrit${a>1?"s":""}</span>`:"")+(b?`<span class="pill ok">★ ${b} suivi${b>1?"s":""}</span>`:"")}
 function markRead(){SEEN.read=Date.now();saveSeen();badges()}
 function favNewsHTML(){
   const head=`<div class="chgh" style="margin-top:2px">Mes favoris</div>`;
@@ -1241,7 +1251,7 @@ function xclick(b){
   else if(a==="join"){const v=$("#sy-in").value;SYNC.join(v).then(()=>{syncSheet(`<div class="note">Code accepté : tes favoris sont chargés.</div>`);renderSyncRow()},e=>syncSheet(syErr(e.message)))}
   return true}
 if(window.SYNC)SYNC.on(()=>{renderSyncRow();if(!$("#sheet").hidden&&$("#sheet").querySelector("#sy-code")&&document.activeElement&&document.activeElement.id!=="sy-in")syncSheet()});
-newsScan();
+newsScan();buildNewC();
 applySeason();
 renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();
 fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
