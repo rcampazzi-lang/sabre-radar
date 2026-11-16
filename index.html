@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794833441";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794833614";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -523,6 +523,7 @@ body.scr .screen>.lt .stamp{display:none}
   .card,.trow,button,[data-comp]{cursor:pointer}
 }
 .ilab{font-size:12px;font-weight:700;color:var(--sub,#777);margin-top:10px}.ipgs{margin:10px 0}.ipg{display:grid;grid-template-columns:20px 1fr auto auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line,#e5e5e5)}.ipg small{display:block;color:var(--sub,#777);font-size:11px}.ipg.del b{text-decoration:line-through;opacity:.5}.idot{font-weight:800;color:var(--accent,#d9531e)}
+.ichk{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px}.ig{color:var(--sub,#777);font-size:11px;grid-column:3/5}
 .isel{width:100%;margin:8px 0;padding:9px;border:1px solid var(--line,#ccc);border-radius:10px;background:var(--card,#fff);color:inherit;font:inherit}
 </style>
 <div id="app">
@@ -1250,6 +1251,21 @@ try{IFILE=JSON.parse(localStorage.getItem("ffe-impfile")||"{}")}catch(e){}
 Object.values(IGRP).forEach(g=>{if(!Array.isArray(g.files))g.files=[]});
 const saveImpMap=()=>{try{localStorage.setItem("ffe-impmap",JSON.stringify(IMAP))}catch(e){}};
 const saveImp=()=>{try{localStorage.setItem("ffe-impdone",JSON.stringify(IDONE));localStorage.setItem("ffe-impgrp",JSON.stringify(IGRP));localStorage.setItem("ffe-impfile",JSON.stringify(IFILE))}catch(e){}};
+const ghTok=()=>{try{return localStorage.getItem("ffe-ghtok")||""}catch(e){return ""}};
+const ghAuto=()=>{try{return localStorage.getItem("ffe-ghauto")==="1"}catch(e){return false}};
+async function ghDelete(path,sha){
+  const t=ghTok();if(!t)throw new Error("pas de jeton");
+  const r=await fetch("https://api.github.com/repos/"+GH.o+"/"+GH.r+"/contents/"+path.split("/").map(encodeURIComponent).join("/"),{method:"DELETE",headers:{Authorization:"Bearer "+t,Accept:"application/vnd.github+json"},body:JSON.stringify({message:"Nettoyage import : "+path,sha,branch:GH.b})});
+  if(!r.ok&&r.status!==404&&r.status!==422)throw new Error("GitHub "+r.status+(r.status===401||r.status===403?" (jeton refusé)":""));
+  return true}
+/* supprime sur GitHub les pages déjà traitées (importées, ignorées ou supprimées) ; les résultats restent dans l'app */
+async function impPurge(only){
+  if(!ghTok())return 0;let n=0;
+  for(const p of Object.keys(IFILE)){const F=IFILE[p];
+    if(only&&only.indexOf(p)<0)continue;
+    if(!F||F.gone||!F.sha||!(F.st==="ok"||F.st==="del"||F.st==="skip"))continue;
+    try{await ghDelete(p,F.sha);F.gone=true;n++}catch(e){IMSG="Échec du nettoyage : "+(e&&e.message||e);break}}
+  saveImp();return n}
 const IKL={ins:"Inscrits",pou:"Poules",cls:"Résultats des poules",tab:"Tableau",fin:"Classement final"};
 function impMeta(html){
   const doc=new DOMParser().parseFromString(html,"text/html");
@@ -1306,10 +1322,12 @@ async function impRun(){
     const files=(tr.tree||[]).filter(x=>x.type==="blob"&&x.path.indexOf(GH.f+"/")===0&&/\.html?$/.test(x.path));
     const groups={};
     files.forEach(x=>{const p=x.path.split("/");if(p.length!==5)return;const gid=p[1]+"/"+p[2]+"/"+p[3];(groups[gid]=groups[gid]||[]).push({path:x.path,name:p[4],sha:x.sha})});
-    /* groupes dont toutes les pages ont disparu de GitHub */
-    Object.keys(IGRP).forEach(g=>{if(!groups[g]){Object.keys(IFILE).forEach(p=>{if(p.indexOf(GH.f+"/"+g+"/")===0){impUndo(p);delete IFILE[p];delete IDONE[p]}});delete IGRP[g]}});
+    /* pages retirées de GitHub : on garde ce qui est déjà importé, on oublie le reste */
+    const inTree=new Set(files.map(x=>x.path));
+    Object.keys(IFILE).forEach(p=>{if(inTree.has(p))return;const F=IFILE[p];if(F.st==="ok")F.gone=true;else{delete IFILE[p];delete IDONE[p]}});
+    Object.keys(IGRP).forEach(g=>{const pre=GH.f+"/"+g+"/";if(!groups[g]&&!Object.keys(IFILE).some(p=>p.indexOf(pre)===0))delete IGRP[g]});
     for(const gid of Object.keys(groups)){
-      const fl=groups[gid],G=IGRP[gid]=IGRP[gid]||{};G.files=fl.map(f=>f.path);
+      const fl=groups[gid],G=IGRP[gid]=IGRP[gid]||{};G.files=fl.map(f=>f.path);fl.forEach(f=>{if(IFILE[f.path])delete IFILE[f.path].gone});
       fl.forEach(f=>{const F=IFILE[f.path];if(F&&F.sha&&F.sha!==f.sha&&F.st==="del"){delete IFILE[f.path]}});
       /* une page modifiée sur GitHub : on relit */
       const todo=fl.filter(f=>{const F=IFILE[f.path];if(F&&F.st==="del")return false;return IDONE[f.path]!==f.sha||!F||F.st==="wait"});
@@ -1333,8 +1351,9 @@ async function impRun(){
       }
     }
     saveImp();if(nP){saveENG();applyEG();renderComps()}
+    let nPurge=0;if(ghAuto()&&ghTok())nPurge=await impPurge();
     const pend=Object.values(IGRP).filter(g=>g.m&&!g.key).length;
-    IMSG=(nP?"✓ "+nP+" page"+(nP>1?"s":"")+" importée"+(nP>1?"s":"")+" ("+nE.size+" épreuve"+(nE.size>1?"s":"")+"). ":"Rien de nouveau. ")+(pend?pend+" épreuve"+(pend>1?"s":"")+" à rapprocher à la main ci-dessous. ":"")+(nErr?nErr+" page"+(nErr>1?"s":"")+" en erreur (réessaie). ":"")
+    IMSG=(nP?"✓ "+nP+" page"+(nP>1?"s":"")+" importée"+(nP>1?"s":"")+" ("+nE.size+" épreuve"+(nE.size>1?"s":"")+"). ":"Rien de nouveau. ")+(pend?pend+" épreuve"+(pend>1?"s":"")+" à rapprocher à la main ci-dessous. ":"")+(nPurge?nPurge+" page"+(nPurge>1?"s":"")+" retirée"+(nPurge>1?"s":"")+" de GitHub. ":"")+(nErr?nErr+" page"+(nErr>1?"s":"")+" en erreur (réessaie). ":"")
   }catch(e){IMSG="Échec : "+(e&&e.message||e)+". (Ce bouton ne marche pas depuis la page Claude : ouvre le site GitHub Pages.)";try{saveImp()}catch(_){}}
   IBUSY=false;impRefresh()}
 function impRefresh(){try{if(S.tab==="m"&&AT==="imp")renderAdmin();if(EGCUR&&document.getElementById("imp-msg"))document.getElementById("imp-msg").textContent=IMSG}catch(e){}}
@@ -1353,11 +1372,12 @@ function impSel(o,i){
   return `<div class="ilab">① Compétition</div><select class="isel" data-impcomp="${i}"><option value="">— choisir la compétition —</option>${sug.length?`<optgroup label="Même ville">${sug.map(op).join("")}</optgroup>`:""}<optgroup label="Toute la saison">${rest.map(op).join("")}</optgroup></select>
   <div class="ilab">② Épreuve</div><select class="isel" data-impep="${i}"><option value="">— d'abord la compétition —</option>${curC?impEpOpts(curC,m,cur):""}</select>
   <div class="btns"><button class="btn primary" data-imp="ok|${i}">Rattacher</button><button class="btn" data-imp="ign|${i}">Ignorer ce groupe</button></div>`}
+function impFiles(o){const pre=GH.f+"/"+o.g+"/";return [...new Set((o.x.files||[]).concat(Object.keys(IFILE).filter(p=>p.indexOf(pre)===0)))].filter(p=>IFILE[p]||(o.x.files||[]).indexOf(p)>=0)}
 function impPages(o,i){
-  return (o.x.files||[]).map(p=>{const F=IFILE[p]||{},nm=p.split("/").pop();
+  return impFiles(o).map(p=>{const F=IFILE[p]||{},nm=p.split("/").pop();
     const lab=F.st==="del"?"Supprimée":F.kind?IKL[F.kind]+(F.N?" de "+F.N:""):F.st==="skip"?"Non utilisée ("+esc(F.why||"")+")":"…";
     const dot=F.st==="ok"?"✓":F.st==="del"?"×":F.st==="skip"?"–":"·";
-    return `<div class="ipg${F.st==="del"?" del":""}"><span class="idot">${dot}</span><div><b>${esc(lab)}</b><small>${esc(nm)}</small></div><button class="btn sm" data-imp="view|${esc(p)}">Voir</button>${F.st==="del"?`<button class="btn sm" data-imp="back|${esc(p)}">Rétablir</button>`:`<button class="btn sm" data-imp="del|${esc(p)}">Supprimer</button>`}</div>`}).join("")}
+    return `<div class="ipg${F.st==="del"?" del":""}"><span class="idot">${dot}</span><div><b>${esc(lab)}</b><small>${esc(nm)}</small></div>${F.gone?`<small class="ig">retirée de GitHub</small>`:`<button class="btn sm" data-imp="view|${esc(p)}">Voir</button>`}${F.st==="del"?`<button class="btn sm" data-imp="back|${esc(p)}">Rétablir</button>`:`<button class="btn sm" data-imp="del|${esc(p)}">Supprimer</button>`}</div>`}).join("")}
 function renderImp(){
   const L=Object.entries(IGRP).filter(([g,x])=>x.m).map(([g,x])=>({g,x}));
   const pend=L.filter(o=>!o.x.key);
@@ -1370,7 +1390,8 @@ function renderImp(){
       <div class="btns">${e?`<button class="btn sm primary" data-res="${ci}:${ei}::0">Voir les résultats</button>`:""}<button class="btn sm" data-imp="delg|${i}">Tout supprimer</button></div>
       <details${(!k||IOPEN[o.g])?" open":""}><summary>${k&&k!=="-"?"Changer le rattachement":"Rattacher à une compétition"}</summary>${impSel(o,i)}</details></div>`};
   const all=pend.concat(L.filter(o=>o.x.key));
-  $("#a-list").innerHTML=`<div class="acard"><div class="btns"><button class="btn primary" data-imp="run"${IBUSY?" disabled":""}>${IBUSY?"Import en cours…":"Importer depuis GitHub"}</button></div>${IMSG?`<div class="sub" id="imp-msg" style="margin-top:8px">${esc(IMSG)}</div>`:""}</div>`+(all.length?all.map(o=>card(o,L.indexOf(o))).join(""):`<div class="empty">Aucune page reçue pour l'instant. Utilise l'extension Chrome sur une page En Garde, puis reviens ici.</div>`);
+  const gset=`<details class="acard"${ghTok()?"":" open"}><summary><b>Nettoyage de GitHub</b>${ghTok()?"":" · jeton à saisir"}</summary><div class="sub" style="margin:8px 0">Pour pouvoir supprimer des pages sur GitHub depuis l'app, colle ici le même jeton que dans l'extension. Il reste uniquement sur cet appareil (jamais synchronisé). Les résultats déjà importés restent dans l'app.</div><input id="gh-tok" class="isel" type="password" autocomplete="off" placeholder="github_pat_…" value="${esc(ghTok())}"><label class="ichk"><input type="checkbox" id="gh-auto"${ghAuto()?" checked":""}> Retirer automatiquement de GitHub les pages une fois importées</label><div class="btns"><button class="btn sm" data-imp="purge">Nettoyer GitHub maintenant</button></div></details>`;
+  $("#a-list").innerHTML=gset+`<div class="acard"><div class="btns"><button class="btn primary" data-imp="run"${IBUSY?" disabled":""}>${IBUSY?"Import en cours…":"Importer depuis GitHub"}</button></div>${IMSG?`<div class="sub" id="imp-msg" style="margin-top:8px">${esc(IMSG)}</div>`:""}</div>`+(all.length?all.map(o=>card(o,L.indexOf(o))).join(""):`<div class="empty">Aucune page reçue pour l'instant. Utilise l'extension Chrome sur une page En Garde, puis reviens ici.</div>`);
   renderImp.L=L}
 const IVCSS="body{font:13px/1.4 system-ui,sans-serif;margin:8px;color:#222}table{border-collapse:collapse;margin:8px 0}td,th{border:1px solid #cfcfcf;padding:3px 7px;vertical-align:top}h1{font-size:18px}small{font-weight:400;color:#666}a{color:inherit;text-decoration:none}";
 async function impView(path){
@@ -1387,17 +1408,22 @@ function impAct(a){
   const [act,i]=a.split("|");
   if(act==="run"){impRun();return}
   if(act==="view"){impView(i);return}
-  if(act==="del"){const F=IFILE[i]=IFILE[i]||{};const sha=F.sha;impUndo(i);IFILE[i]={sha,kind:F.kind,N:F.N,st:"del"};IDONE[i]=sha;impAfterChange();renderAdmin();return}
+  if(act==="del"){const F=IFILE[i]=IFILE[i]||{};const sha=F.sha;impUndo(i);IFILE[i]={sha,kind:F.kind,N:F.N,st:"del",gone:F.gone};IDONE[i]=sha;impAfterChange();renderAdmin();
+    if(ghTok()&&!F.gone)impPurge([i]).then(n=>{IMSG=n?"Page supprimée aussi sur GitHub.":IMSG;renderAdmin()});return}
   if(act==="back"){delete IFILE[i];delete IDONE[i];saveImp();impRun();return}
   if(act==="delg"){const o=renderImp.L[+i];if(!o||!confirm("Supprimer toutes les pages de ce groupe et les résultats qui en viennent ?"))return;
-    (o.x.files||[]).forEach(p=>{const F=IFILE[p]||{};const sha=F.sha;impUndo(p);IFILE[p]={sha,kind:F.kind,N:F.N,st:"del"};IDONE[p]=sha});impAfterChange();renderAdmin();return}
+    const fl=impFiles(o);fl.forEach(p=>{const F=IFILE[p]||{};const sha=F.sha;impUndo(p);IFILE[p]={sha,kind:F.kind,N:F.N,st:"del",gone:F.gone};IDONE[p]=sha});impAfterChange();renderAdmin();
+    if(ghTok())impPurge(fl).then(n=>{IMSG=n?n+" page"+(n>1?"s":"")+" supprimée"+(n>1?"s":"")+" aussi sur GitHub.":IMSG;renderAdmin()});return}
+  if(act==="purge"){IMSG="Nettoyage de GitHub…";renderAdmin();impPurge().then(n=>{if(!/Échec/.test(IMSG))IMSG=n?n+" page"+(n>1?"s":"")+" retirée"+(n>1?"s":"")+" de GitHub.":"Rien à nettoyer.";renderAdmin()});return}
   if(act==="ign"||act==="ok"){const o=renderImp.L[+i];if(!o)return;
     let v="-";
     if(act==="ok"){const s=document.querySelector('select[data-impep="'+i+'"]');v=s&&s.value;if(!v)return}
-    (o.x.files||[]).forEach(p=>{impUndo(p);delete IDONE[p];if(IFILE[p]&&IFILE[p].st!=="del")IFILE[p].st="wait"});
+    impFiles(o).forEach(p=>{if(IFILE[p]&&IFILE[p].gone)return;impUndo(p);delete IDONE[p];if(IFILE[p]&&IFILE[p].st!=="del")IFILE[p].st="wait"});
     IMAP[o.g]=v;saveImpMap();o.x.key=null;o.x.auto=false;IOPEN[o.g]=0;impAfterChange();impRun()}}
 document.addEventListener("change",e=>{
-  const s=e.target;if(!s||!s.dataset||s.dataset.impcomp===undefined)return;
+  const s=e.target;
+  if(s&&s.id==="gh-tok"){try{localStorage.setItem("ffe-ghtok",s.value.trim())}catch(_){}renderAdmin();return}
+  if(s&&s.id==="gh-auto"){try{localStorage.setItem("ffe-ghauto",s.checked?"1":"0")}catch(_){}return}if(!s||!s.dataset||s.dataset.impcomp===undefined)return;
   const o=renderImp.L&&renderImp.L[+s.dataset.impcomp];const ep=document.querySelector('select[data-impep="'+s.dataset.impcomp+'"]');if(!o||!ep)return;
   const c=D.comps.find(z=>z.k===s.value);
   ep.innerHTML=c?impEpOpts(c,o.x.m,""):`<option value="">— d'abord la compétition —</option>`;
