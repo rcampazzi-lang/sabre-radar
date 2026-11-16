@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794821603";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794822263";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1500,7 +1500,7 @@ function statsAll(){
   const sig=RES?Object.keys(RES).length:0;
   if(STC&&STC.res===RES&&STC.s===SEASON&&STC.sig===sig)return STC.M;
   const M={},seen=new Set();
-  const get=(nk,name,club)=>M[nk]||(M[nk]={nk,name,club,sx:{},cat:{},pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,pls:[],dl:[],cs:[],opp:{},lv:{}});
+  const get=(nk,name,club)=>M[nk]||(M[nk]={nk,name,club,ne:0,sx:{},cat:{},pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,pls:[],dl:[],cs:[],opp:{},lv:{}});
   const nn=s=>nkey(s,"");
   if(RES)D.comps.forEach(c=>{
     if(!inSeason(c))return;
@@ -1524,17 +1524,18 @@ function statsAll(){
             const nm=ot&&pl[ot]?pl[ot][1]+" "+pl[ot][0]:(ox.name||"");
             const o=a.opp[on]||(a.opp[on]={nm,w:0,l:0});if(s1>s2)o.w++;else o.l++})}));
         const cp=((r.classement_poules||[]).find(x=>x.tour===1)||(r.classement_poules||[])[0]||{}).rows||[];
-        (r.final||[]).forEach(f=>{
-          const p=pl[f.id];if(!p)return;const sk=(r.gid||"")+"|"+f.id;if(r.gid){if(seen.has(sk))return;seen.add(sk)}
-          const nk=nkey(p[0],p[1]);const o=get(nk,p[1]+" "+p[0],p[2]);o.club=p[2]||o.club;
+        const fin={};(r.final||[]).forEach(f=>{fin[f.id]=f.pl});const n=(r.final||[]).length;
+        new Set([...Object.keys(A),...Object.keys(fin)]).forEach(id=>{
+          const p=pl[id];if(!p)return;const sk=(r.gid&&r.gid!=="eg"?r.gid:c.k+"|"+e.c+"|"+e.s)+"|"+id;if(seen.has(sk))return;seen.add(sk);
+          const nk=nkey(p[0],p[1]);const o=get(nk,p[1]+" "+p[0],p[2]);o.club=p[2]||o.club;o.ne++;
           const pc=pcat(p[3])||single;if(pc)o.cat[pc]=(o.cat[pc]||0)+1;if(e.s!=="Mixte")o.sx[e.s]=(o.sx[e.s]||0)+1;
-          const a=A[f.id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,opp:{}};
+          const a=A[id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,opp:{}};
           ["pm","pw","ptd","ptr","tw","tl","ttd","ttr"].forEach(k=>o[k]+=a[k]);
           for(const k in a.opp){const q=o.opp[k]||(o.opp[k]={nm:a.opp[k].nm,w:0,l:0});q.w+=a.opp[k].w;q.l+=a.opp[k].l}
-          const n=r.final.length;o.pls.push({pl:f.pl,n,c,e});
-          const cr=cp.find(x=>String(x.id)===String(f.id));if(cr&&typeof cr.pl==="number")o.dl.push(cr.pl-f.pl);
-          const lv=levelOf(c);const ll=lv?lv.lab:"Autre";const z=o.lv[ll]||(o.lv[ll]={n:0,best:999});z.n++;z.best=Math.min(z.best,f.pl);
-          o.cs.push({c,pl:f.pl,n})})})})});
+          if(fin[id]!==undefined){const fp=fin[id];o.pls.push({pl:fp,n,c,e});
+            const cr=cp.find(x=>String(x.id)===String(id));if(cr&&typeof cr.pl==="number")o.dl.push(cr.pl-fp);
+            const lv=levelOf(c);const ll=lv?lv.lab:"Autre";const z=o.lv[ll]||(o.lv[ll]={n:0,best:999});z.n++;z.best=Math.min(z.best,fp);
+            o.cs.push({c,pl:fp,n})}})})})});
   STC={res:RES,s:SEASON,sig,M};return M;
 }
 const sMain=o=>{const t=(m)=>Object.entries(m).sort((a,b)=>b[1]-a[1])[0];const a=t(o.sx),b=t(o.cat);return {sx:a?a[0]:"",cat:b?b[0]:""}};
@@ -1564,17 +1565,17 @@ function sRow(me,all,k){
 }
 function statsHTML(t,idx){
   const all=statsAll(),nk=nkey(t[0],t[1]),me=all[nk];
-  if(!me||!me.pls.length)return `<div class="empty">Pas encore de résultats Greg pour ce tireur cette saison.</div>`;
+  if(!me||!me.ne)return `<div class="empty">Pas encore de résultats Greg pour ce tireur cette saison.</div>`;
   const {sx,cat}=sMain(me);
-  const pm=me.pm,tm=me.tw+me.tl,best=me.pls.slice().sort((a,b)=>a.pl-b.pl)[0];
-  const avgPl=me.pls.reduce((s,x)=>s+x.pl,0)/me.pls.length;
+  const pm=me.pm,tm=me.tw+me.tl,best=me.pls.slice().sort((a,b)=>a.pl-b.pl)[0]||null;
+  const avgPl=me.pls.length?me.pls.reduce((s,x)=>s+x.pl,0)/me.pls.length:null;
   const dl=me.dl.length?me.dl.reduce((a,b)=>a+b,0)/me.dl.length:null;
   // classements officiels / Sabre Radar
   let rk="";
   const L=FFK?FFK.lists.filter(x=>x.rows.some(r=>r[5]===t[2])).sort((a,b)=>(FLV[a.niv]??9)-(FLV[b.niv]??9)):[];
   L.slice(0,3).forEach(x=>{const r=x.rows.find(y=>y[5]===t[2]);rk+=`<div class="rkc ffe"><span class="fb"><i></i>FFE officiel</span><b>${r[0]}${r[0]===1?"er":"e"}</b><small>${esc(x.niv)} · ${esc(KL(x.cat.split(" / ")[0]))} · ${fPts(r[4])} pts · ${x.rows.length} classés</small></div>`});
   if(sx&&cat&&RES){try{const B=klassData()[sx+"|"+cat]||{};const E=Object.values(B).map(v=>kScore(v.res,cat).tot);const mine=B[nk]?kScore(B[nk].res,cat).tot:0;if(B[nk]&&mine>0)rk+=`<div class="rkc sr"><span class="fb"><i></i>Sabre Radar</span><b>${1+E.filter(x=>x>mine).length}${E.filter(x=>x>mine).length===0?"er":"e"}</b><small>${esc(KL(cat))} ${sx==="Dames"?"dames":"hommes"} · ${Math.round(mine)} pts · ${E.length} classés</small></div>`}catch(e){}}
-  const tiles=`<div class="tiles"><div><b>${me.pls.length}</b><small>compétition${me.pls.length>1?"s":""}</small></div><div><b>${pm+tm}</b><small>matchs</small></div><div class="hi"><b>${rkLbl(best.pl)}</b><small>meilleure place</small></div></div>`;
+  const tiles=`<div class="tiles"><div><b>${me.ne}</b><small>épreuve${me.ne>1?"s":""}</small></div><div><b>${pm+tm}</b><small>matchs</small></div><div class="hi"><b>${best?rkLbl(best.pl):"–"}</b><small>meilleure place</small></div></div>`;
   const rows=k=>sRow(me,all,k);
   const touches=(pm+tm)?`<div class="tiles"><div><b>${me.ptd+me.ttd}</b><small>touches données</small></div><div><b>${me.ptr+me.ttr}</b><small>touches reçues</small></div><div class="${me.ptd+me.ttd>=me.ptr+me.ttr?"hi":""}"><b>${(me.ptd+me.ttd-me.ptr-me.ttr>0?"+":"")+(me.ptd+me.ttd-me.ptr-me.ttr)}</b><small>différence</small></div></div>`:"";
   const evo=me.cs.slice().sort((a,b)=>a.c.d.localeCompare(b.c.d)).map(x=>{const h=x.n>1?(x.n-x.pl)/(x.n-1):1;return `<div class="eb2" title="${esc(x.c.v)} · ${esc(fd(x.c.d))} · ${rkLbl(x.pl)} sur ${x.n}"><span class="eb2v">${x.pl}</span><i style="height:${Math.max(6,Math.round(h*70))}px"></i><small>${x.c.d.slice(8)}/${x.c.d.slice(5,7)}</small></div>`}).join("");
@@ -1584,7 +1585,7 @@ function statsHTML(t,idx){
   <div class="sec">Poules</div>${pm?`<div class="mini" style="margin:0 0 6px">${me.pw} victoire${me.pw>1?"s":""} sur ${pm} match${pm>1?"s":""}</div>`:""}${rows("pw")}${rows("pi")}
   <div class="sec">Tableaux</div>${tm?`<div class="mini" style="margin:0 0 6px">${me.tw} victoire${me.tw>1?"s":""}, ${me.tl} défaite${me.tl>1?"s":""} en tableau</div>`:`<div class="mini">Pas de match de tableau joué cette saison.</div>`}${rows("tw")}
   <div class="sec">Touches données et reçues</div>${touches}${rows("td")}${rows("tr")}
-  <div class="sec">Classement final</div><div class="mini" style="margin:0 0 6px">Place moyenne : ${avgPl.toFixed(1).replace(".",",")}${dl!==null?` · entre la fin des poules et le classement final : ${dl>0?"+":""}${dl.toFixed(1).replace(".",",")} place${Math.abs(dl)>=2?"s":""} en moyenne`:""}</div>${rows("pp")}
+  <div class="sec">Classement final</div><div class="mini" style="margin:0 0 6px">${avgPl!==null?"Place moyenne : "+avgPl.toFixed(1).replace(".",","):"Pas encore de classement final"}${dl!==null?` · entre la fin des poules et le classement final : ${dl>0?"+":""}${dl.toFixed(1).replace(".",",")} place${Math.abs(dl)>=2?"s":""} en moyenne`:""}</div>${rows("pp")}
   <div class="sec">Évolution (place finale ; la barre = tireurs battus)</div><div class="evo">${evo}</div>
   <div class="sec">Par niveau</div><div class="row">${lv}</div>
   ${opp?`<div class="sec">Adversaires affrontés plusieurs fois</div><div class="list">${opp}</div>`:""}
@@ -1685,7 +1686,7 @@ function klassData(){
         if(!r.final||!r.final.length)return;
         r.final.forEach(f=>{
           const p=r.players[f.id];if(!p)return;
-          const sk=(r.gid||"")+"|"+f.id;if(r.gid){if(seen.has(sk))return;seen.add(sk)}
+          const sk=(r.gid&&r.gid!=="eg"?r.gid:c.k+"|"+e.c+"|"+e.s)+"|"+f.id;if(seen.has(sk))return;seen.add(sk)
           let pc=pcat(p[3])||single;if(!pc||!KCATS.includes(pc))return;
           const gap=minr&&KRK[pc]?Math.max(0,minr-KRK[pc]):0;
           const coef=lv.coef*(1+COEF.sur*gap),base=ptsOf(f.pl);
