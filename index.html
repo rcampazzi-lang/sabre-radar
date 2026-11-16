@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794844062";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794844242";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2038,7 +2038,7 @@ function tireur(i){
 let TFT="c",STC=null;
 const sNum=x=>typeof x==="number"&&isFinite(x)?x:(typeof x==="string"&&/^-?\d+$/.test(x.trim())?parseInt(x,10):null);
 function statsAll(){
-  const sig=RES?Object.keys(RES).length:0;
+  let sig=0;if(RES)for(const k in RES){sig++;for(const r of (RES[k].res||[]))sig+=(r.final||[]).length*3+(r.poules||[]).length*5+(r.tableau||[]).length*7+Object.keys(r.players||{}).length}
   if(STC&&STC.res===RES&&STC.s===SEASON&&STC.sig===sig)return STC.M;
   const M={},seen=new Set();
   const get=(nk,name,club)=>M[nk]||(M[nk]={nk,name,club,ne:0,sx:{},cat:{},pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,pls:[],dl:[],cs:[],opp:{},lv:{}});
@@ -2046,7 +2046,7 @@ function statsAll(){
   if(RES)D.comps.forEach(c=>{
     if(!inSeason(c))return;
     c.eps.forEach(e=>{
-      const R=resOf(c,e);if(!R||!R.res)return;
+      const R=resOf(c,e);if(!R||!R.res||EQ(e))return;
       const single=e.c.split(", ").length===1?pcat(e.c):"";
       R.res.forEach(r=>{
         const pl=r.players||{};const byName={};
@@ -2067,7 +2067,7 @@ function statsAll(){
         const cp=((r.classement_poules||[]).find(x=>x.tour===1)||(r.classement_poules||[])[0]||{}).rows||[];
         const fin={};(r.final||[]).forEach(f=>{fin[f.id]=f.pl});const n=(r.final||[]).length;
         new Set([...Object.keys(A),...Object.keys(fin)]).forEach(id=>{
-          const p=pl[id];if(!p)return;if(r.src==="fie"&&p[2]!=="FRA")return;const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+id;if(seen.has(sk))return;seen.add(sk);
+          const p=pl[id];if(!p)return;const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+id;if(seen.has(sk))return;seen.add(sk);
           const nk=nkey(p[0],p[1]);const o=get(nk,p[1]+" "+p[0],p[2]);o.club=p[2]||o.club;o.ne++;
           const pc=pcat(p[3])||single;if(pc)o.cat[pc]=(o.cat[pc]||0)+1;if(e.s!=="Mixte")o.sx[e.s]=(o.sx[e.s]||0)+1;
           const a=A[id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,opp:{}};
@@ -2283,7 +2283,7 @@ function klassData(){
   D.comps.forEach(c=>{
     if(!inSeason(c))return;const lv=levelOf(c);if(!lv)return;
     c.eps.forEach(e=>{
-      const R=resOf(c,e);if(!R||!(c.f<TODAY||R.done))return;
+      const R=resOf(c,e);if(!R||EQ(e)||!(c.f<TODAY||R.done))return;
       const cats=e.c.split(", ").map(x=>KRK[x]).filter(Boolean);const minr=cats.length?Math.min(...cats):0;
       const single=e.c.split(", ").length===1?pcat(e.c):"";
       R.res.forEach((r,ri)=>{
