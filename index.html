@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794840863";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794842491";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -700,7 +700,7 @@ var E={applying:false,KEYS:KEYS,onset:function(k){T[k]=Date.now();saveT();if(ON)
  boot:function(){if(ON){if(S.code)sync(true);else if(KEYS.some(function(k){return get(k)!=null}))create()}}};
 ENG.push(E);return E}
 var PERS=mk(["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-dec","ffe-coef","ffe-k"],"ffe-sync-code","ffe-sync-t","ffe-sync-last");
-var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx","ffe-impmap","ffe-implab"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
+var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx","ffe-impmap","ffe-implab","ffe-fie"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
 if(_set)Storage.prototype.setItem=function(k,v){
   _set.call(this,k,v);
   try{if(this===localStorage)ENG.forEach(function(E){if(!E.applying&&E.KEYS.indexOf(k)>-1)E.onset(k)})}catch(e){}
@@ -1209,6 +1209,7 @@ function applyEG(){
     if(new Set(L).size<L.length)L=os.map((o,i)=>(o.lab||"Résultats")+(o.tour&&o.tour!==o.lab?" · "+o.tour:""));
     if(new Set(L).size<L.length)L=L.map((x,i)=>x+" ("+(i+1)+")");
     RES[base]={src:"engarde",gids:[],res,labels:res.length>1?L:undefined,t:os.map(o=>o.t||"").sort().pop(),done:true,local:true,eg:true}}
+  try{applyFIE()}catch(e){}
   /* inscrits = nombre de classés au classement final dès qu'il existe (la FFE peut en manquer) */
   for(const c of D.comps)for(const e of c.eps){const R=RES[EK(c,e)];if(!R||!R.res||(R.eg&&R.res.length>1))continue;
     const u=new Set();R.res.forEach(r=>(r.final||[]).forEach(f=>{const p=r.players&&r.players[f.id];if(p)u.add(egN(p[0]+" "+p[1]).split(" ").sort().join(" "))}));
@@ -1469,6 +1470,197 @@ document.addEventListener("change",e=>{
   ep.innerHTML=c?impEpOpts(c,o.x.m,""):`<option value="">— d'abord la compétition —</option>`;
   if(c&&ep.selectedIndex<0)ep.selectedIndex=0;if(c&&!ep.value&&ep.options.length)ep.selectedIndex=0});
 
+/* ===== Lecteur des PDF FIE (fie.org : Pools / Pool results / Tableau / Results) ===== */
+const FIE={};
+FIE.norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+FIE.lines=function(items,tol){tol=tol||2.5;const it=items.filter(i=>String(i.t).trim()).slice().sort((a,b)=>a.y-b.y||a.x-b.x);const L=[];for(const i of it){const l=L[L.length-1];if(l&&Math.abs(l.y-i.y)<=tol)l.it.push(i);else L.push({y:i.y,it:[i]})}L.forEach(l=>l.it.sort((a,b)=>a.x-b.x));return L};
+FIE.kind=function(pages){const p=pages[0]||[],t=p.map(i=>i.t).join(" ");
+  if(/LIST OF POOL RESULTS/.test(t))return"poolres";if(/LIST OF RESULTS/.test(t))return"results";
+  if(p.some(i=>/^A\d+\s*—\s*\d+\s+MATCH/.test(i.t)))return"tableau";if(p.some(i=>/^Pool \d+/.test(i.t)))return"pools";return null};
+FIE.meta=function(items){const L=FIE.lines(items);
+  for(let k=0;k<L.length;k++){const l=L[k],di=l.it.findIndex(i=>/^\d{4}-\d\d-\d\d$/.test(i.t));if(di<1)continue;
+    const tk=l.it.slice(di+1).map(i=>i.t);if(tk.length<3||tk.some(x=>x.length>2))continue;
+    const comp=di>=2?l.it.slice(0,di-1).map(i=>i.t).join(" "):(k>0?L[k-1].it.map(i=>i.t).join(" "):"");
+    return{comp,place:l.it[di-1].t,date:l.it[di].t,cat:{J:"M20",C:"M17",S:"SENIOR"}[tk[0]]||null,weapon:tk[1],s:tk[2]==="M"?"Hommes":tk[2]==="F"?"Dames":null,ev:tk[3],type:tk[4]||""}}
+  return null};
+const _hdrY=(L,re)=>L.findIndex(l=>l.it.some(i=>re.test(i.t)));
+FIE.parseResults=function(pages){const out=[];
+  for(const items of pages){const L=FIE.lines(items),h=L.findIndex(l=>l.it.some(i=>i.t==="Rank")&&l.it.some(i=>i.t==="Points"));if(h<0)continue;
+    const rows=[],nm=[];const natX=(L[h].it.find(i=>i.t==="Nationality")||{x:170}).x,ptsX=(L[h].it.find(i=>i.t==="Points")||{x:48}).x;
+    for(const l of L.slice(h+1)){if(l.it.some(i=>/^Generated|^Page /.test(i.t)))continue;const f=l.it[0];
+      if(/^\d+$/.test(f.t)&&f.x<40&&l.it.length>=3){const cc=l.it.find(i=>/^[A-Z]{3}$/.test(i.t)&&i.x>=natX-2);rows.push({y:l.y,rank:+f.t,pts:parseFloat(l.it[1].t)||0,cc:cc?cc.t:"",age:+l.it[l.it.length-1].t||0,nm:[]})}}
+    // les noms de la ligne de rang ont leur propre y : on réaffecte tous les noms à la ligne la plus proche
+    const all=[];for(const l of L.slice(h+1)){if(l.it.some(i=>/^Generated|^Page /.test(i.t)))continue;l.it.forEach(i=>{if(i.x>=ptsX+30&&i.x<natX-2&&!/^[\d.]+$/.test(i.t))all.push(i)})}
+    all.sort((a,b)=>a.y-b.y||a.x-b.x);const cl=[];for(const i of all){const c=cl[cl.length-1];if(c&&i.y-c.last<=13){c.it.push(i);c.last=i.y}else cl.push({y:i.y,last:i.y,it:[i]})}
+    for(const c of cl){let b=null,d=1e9;for(const r of rows){const dd=Math.abs(r.y-c.y);if(dd<d){d=dd;b=r}}if(b&&d<30)c.it.forEach(i=>b.nm.push(i))}
+    rows.forEach(r=>{r.nm.sort((a,b)=>a.y-b.y||a.x-b.x);r.name=r.nm.map(i=>i.t).join(" ").replace(/\s+/g," ").trim();delete r.nm;out.push(r)})}
+  return out};
+FIE.parsePoolRes=function(pages){const out=[];
+  for(const items of pages){const L=FIE.lines(items);const h=L.findIndex(l=>l.it.some(i=>i.t==="Rank")&&l.it.some(i=>i.t==="Nationality"));if(h<0)continue;
+    const ageX=(L[h].it.find(i=>i.t==="Age")||{x:269}).x;
+    for(const l of L.slice(h+1)){const f=l.it[0];if(!/^\d+$/.test(f.t)||f.x>40)continue;
+      const name=l.it.filter(i=>i!==f&&i.x<ageX-3).map(i=>i.t).join(" ").replace(/\s+/g," ").trim();
+      const r=l.it.filter(i=>i!==f&&i.x>=ageX-3).map(i=>i.t);if(r.length<9)continue;
+      out.push({rank:+f.t,name,age:+r[0],cc:r[1],v:+r[2],m:+r[3],td:+r[4],tr:+r[5],ind:parseFloat(r[6]),diff:+String(r[7]).replace("+",""),q:r[8]})}}
+  return out};
+FIE.parsePools=function(pages){const P=[];let cur=null,anch=null;
+  for(const items of pages){const L=FIE.lines(items);
+    for(const l of L){const f=l.it[0];
+      const pm=/^Pool (\d+)/.exec(f.t);
+      if(pm){cur={no:+pm[1],arb:"",rows:[],n:0};P.push(cur);continue}
+      if(/^Referee/.test(f.t)&&cur){cur.arb=f.t.replace(/^Referees?:\s*/,"").replace(/\s*\([A-Z]{3}\)/g,"").replace(/;\s*/g,", ");continue}
+      if(f.t==="#"&&l.it.some(i=>i.t==="Name")){anch=l.it.slice(1).map(i=>({t:i.t,x:i.x}));if(cur)cur.n=anch.filter(a=>/^\d+$/.test(a.t)).length;continue}
+      if(!cur||!anch||!/^\d+$/.test(f.t)||f.x>60)continue;
+      const natA=anch.find(a=>a.t==="Nat"),row={idx:+f.t,name:"",cc:"",cells:[],vm:null,ts:null,tr:null,ind:null};const nm=[];
+      for(const i of l.it.slice(1)){if(natA&&i.x<natA.x-12){nm.push(i.t);continue}
+        let b=null,d=1e9;for(const a of anch){const dd=Math.abs(a.x-i.x);if(dd<d){d=dd;b=a}}
+        if(!b||d>28)continue;
+        if(b.t==="Nat")row.cc=i.t;else if(/^\d+$/.test(b.t))row.cells[+b.t-1]=i.t;else if(b.t==="V/M")row.vm=parseFloat(i.t);else if(b.t==="TS")row.ts=+i.t;else if(b.t==="TR")row.tr=+i.t;else if(b.t==="Ind")row.ind=+String(i.t).replace("+","")}
+      row.name=nm.join(" ").replace(/\s+/g," ").trim();cur.rows.push(row)}}
+  return P.filter(p=>p.rows.length)};
+FIE.parseTableau=function(pages){const matches=[];let cols=null;
+  const ent=[];
+  for(const items of pages){const L=FIE.lines(items);const hdr=items.filter(i=>/^A\d+\s*—\s*\d+\s+MATCH/.test(i.t));if(!hdr.length)continue;
+    const hs=hdr.map(i=>({x:i.x,size:+/^A(\d+)/.exec(i.t)[1],y:i.y})).sort((a,b)=>a.x-b.x);if(!cols)cols=hs;
+    const hy=hs[0].y;
+    cols.forEach((c,ci)=>{const x0=c.x-56,x1=ci+1<cols.length?cols[ci+1].x-56:c.x+150;
+      const it=items.filter(i=>i.y>hy+6&&i.x>=x0&&i.x<x1&&String(i.t).trim()&&!/^Generated|^\d{4}-\d\d-\d\d$/.test(i.t)).sort((a,b)=>a.y-b.y||a.x-b.x);
+      let cu=[];(ent[ci]=ent[ci]||[]);
+      for(const i of it){
+        if(i.t==="BYE"){ent[ci].push({bye:true});cu=[];continue}
+        let m=/^([VD]?)\/(\d+)$/.exec(i.t);if(!m&&/^\[\w+\]$/.test(i.t))m=["","D",null,i.t];
+        if(m){const cc=cu.filter(q=>/^[A-Z]{3}$/.test(q.t)&&q.x>=c.x+30).pop();const name=cu.filter(q=>q!==cc).map(q=>q.t).join(" ").replace(/\s+/g," ").trim();ent[ci].push({name,cc:cc?cc.t:"",res:m[1],sc:m[2]==null?null:+m[2],tag:m[3]||""});cu=[];continue}
+        cu.push(i)}})}
+  if(!cols)return[];
+  cols.forEach((c,ci)=>{const E=(ent[ci]||[]).filter(e=>!e.bye),r=Math.round(Math.log2(c.size))-1;
+    for(let k=0;k<E.length-1;){const a=E[k],b=E[k+1];if(a.res&&b.res&&a.res!==b.res&&a.name&&b.name){matches.push({r,a,b});k+=2}else k++}});
+  return matches};
+/* ---- assemblage ---- */
+FIE.split=function(n){const w=String(n).trim().split(/\s+/);let i=0;while(i<w.length-1&&w[i]===w[i].toUpperCase()&&/[A-ZÀ-ÖØ-Þ]/.test(w[i]))i++;if(i===0)i=1;if(w.length===1)i=1;return[w.slice(0,i).join(" "),w.slice(i).join(" ")]};
+FIE.lev=function(a,b){const m=a.length,n=b.length;if(Math.abs(m-n)>3)return 9;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const q=[i];for(let j=1;j<=n;j++)q[j]=Math.min(p[j]+1,q[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=q}return p[n]};
+FIE.build=function(P){/* P={results,poolres,pools,tableau} -> R (structure de l'app) */
+  const reg=new Map(),names={};let nx=0;
+  const prio={results:1,tableau:2,poolres:3,pools:4};
+  function id(name,cc,src){const k=FIE.norm(name);if(!k)return null;let f=reg.get(k);
+    if(!f){for(const [k2,v] of reg)if((!cc||!v.cc||v.cc===cc)&&FIE.lev(k,k2)<=2){f=v;break}}
+    if(!f){f={id:"f"+(++nx),cc:cc||""};reg.set(k,f);names[f.id]=[]}
+    if(!f.cc&&cc)f.cc=cc;names[f.id].push([prio[src]||9,name]);return f.id}
+  const R={gid:"fie",url:"",players:{},ins:[],poules:[],classement_poules:[],tableau:[],final:[],src:"fie"};
+  const poolIds=[];
+  (P.poolres||[]).forEach(x=>{x._id=id(x.name,x.cc,"poolres");R.ins.push(x._id)});
+  (P.pools||[]).forEach(p=>p.rows.forEach(r=>{r._id=id(r.name,r.cc,"pools")}));
+  (P.results||[]).forEach(x=>{x._id=id(x.name,x.cc,"results")});
+  (P.tableau||[]).forEach(m=>{m.a._id=id(m.a.name,m.a.cc,"tableau");m.b._id=id(m.b.name,m.b.cc,"tableau")});
+  const up=s=>s===s.toUpperCase();
+  for(const f of reg.values()){const c=names[f.id].slice().sort((a,b)=>a[0]-b[0]),mixed=c.find(q=>!up(q[1]));const nm=(mixed||c[0])[1];const sp=FIE.split(nm);R.players[f.id]=[sp[0],sp[1],f.cc,""]}
+  const rankOf={};(P.poolres||[]).forEach(x=>rankOf[x._id]=x.rank);
+  (P.pools||[]).forEach(p=>{
+    const rows=p.rows.map((r,i)=>{const m=[];for(let j=0;j<p.rows.length;j++){const c=r.cells[j];m.push(j===i||c==null||c===""?"":/^V/i.test(c)?"V":"D"+c)}
+      return{id:r._id,n:String(i+1),m,v:m.filter(x=>x==="V").length,td:r.ts,tr:r.tr,pl:rankOf[r._id]||0}});
+    R.poules.push({tour:1,poule:p.no,arb:p.arb||"",rows})});
+  if((P.poolres||[]).length)R.classement_poules.push({tour:1,rows:P.poolres.map(x=>({pl:x.rank,id:x._id,v:x.ind,td:x.td,tr:x.tr,ind:x.diff}))});
+  if((P.results||[]).length)R.final=P.results.map(x=>({pl:x.rank,id:x._id}));
+  const nm=i=>R.players[i][1]+" "+R.players[i][0];
+  const ms=[];
+  (P.tableau||[]).forEach(m=>{const A=m.a,B=m.b,wa=A.res==="V";const ia=A._id,ib=B._id;
+    const ff=A.tag||B.tag||A.sc==null||B.sc==null;ms.push({r:m.r,a:{id:ia,name:nm(ia),sc:(wa?"V":"D")+(ff?"":A.sc)},b:{id:ib,name:nm(ib),sc:(wa?"D":"V")+(ff?"":B.sc)},arb:"",piste:"",_w:wa?ia:ib})});
+  if(ms.length){const by={};ms.forEach(m=>(by[m.r]=by[m.r]||[]).push(m));const used=new Set(),out=[];
+    const child=(m,pid)=>(by[m.r+1]||[]).find(c=>c._w===pid&&!used.has(c));
+    const walk=(m,res)=>{used.add(m);res.push({r:m.r,a:m.a,b:m.b,arb:"",piste:""});for(const pid of[m.a.id,m.b.id]){const c=child(m,pid);if(c)walk(c,res)}};
+    const rs=Object.keys(by).map(Number).sort((a,b)=>a-b);
+    for(const r of rs)for(const m of by[r]){if(used.has(m))continue;if((by[r-1]||[]).some(p=>p.a.id===m._w||p.b.id===m._w))continue;const res=[];walk(m,res);out.push({place:"1",matches:res})}
+    for(const r of rs)for(const m of by[r])if(!used.has(m)){const res=[];walk(m,res);out.push({place:"1",matches:res})}
+    R.tableau=out}
+  return R};
+FIE.check=function(P){const w=[];
+  (P.pools||[]).forEach(p=>p.rows.forEach((r,i)=>{const v=r.cells.filter(c=>/^V/i.test(c||"")).length,mm=p.rows.length-1;if(r.vm!=null&&Math.abs(v/mm-r.vm)>0.011)w.push(`poule ${p.no} ligne ${i+1} : V/M ${r.vm}≠${v}/${mm}`)}));
+  const t=P.tableau||[];if(t.length&&P.results&&P.results.length){const fin=t.filter(m=>m.r===0)[0];if(fin){const win=(fin.a.res==="V"?fin.a:fin.b).name,r1=P.results.find(x=>x.rank===1);if(r1&&FIE.norm(r1.name)!==FIE.norm(win))w.push("vainqueur du tableau ≠ rang 1")}}
+  return w};
+/* pages PDF.js -> items {t,x,y} */
+FIE.fromPdfjs=async function(pdf){const pages=[];for(let n=1;n<=pdf.numPages;n++){const pg=await pdf.getPage(n),vp=pg.getViewport({scale:1}),tc=await pg.getTextContent();
+  pages.push(tc.items.filter(i=>String(i.str).trim()).map(i=>({t:i.str,x:Math.round(i.transform[4]),y:Math.round(vp.height-i.transform[5])})))}return pages};
+FIE.parse=function(pages){const kind=FIE.kind(pages);if(!kind)return null;const meta=FIE.meta(pages[0]);if(!meta)return null;
+  const data={results:FIE.parseResults,poolres:FIE.parsePoolRes,pools:FIE.parsePools,tableau:FIE.parseTableau}[kind](pages);return{kind,meta,data}};
+
+
+/* ===== Import des PDF FIE (dépôt de fichiers) ===== */
+let FIEL={},FMSG="",FBUSY=false;try{FIEL=JSON.parse(localStorage.getItem("ffe-fie")||"{}")}catch(e){}
+const saveFie=()=>{try{localStorage.setItem("ffe-fie",JSON.stringify(FIEL))}catch(e){FMSG="Stockage plein : "+e.message}};
+const FCITY={cairo:"le caire",tashkent:"tachkent",padua:"padoue",athens:"athenes",warsaw:"varsovie",livorno:"livourne",segovia:"segovie",panagyurishte:"sofia",seoul:"seoul",budapest:"budapest","new delhi":"new delhi","sao paulo":"sao paulo"};
+const fday=s=>Date.parse(s+"T12:00:00Z")/864e5;
+function fieMatch(m){
+  const np=FIE.norm(m.place),pc=FCITY[np]||np;let best=null,bs=1e9;
+  for(const c of D.comps){const nv=FIE.norm(c.v);if(!(nv===pc||nv.includes(pc)||pc.includes(nv)))continue;
+    const d=fday(m.date),a=fday(c.d),b=fday(c.f||c.d);const dist=d<a?a-d:d>b?d-b:0;if(dist>5)continue;
+    for(const e of c.eps){if(EQ(e)||e.s!==m.s||!e.c.split(", ").includes(m.cat))continue;
+      const sc=dist+(c.ty==="international"?0:.5);if(sc<bs){bs=sc;best=EK(c,e)}}}
+  return best}
+function fieDerive(R){
+  if(R.final.length||!R.tableau.length)return false;const f={};
+  R.tableau.forEach(t=>t.matches.forEach(m=>{const wa=/^V/.test(m.a.sc||"");const w=wa?m.a:m.b,l=wa?m.b:m.a;
+    if(m.r===0){f[w.id]=1;f[l.id]=2}else if(f[l.id]===undefined)f[l.id]=Math.pow(2,m.r)+1}));
+  const L=Object.keys(f).map(id=>({pl:f[id],id}));L.sort((a,b)=>a.pl-b.pl);R.final=L;return L.length>0}
+function applyFIE(){
+  if(!RES)RES={};
+  for(const k in RES)if(RES[k]&&RES[k].fie)delete RES[k];
+  const by={};
+  for(const g in FIEL){const x=FIEL[g];x.w=[];x.err="";x.cur=null;x.derived=false;
+    const P={};for(const k in x.parts)P[k]=x.parts[k].data;
+    if(!(P.pools||P.poolres||P.tableau||P.results))continue;
+    let R;try{R=FIE.build(P);try{x.w=FIE.check(P)}catch(e){}}catch(e){x.err=String(e&&e.message||e);continue}
+    R.gid="fie|"+g;R.sub="";x.derived=fieDerive(R);
+    const key=x.key==="-"?null:(x.key||fieMatch(x.meta));x.auto=!x.key&&!!key;x.cur=key;
+    if(!key)continue;(by[key]=by[key]||[]).push({R,x})}
+  for(const k in by){if(RES[k]&&RES[k].eg)continue;const L=by[k].sort((a,b)=>a.x.meta.date.localeCompare(b.x.meta.date));
+    RES[k]={src:"fie",gids:[],res:L.map(o=>o.R),labels:L.length>1?L.map(o=>fd(o.x.meta.date)):undefined,t:L[L.length-1].x.meta.date,done:L.some(o=>o.R.final.length>0),local:true,fie:true}}}
+async function fieLib(){
+  if(window.pdfjsLib)return window.pdfjsLib;
+  await new Promise((ok,ko)=>{const s=document.createElement("script");s.src="vendor/pdf.min.js";s.onload=ok;s.onerror=()=>ko(new Error("lecteur PDF indisponible (vendor/pdf.min.js)"));document.head.appendChild(s)});
+  pdfjsLib.GlobalWorkerOptions.workerSrc="vendor/pdf.worker.min.js";return pdfjsLib}
+async function fieIngest(files){
+  files=[...files];if(!files.length||FBUSY)return;FBUSY=true;const log=[];let ok=0;renderAdmin();
+  for(const f of files){
+    try{
+      if(!/\.pdf$/i.test(f.name)){log.push(f.name+" : pas un PDF");continue}
+      const lib=await fieLib();const pdf=await lib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;
+      const r=FIE.parse(await FIE.fromPdfjs(pdf));
+      if(!r){log.push(f.name+" : format non reconnu");continue}
+      const m=r.meta;
+      if(m.weapon!=="S"){log.push(f.name+" : ignoré (pas sabre)");continue}
+      if(m.ev==="T"){log.push(f.name+" : ignoré (épreuve par équipes)");continue}
+      if(!m.cat||!m.s){log.push(f.name+" : catégorie ou sexe illisible");continue}
+      const g=[m.place,m.date,m.cat,m.s].join("|");
+      const x=FIEL[g]||(FIEL[g]={meta:m,parts:{},key:null});x.meta=m;x.parts[r.kind]={data:r.data,name:f.name};ok++
+    }catch(e){log.push(f.name+" : "+(e&&e.message||e))}}
+  FBUSY=false;saveFie();applyEG();renderComps();
+  FMSG=ok+" PDF lu"+(ok>1?"s":"")+(log.length?" · "+log.join(" · "):"");renderAdmin()}
+const FPART=[["pools","Poules"],["poolres","Résultats poules"],["tableau","Tableau"],["results","Résultats"]];
+const FCAT={M17:"Cadets",M20:"Juniors",SENIOR:"Seniors"};
+function renderFie(){
+  $("#a-intro").innerHTML="Dépose ici les PDF téléchargés sur fie.org (Poules, Résultats des poules, Tableau, Résultats). Le format, la compétition, la catégorie et le sexe sont reconnus automatiquement à partir du tableau d'en-tête de chaque PDF ; tu peux tout déposer en une fois. Sabre individuel uniquement.";
+  const gs=Object.keys(FIEL).sort((a,b)=>FIEL[b].meta.date.localeCompare(FIEL[a].meta.date)||a.localeCompare(b));
+  const card=g=>{const x=FIEL[g],m=x.meta,k=x.cur,c=k&&D.comps.find(z=>z.k===k.split("|")[0]),e=c&&c.eps.find(z=>EK(c,z)===k);
+    const ci=c?D.comps.indexOf(c):-1,ei=c?c.eps.indexOf(e):-1;
+    const chips=FPART.map(([p,l])=>`<span class="chip" style="height:26px;padding:0 10px;font-size:12px;${x.parts[p]?"":"opacity:.45"}">${x.parts[p]?"✓ ":""}${l}</span>`).join("");
+    const st=x.key==="-"?`<div class="adone">Ignoré</div>`:c?`<div class="adone">${x.auto?"Rapproché automatiquement":"Rapproché"} : ${esc(c.v)} · ${esc(fd(c.d))} · ${esc(epLabel(e))}</div>`:`<div class="adone" style="color:var(--bad,#c0392b)">Aucune compétition trouvée dans l'app : choisis-la ci-dessous.</div>`;
+    const warn=(x.err?[x.err]:[]).concat(x.w||[]);
+    const ic=D.comps.filter(z=>z.ty==="international"||z.fie).sort((a,b)=>a.d.localeCompare(b.d));
+    const sel=`<details${c?"":" open"}><summary>${c?"Changer le rattachement":"Rattacher à une compétition"}</summary><div class="btns" style="flex-wrap:wrap;margin-top:8px"><select data-fiecomp="${esc(g)}" class="inp"><option value="">— compétition —</option>${ic.map(z=>`<option value="${esc(z.k)}">${esc(z.v)} · ${esc(fd(z.d))}</option>`).join("")}</select><select data-fieep="${esc(g)}" class="inp"><option value="">— d'abord la compétition —</option></select><button class="btn sm" data-fie="ok|${esc(g)}">Rattacher</button><button class="btn sm" data-fie="ign|${esc(g)}">Ignorer</button></div></details>`;
+    return `<div class="acard"><div><b>${esc(m.place)} · ${esc(FCAT[m.cat]||m.cat)} ${m.s==="Dames"?"Dames":"Hommes"}</b><div class="sub">${esc(m.comp||"")} · ${esc(m.date)}</div></div><div class="chips" style="margin:0">${chips}</div>${st}${x.derived?`<div class="sub">Classement final déduit du tableau (PDF « Résultats » absent).</div>`:""}${warn.length?`<div class="sub" style="color:var(--warn,#b8860b)">⚠ ${warn.map(esc).join("<br>⚠ ")}</div>`:""}<div class="btns">${e&&RES&&RES[k]?`<button class="btn sm primary" data-res="${ci}:${ei}::0">Voir les résultats</button>`:""}<button class="btn sm" data-fie="del|${esc(g)}">Supprimer</button></div>${sel}</div>`};
+  $("#a-list").innerHTML=`<div class="acard"><div id="fie-drop" style="border:2px dashed var(--line);border-radius:14px;padding:26px 12px;text-align:center;cursor:pointer"><b>${FBUSY?"Lecture en cours…":"Dépose tes PDF FIE ici"}</b><div class="sub">ou touche pour choisir les fichiers</div></div><input type="file" id="fie-file" accept="application/pdf,.pdf" multiple hidden>${FMSG?`<div class="sub" style="margin-top:8px">${esc(FMSG)}</div>`:""}</div>`+(gs.length?gs.map(card).join(""):`<div class="empty">Aucun PDF FIE importé pour l'instant.</div>`)}
+function fieAct(a){const [op,g]=[a.slice(0,a.indexOf("|")),a.slice(a.indexOf("|")+1)];const x=FIEL[g];if(!x)return;
+  if(op==="del"){delete FIEL[g]}
+  else if(op==="ign"){x.key="-"}
+  else if(op==="ok"){const s=document.querySelector('select[data-fieep="'+g.replace(/"/g,'\\"')+'"]');if(!s||!s.value)return;x.key=s.value}
+  saveFie();applyEG();renderComps();renderAdmin()}
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#fie-drop")){const f=document.getElementById("fie-file");if(f)f.click()}});
+document.addEventListener("dragover",e=>{if(e.target.closest&&e.target.closest("#fie-drop"))e.preventDefault()});
+document.addEventListener("drop",e=>{if(e.target.closest&&e.target.closest("#fie-drop")){e.preventDefault();fieIngest(e.dataTransfer.files)}});
+document.addEventListener("change",e=>{const s=e.target;if(!s)return;
+  if(s.id==="fie-file"){fieIngest(s.files);s.value="";return}
+  if(s.dataset&&s.dataset.fiecomp!==undefined){const ep=document.querySelector('select[data-fieep="'+s.dataset.fiecomp.replace(/"/g,'\\"')+'"]');const c=D.comps.find(z=>z.k===s.value);
+    ep.innerHTML=c?c.eps.filter(z=>!EQ(z)).map(z=>`<option value="${esc(EK(c,z))}">${esc(epLabel(z))}</option>`).join(""):`<option value="">— d'abord la compétition —</option>`}});
+
 function egBindZones(){
   document.querySelectorAll("textarea[data-egz]").forEach(ta=>{
     const h=()=>{if(ta.value.length>=200)egIngest(ta.dataset.egz,ta.value)};
@@ -1685,11 +1877,12 @@ function pendInfo(p,idx){
 function renderAdmin(){
   const ndc=D.comps.filter(tyDoubt).length;
   const ngr=grpClusters().length;let nd2=0;try{nd2=dupCands().length}catch(e){}
-  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"')+seg("Doublons"+(nd2?" ("+nd2+")":""),AT==="dup",'data-atab="dup"')+seg("Import GitHub",AT==="imp",'data-atab="imp"');
+  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"')+seg("Doublons"+(nd2?" ("+nd2+")":""),AT==="dup",'data-atab="dup"')+seg("Import GitHub",AT==="imp",'data-atab="imp"')+seg("Import FIE",AT==="fie",'data-atab="fie"');
   if(AT==="cls")return renderCls();
   if(AT==="grp")return renderGrp();
   if(AT==="dup")return renderDup();
   if(AT==="imp")return renderImp();
+  if(AT==="fie")return renderFie();
   const A=$("#a-list");
   if(!CAND){$("#a-intro").textContent="Chargement…";A.innerHTML="";return}
   const L=CAND.pend.map(pendInfo).filter(Boolean);
@@ -1826,7 +2019,7 @@ function statsAll(){
         const cp=((r.classement_poules||[]).find(x=>x.tour===1)||(r.classement_poules||[])[0]||{}).rows||[];
         const fin={};(r.final||[]).forEach(f=>{fin[f.id]=f.pl});const n=(r.final||[]).length;
         new Set([...Object.keys(A),...Object.keys(fin)]).forEach(id=>{
-          const p=pl[id];if(!p)return;const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+id;if(seen.has(sk))return;seen.add(sk);
+          const p=pl[id];if(!p)return;if(r.src==="fie"&&p[2]!=="FRA")return;const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+id;if(seen.has(sk))return;seen.add(sk);
           const nk=nkey(p[0],p[1]);const o=get(nk,p[1]+" "+p[0],p[2]);o.club=p[2]||o.club;o.ne++;
           const pc=pcat(p[3])||single;if(pc)o.cat[pc]=(o.cat[pc]||0)+1;if(e.s!=="Mixte")o.sx[e.s]=(o.sx[e.s]||0)+1;
           const a=A[id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,opp:{}};
@@ -2048,7 +2241,7 @@ function klassData(){
       R.res.forEach((r,ri)=>{
         if(!r.final||!r.final.length)return;
         r.final.forEach(f=>{
-          const p=r.players[f.id];if(!p)return;
+          const p=r.players[f.id];if(!p)return;if(r.src==="fie"&&p[2]!=="FRA")return;
           const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+f.id;if(seen.has(sk))return;seen.add(sk)
           let pc=pcat(p[3])||single;if(!pc||!KCATS.includes(pc))return;
           const gap=minr&&KRK[pc]?Math.max(0,minr-KRK[pc]):0;
@@ -2381,6 +2574,7 @@ function xclick(b){
   if(b.dataset.f==="admback"){setTab("a");return true}
   if(b.dataset.dup){dupAct(b.dataset.dup);return true}
   if(b.dataset.imp){impAct(b.dataset.imp);return true}
+  if(b.dataset.fie){fieAct(b.dataset.fie);return true}
   if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();if(AT==="imp"&&!window.__impAuto){window.__impAuto=1;impRun()}return true}
   if(b.dataset.acf){ACF=b.dataset.acf;renderAdmin();return true}
   if(b.dataset.aty!==undefined){const [id,t]=b.dataset.aty.split("|");const c=D.comps.find(x=>x.id===+id);if(!c)return true;if(t)TYO[c.k]=t;else delete TYO[c.k];saveTyo();applyTypes();renderAdmin();renderComps();return true}

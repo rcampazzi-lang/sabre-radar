@@ -18,4 +18,8 @@ assert '<title>Sabre Radar</title>' in s[:200] and 'const D=' in s, "page inatte
 open(os.path.join(here,'index.html'),'w',encoding='utf-8').write(HEAD+s)
 shutil.copy(res,os.path.join(here,'resultats.json'));shutil.copy(cand,os.path.join(here,'candidats.json'))
 if len(sys.argv)>4 and os.path.exists(sys.argv[4]): shutil.copy(sys.argv[4],os.path.join(here,"ffe_classements.json"))
+vs=os.path.join(os.path.dirname(os.path.abspath(page)),"vendor")
+if os.path.isdir(vs):
+    vd=os.path.join(here,"vendor");os.makedirs(vd,exist_ok=True)
+    for f in os.listdir(vs):shutil.copy(os.path.join(vs,f),os.path.join(vd,f))
 print("ok")
