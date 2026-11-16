@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794831784";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794832417";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -522,6 +522,7 @@ body.scr .screen>.lt .stamp{display:none}
   .tabbar button[aria-selected="true"]:hover .ti{background:var(--accent)}
   .card,.trow,button,[data-comp]{cursor:pointer}
 }
+.isel{width:100%;margin:8px 0;padding:9px;border:1px solid var(--line,#ccc);border-radius:10px;background:var(--card,#fff);color:inherit;font:inherit}
 </style>
 <div id="app">
 <section id="v-c" class="screen">
@@ -697,7 +698,7 @@ var E={applying:false,KEYS:KEYS,onset:function(k){T[k]=Date.now();saveT();if(ON)
  boot:function(){if(ON){if(S.code)sync(true);else if(KEYS.some(function(k){return get(k)!=null}))create()}}};
 ENG.push(E);return E}
 var PERS=mk(["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-dec","ffe-coef","ffe-k"],"ffe-sync-code","ffe-sync-t","ffe-sync-last");
-var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
+var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx","ffe-impmap"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
 if(_set)Storage.prototype.setItem=function(k,v){
   _set.call(this,k,v);
   try{if(this===localStorage)ENG.forEach(function(E){if(!E.applying&&E.KEYS.indexOf(k)>-1)E.onset(k)})}catch(e){}
@@ -924,7 +925,7 @@ function egSet(ci,gi,msg){
   let body=linkBlock(c,gi,EGST.tab);
   if(EGST.tab==="eg"&&list.length){
     const it=list[EGST.ep],multi=cs.length>1;
-    body+=`<div class="sec">Épreuves</div>${list.length>1?`<div class="chips">${list.map((x,i)=>chip((multi?fd(x.c.d).replace(/^\S+ /,"")+" · ":"")+epLabel(x.e)+(ENG[x.c.k+"|"+x.e.c+"|"+x.e.s]?" ✓":""),i===EGST.ep,`data-ege="${i}"`)).join("")}</div>`:`<div class="mini" style="margin-bottom:8px">${esc(epLabel(it.e))}</div>`}${egZonesHTML(it,msg)}`;
+    body+=`<div class="sec">Épreuves</div>${list.length>1?`<div class="chips">${list.map((x,i)=>chip((multi?fd(x.c.d).replace(/^\S+ /,"")+" · ":"")+epLabel(x.e)+(ENG[x.c.k+"|"+x.e.c+"|"+x.e.s]?" ✓":""),i===EGST.ep,`data-ege="${i}"`)).join("")}</div>`:`<div class="mini" style="margin-bottom:8px">${esc(epLabel(it.e))}</div>`}${egZonesHTML(it,msg)}<div class="sec">Import automatique</div><div class="btns"><button class="btn" data-imp="run">Importer depuis GitHub</button></div><div class="mini" id="imp-msg">${esc(IMSG||"Pages envoyées par l'extension Chrome, rapprochées automatiquement.")}</div>`;
   }else if(EGST.tab!=="eg")body+=`<div class="mini" style="margin-top:14px">L'import des pages de ce site arrive plus tard.</div>`;
   sheet(`Réglages<div class="sub">${esc(c.v)}</div>`,`${tabs}${body}`);
   BACK=()=>reopen(ci);
@@ -1238,6 +1239,110 @@ function egIngest(id,v){
     saveENG();applyEG();renderComps();
     EGST.last={[id]:{t:kind==="tab"?"Tableau de "+p.N+" enregistré ("+p.data.matches.length+" matchs). Tu peux en ajouter un autre.":"Enregistré"}};egSet(EGCUR.ci,EGCUR.gi,EGST.last)}
   catch(er){EGST.last={[id]:{t:"Échec : "+(er&&er.message||er),err:true}};egSet(EGCUR.ci,EGCUR.gi,EGST.last)}}
+/* ===== Import GitHub (extension Chrome « Envoi En Garde ») ===== */
+const GH={o:"rcampazzi-lang",r:"sabre-radar",b:"main",f:"imports"};
+let IMAP={},IDONE={},IGRP={},IMSG="",IBUSY=false;
+try{IMAP=JSON.parse(localStorage.getItem("ffe-impmap")||"{}")}catch(e){}
+try{IDONE=JSON.parse(localStorage.getItem("ffe-impdone")||"{}")}catch(e){}
+try{IGRP=JSON.parse(localStorage.getItem("ffe-impgrp")||"{}")}catch(e){}
+const saveImpMap=()=>{try{localStorage.setItem("ffe-impmap",JSON.stringify(IMAP))}catch(e){}};
+const saveImp=()=>{try{localStorage.setItem("ffe-impdone",JSON.stringify(IDONE));localStorage.setItem("ffe-impgrp",JSON.stringify(IGRP))}catch(e){}};
+function impMeta(html){
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  const h=doc.querySelector("h1"),sm=h&&h.querySelector("small"),sub=egTx(sm);
+  const name=h?egTx(h).replace(sub,"").trim():"";
+  const t=egN(sub+" "+doc.title);
+  const wp=/sabre/.test(t)?"sabre":/epee/.test(t)?"epee":/fleuret/.test(t)?"fleuret":"";
+  const sex=/\b(dames?|femmes?)\b/.test(t)?"Dames":/\b(hommes?|messieurs)\b/.test(t)?"Hommes":/mixte/.test(t)?"Mixte":"";
+  let cat="";const mm=/\bm\s?(\d{1,2})\b/.exec(t);
+  if(mm)cat="M"+mm[1];else if(/senior/.test(t))cat="SENIOR";else if(/\bvet|veteran|\bv[1-4]\b/.test(t))cat="VET";
+  return {name,org:egTx(doc.querySelector(".org-title")),tour:egTx(doc.querySelector(".tounament-title")),wp,sex,cat,lab:sub||doc.title}}
+function impEpOf(c,m){return c.eps.findIndex(e=>e.s===m.sex&&String(e.c).split(/,\s*/).includes(m.cat))}
+function impCands(gid,m){
+  const hay=egN((m.org||"")+" "+(m.tour||"")+" "+gid.replace(/[_\-/]/g," "));
+  const nm=egN(m.name).replace(/^epreuve /,"");
+  const now=Date.now(),day=864e5,out=[];
+  D.comps.forEach((c,ci)=>{
+    if(IGN[c.k])return;const ei=impEpOf(c,m);if(ei<0)return;
+    const dt=new Date(c.d+"T12:00:00").getTime(),age=(now-dt)/day;
+    const win=age>=-2&&age<=150;
+    const v=egN(c.v),vm=!!v&&hay.includes(v),nmm=!!nm&&egN(c.n).replace(/^epreuve /,"")===nm;
+    out.push({ci,ei,vm,nmm,win,age,s:(vm?4:0)+(nmm?3:0)+(win?1:0)})});
+  out.sort((a,b)=>b.s-a.s||a.age-b.age);return out}
+function impAuto(gid,m){
+  if(!m.cat||!m.sex)return {key:null,C:[]};
+  const C=impCands(gid,m);let P=C.filter(x=>x.win&&x.vm);
+  if(!P.length)P=C.filter(x=>x.win&&x.nmm);
+  if(P.length>1){const n=P.filter(x=>x.nmm);if(n.length)P=n}
+  if(P.length>1){P.sort((a,b)=>a.age-b.age);if(P[1].age-P[0].age<14)P=[]; else P=[P[0]]}
+  const x=P.length===1?P[0]:null;
+  return {key:x?D.comps[x.ci].k+"|"+D.comps[x.ci].eps[x.ei].c+"|"+D.comps[x.ci].eps[x.ei].s:null,C}}
+function egStore(key,p){
+  const zz=(ENG[key]=ENG[key]||{z:{}}).z;
+  if(p.kind==="tab"){zz.tab=zz.tab||{};zz.tab[p.N]=p.data}else zz[p.kind]=p.data;
+  ENG[key].t=iso(new Date())+"T"+new Date().toTimeString().slice(0,5)}
+async function impPool(L,n,fn){const q=L.slice();await Promise.all(Array.from({length:n},async()=>{while(q.length){const x=q.shift();await fn(x)}}))}
+async function impRun(){
+  if(IBUSY)return;IBUSY=true;IMSG="Lecture de GitHub…";impRefresh();
+  let nP=0,nE=new Set(),nSkip=0,nErr=0;
+  try{
+    const api="https://api.github.com/repos/"+GH.o+"/"+GH.r;
+    const cr=await fetch(api+"/commits/"+GH.b,{headers:{Accept:"application/vnd.github.sha"}});
+    if(!cr.ok)throw new Error("GitHub "+cr.status);const cm=(await cr.text()).trim();
+    const tr=await (await fetch(api+"/git/trees/"+cm+"?recursive=1")).json();
+    const files=(tr.tree||[]).filter(x=>x.type==="blob"&&x.path.indexOf(GH.f+"/")===0&&/\.html?$/.test(x.path));
+    const groups={};
+    files.forEach(x=>{const p=x.path.split("/");if(p.length!==5)return;const gid=p[1]+"/"+p[2]+"/"+p[3];(groups[gid]=groups[gid]||[]).push({path:x.path,name:p[4],sha:x.sha})});
+    const raw=f=>fetch("https://raw.githubusercontent.com/"+GH.o+"/"+GH.r+"/"+cm+"/"+f.path.split("/").map(encodeURIComponent).join("/")).then(r=>{if(!r.ok)throw new Error("GitHub "+r.status);return r.text()});
+    for(const gid of Object.keys(groups)){
+      const fl=groups[gid],todo=fl.filter(f=>IDONE[f.path]!==f.sha);
+      const G=IGRP[gid]=IGRP[gid]||{files:0};G.files=fl.length;G.t=G.t||0;
+      if(!todo.length&&G.key!==undefined)continue;
+      IMSG="Analyse de "+gid+"…";impRefresh();
+      let html0=null;
+      if(!G.m){html0={};const f0=todo[0]||fl[0];html0[f0.path]=await raw(f0);G.m=impMeta(html0[f0.path])}
+      if(G.m.wp&&G.m.wp!=="sabre"){G.key="-";todo.forEach(f=>IDONE[f.path]=f.sha);continue}
+      const man=IMAP[gid];
+      if(man)G.key=man;else{const a=impAuto(gid,G.m);G.key=a.key;G.auto=!!a.key}
+      if(!G.key||G.key==="-")continue;
+      const [ck,ec,es]=G.key.split("|");const comp=D.comps.find(c=>c.k===ck);
+      if(!comp||!comp.eps.some(e=>e.c===ec&&e.s===es)){G.key=null;continue}
+      await impPool(todo,4,async f=>{
+        try{
+          if(/^(cla?s)?poules?([2-9])/.test(f.name)){IDONE[f.path]=f.sha;nSkip++;return}
+          const h=(html0&&html0[f.path])||await raw(f);
+          let p;try{p=egParse(h)}catch(e){IDONE[f.path]=f.sha;nSkip++;return}
+          egStore(G.key,p);IDONE[f.path]=f.sha;nP++;nE.add(G.key);G.t=Date.now()
+        }catch(e){nErr++}})
+    }
+    saveImp();if(nP){saveENG();applyEG();renderComps()}
+    const pend=Object.values(IGRP).filter(g=>g.m&&!g.key).length;
+    IMSG=(nP?"✓ "+nP+" page"+(nP>1?"s":"")+" importée"+(nP>1?"s":"")+" ("+nE.size+" épreuve"+(nE.size>1?"s":"")+"). ":"Rien de nouveau. ")+(pend?pend+" épreuve"+(pend>1?"s":"")+" à rapprocher à la main (Admin → Import GitHub). ":"")+(nErr?nErr+" page"+(nErr>1?"s":"")+" en erreur (réessaie). ":"")
+  }catch(e){IMSG="Échec : "+(e&&e.message||e)+". (Ce bouton ne marche pas depuis la page Claude : ouvre le site GitHub Pages.)";try{saveImp()}catch(_){}}
+  IBUSY=false;impRefresh()}
+function impRefresh(){try{if(S.tab==="m"&&AT==="imp")renderAdmin();if(EGCUR&&document.getElementById("imp-msg"))document.getElementById("imp-msg").textContent=IMSG}catch(e){}}
+function impOptLab(c,ei){return c.v+" · "+fd(c.d)+" · "+c.n.replace(/^\[[^\]]*\]\s*/,"")+" · "+epLabel(c.eps[ei])}
+function renderImp(){
+  const L=Object.entries(IGRP).filter(([g,x])=>x.m&&x.key!=="-"||IMAP[g]==="-").map(([g,x])=>({g,x}));
+  const pend=L.filter(o=>!o.x.key);
+  $("#a-intro").innerHTML="Les pages En Garde envoyées par l'extension Chrome sont lues sur GitHub, puis rapprochées automatiquement de la compétition et de l'épreuve (ville, nom de l'épreuve, catégorie, sexe). Si un doute subsiste, tu choisis ici l'épreuve : c'est mémorisé pour tous les appareils.";
+  const sel=(o,i)=>{const C=impCands(o.g,o.x.m).filter(x=>x.win||x.vm).slice(0,25);const cur=o.x.key;
+    const opts=C.map(x=>{const c=D.comps[x.ci],k=c.k+"|"+c.eps[x.ei].c+"|"+c.eps[x.ei].s;return `<option value="${esc(k)}"${k===cur?" selected":""}>${esc(impOptLab(c,x.ei))}</option>`}).join("");
+    return `<select data-impsel="${i}" class="isel"><option value="">— choisir l'épreuve —</option>${opts}<option value="-">Ignorer ce groupe</option></select><div class="btns"><button class="btn primary" data-imp="ok|${i}">Valider</button></div>`};
+  const card=(o,i)=>{const m=o.x.m,k=o.x.key,c=k&&D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);
+    if(k==="-")return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.lab)} · ignoré</div></div><details><summary>Changer</summary>${sel(o,i)}</details></div>`;
+    return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.org)} · ${esc(m.lab)}${m.name?" · "+esc(m.name):""}</div><div class="sub">${o.x.files} page${o.x.files>1?"s":""} sur GitHub</div></div>${k?`<div class="adone">${o.x.auto&&!IMAP[o.g]?"Rapproché automatiquement":"Rapproché"} : ${esc(c.v)} · ${esc(fd(c.d))} · ${esc(e?epLabel(e):"")}</div>`:`<div class="adone" style="color:var(--bad)">Aucune compétition trouvée avec certitude</div>`}<details${k?"":" open"}><summary>${k?"Changer":"Choisir"}</summary>${sel(o,i)}</details></div>`};
+  const all=pend.concat(L.filter(o=>o.x.key));
+  $("#a-list").innerHTML=`<div class="acard"><div class="btns"><button class="btn primary" data-imp="run"${IBUSY?" disabled":""}>${IBUSY?"Import en cours…":"Importer depuis GitHub"}</button></div>${IMSG?`<div class="sub" id="imp-msg" style="margin-top:8px">${esc(IMSG)}</div>`:""}</div>`+(all.length?all.map((o,i)=>card(o,L.indexOf(o))).join(""):`<div class="empty">Aucune page reçue pour l'instant. Utilise l'extension Chrome sur une page En Garde, puis reviens ici.</div>`);
+  renderImp.L=L}
+function impAct(a){
+  const [act,i]=a.split("|");
+  if(act==="run"){impRun();return}
+  if(act==="ok"){const o=renderImp.L[+i];if(!o)return;const s=document.querySelector('select[data-impsel="'+i+'"]');if(!s||!s.value)return;
+    IMAP[o.g]=s.value;saveImpMap();o.x.key=s.value==="-"?"-":null;o.x.auto=false;
+    /* force la relecture des pages de ce groupe */
+    Object.keys(IDONE).forEach(p=>{if(p.indexOf(GH.f+"/"+o.g+"/")===0)delete IDONE[p]});saveImp();impRun()}}
+
 function egBindZones(){
   document.querySelectorAll("textarea[data-egz]").forEach(ta=>{
     const h=()=>{if(ta.value.length>=200)egIngest(ta.dataset.egz,ta.value)};
@@ -1454,10 +1559,11 @@ function pendInfo(p,idx){
 function renderAdmin(){
   const ndc=D.comps.filter(tyDoubt).length;
   const ngr=grpClusters().length;let nd2=0;try{nd2=dupCands().length}catch(e){}
-  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"')+seg("Doublons"+(nd2?" ("+nd2+")":""),AT==="dup",'data-atab="dup"');
+  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"')+seg("Doublons"+(nd2?" ("+nd2+")":""),AT==="dup",'data-atab="dup"')+seg("Import GitHub",AT==="imp",'data-atab="imp"');
   if(AT==="cls")return renderCls();
   if(AT==="grp")return renderGrp();
   if(AT==="dup")return renderDup();
+  if(AT==="imp")return renderImp();
   const A=$("#a-list");
   if(!CAND){$("#a-intro").textContent="Chargement…";A.innerHTML="";return}
   const L=CAND.pend.map(pendInfo).filter(Boolean);
@@ -2148,6 +2254,7 @@ function xclick(b){
   if(b.dataset.f==="adm"){setTab("m");return true}
   if(b.dataset.f==="admback"){setTab("a");return true}
   if(b.dataset.dup){dupAct(b.dataset.dup);return true}
+  if(b.dataset.imp){impAct(b.dataset.imp);return true}
   if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();return true}
   if(b.dataset.acf){ACF=b.dataset.acf;renderAdmin();return true}
   if(b.dataset.aty!==undefined){const [id,t]=b.dataset.aty.split("|");const c=D.comps.find(x=>x.id===+id);if(!c)return true;if(t)TYO[c.k]=t;else delete TYO[c.k];saveTyo();applyTypes();renderAdmin();renderComps();return true}
