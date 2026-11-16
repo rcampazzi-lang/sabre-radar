@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Classements officiels FFE</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sabre Radar">
+<meta name="theme-color" content="#2b4c8c">
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1c1e21;--mut:#6b7280;--line:#e3e5e9;--acc:#2b4c8c;--accsoft:#e6ecf8;--up:#1a7f45;--down:#c0392b}
+@media (prefers-color-scheme:dark){:root{--bg:#14171b;--card:#1d2127;--ink:#eceff3;--mut:#9aa3af;--line:#2c323a;--acc:#7da2e8;--accsoft:#222c3f;--up:#4cc27e;--down:#ef7b6e}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px -apple-system,system-ui,sans-serif}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{padding:12px 14px 4px}
+h1{font-size:19px;margin:0 0 2px}
+.sub{color:var(--mut);font-size:12.5px;line-height:1.35}
+.sub a{color:var(--acc)}
+.badge{display:inline-block;background:var(--accsoft);color:var(--acc);border-radius:6px;padding:2px 7px;font-size:11.5px;font-weight:600;margin-right:6px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:10px 12px;padding:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1 1 30%;min-width:96px}
+label{display:block;font-size:11.5px;color:var(--mut);margin:0 0 3px}
+select,input[type=search]{width:100%;padding:9px 8px;font-size:16px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.chk{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mut);margin-top:8px}
+.meta{font-size:12.5px;color:var(--mut);margin:8px 2px 4px}
+table{width:100%;border-collapse:collapse}
+th{font-size:11.5px;color:var(--mut);font-weight:600;text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card)}
+td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+td.r{width:34px;font-weight:700;text-align:right;padding-right:6px}
+td.d{width:34px;font-size:12px;text-align:center}
+td.p{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+.n b{font-weight:600}.n small{display:block;color:var(--mut);font-size:12px}
+.up{color:var(--up)}.down{color:var(--down)}.new{color:var(--acc)}
+tr.t{cursor:pointer}
+tr.det td{background:var(--accsoft);font-size:13px;padding:8px 10px}
+.det ul{margin:4px 0 0;padding:0;list-style:none}
+.det li{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.empty{color:var(--mut);text-align:center;padding:20px 8px;font-size:14px}
+button{padding:9px 12px;border:0;border-radius:8px;background:var(--acc);color:#fff;font-size:15px;font-weight:600}
+.gl{display:flex;gap:6px;margin-top:6px}.gl input{flex:1}
+.res{font-size:13.5px;margin-top:8px}
+.res div{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--line)}
+.res span:last-child{white-space:nowrap;font-weight:600}
+.scroll{overflow-x:auto}
+</style>
+</head>
+<body>
+<header>
+  <h1>Classements officiels FFE</h1>
+  <div class="sub"><span class="badge">Officiel FFE</span>Sabre · individuel · <span id="saison">saison</span>. Données de ffescrime.fr, <b>distinctes</b> des classements calculés de Sabre Radar. <a href="./">← Sabre Radar</a></div>
+  <div class="sub" id="built"></div>
+</header>
+
+<div class="panel">
+  <div class="row">
+    <div><label for="fniv">Niveau</label><select id="fniv"></select></div>
+    <div><label for="fcat">Catégorie</label><select id="fcat"></select></div>
+    <div><label for="fgen">Genre</label><select id="fgen"></select></div>
+  </div>
+  <label class="chk"><input type="checkbox" id="fvide" checked> Masquer les classements vides</label>
+  <div style="margin-top:8px"><label for="fcla">Classement</label><select id="fcla"></select></div>
+</div>
+
+<div class="panel">
+  <label for="q">Rechercher dans ce classement (nom, prénom, club)</label>
+  <input type="search" id="q" placeholder="ex. MONTALS ou Orléanais" autocomplete="off">
+  <div class="meta" id="meta"></div>
+  <div class="scroll"><table id="tab"></table></div>
+</div>
+
+<div class="panel">
+  <label for="gq">Trouver un tireur dans tous les classements</label>
+  <div class="gl"><input type="search" id="gq" placeholder="Nom (et prénom)" autocomplete="off"><button id="gb">Chercher</button></div>
+  <div class="res" id="gres"></div>
+</div>
+
+<script>
+var CATS=['M9','M11','M13','M15','M17','M20','SENIOR','V1','V2','V3','V4'];
+var NIV=['International','National','Régional'];
+var $=function(i){return document.getElementById(i)};
+var IX=null, CUR=null, CACHE={}, ALL=null;
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function lab(c){return c==='SENIOR'?'Senior':c}
+function fd(iso){if(!iso)return '';var d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}
+function fp(v){return v==null?'':Number(v).toLocaleString('fr-FR',{maximumFractionDigits:2})}
+function norm(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
+function gj(u){return fetch(u+'?v='+(IX?IX.built:Date.now())).then(function(r){if(!r.ok)throw new Error(u+' '+r.status);return r.json()})}
+function opts(sel,list,cur){sel.innerHTML=list.map(function(o){return '<option value="'+esc(o[0])+'"'+(o[0]===cur?' selected':'')+'>'+esc(o[1])+'</option>'}).join('')}
+function save(){try{localStorage.setItem('ffeF',JSON.stringify({n:$('fniv').value,c:$('fcat').value,g:$('fgen').value,v:$('fvide').checked,k:$('fcla').value}))}catch(e){}}
+function load(){try{return JSON.parse(localStorage.getItem('ffeF')||'{}')}catch(e){return{}}}
+
+function matches(){
+  var n=$('fniv').value,c=$('fcat').value,g=$('fgen').value,v=$('fvide').checked;
+  return IX.classements.filter(function(x){
+    return (!n||x.niveau===n)&&(!c||x.cats.indexOf(c)>-1)&&(!g||(g==='?'?x.genre==='':x.genre===g))&&(!v||x.n>0)
+  }).sort(function(a,b){return NIV.indexOf(a.niveau)-NIV.indexOf(b.niveau)||a.nom.localeCompare(b.nom,'fr')});
+}
+function fillClassements(keep){
+  var m=matches();
+  opts($('fcla'),m.length?m.map(function(x){return[x.id,x.nom+' — '+x.n+' tireur'+(x.n>1?'s':'')]}):[['','(aucun classement)']],keep);
+  save();showCla();
+}
+function showCla(){
+  var id=$('fcla').value;
+  if(!id){CUR=null;$('meta').textContent='Aucun classement pour ces filtres.';$('tab').innerHTML='';return}
+  $('meta').textContent='Chargement…';
+  var p=CACHE[id]?Promise.resolve(CACHE[id]):gj('ffe/'+id+'.json').then(function(d){return CACHE[id]=d});
+  p.then(function(d){CUR=d;render()}).catch(function(e){$('meta').textContent='Erreur : '+e.message});
+}
+function prevMap(d){
+  var h=d.hist||[];if(h.length<2)return null;return h[h.length-2];
+}
+function key(r){return (r[1]+'|'+r[2]+'|'+r[6]).toUpperCase()}
+function render(){
+  var d=CUR;if(!d)return;
+  var q=norm($('q').value.trim()),pm=prevMap(d),rows=d.rows;
+  if(q)rows=rows.filter(function(r){return norm(r[1]+' '+r[2]+' '+r[7]).indexOf(q)>-1});
+  $('meta').innerHTML='<b>'+esc(d.nom)+'</b><br>'+esc(d.niveau)+' · '+d.rows.length+' tireurs · mise à jour FFE : '+esc(fd(d.maj))+(pm?' · évolution vs relevé du '+esc(fd(pm.maj)):' · évolution dès le prochain relevé')+(q?' · '+rows.length+' résultat'+(rows.length>1?'s':''):'');
+  if(!rows.length){$('tab').innerHTML='<tr><td class="empty">Aucun tireur.</td></tr>';return}
+  var h='<tr><th>#</th><th>±</th><th>Tireur</th><th style="text-align:right">Points</th></tr>';
+  rows.slice(0,400).forEach(function(r,i){
+    var dl='';
+    if(pm){var o=pm.d[key(r)];if(!o)dl='<span class="new">new</span>';else{var x=o[0]-r[0];dl=x>0?'<span class="up">▲'+x+'</span>':x<0?'<span class="down">▼'+(-x)+'</span>':'–'}}
+    h+='<tr class="t" data-i="'+d.rows.indexOf(r)+'"><td class="r">'+esc(r[0])+'</td><td class="d">'+dl+'</td><td class="n"><b>'+esc(r[1])+'</b> '+esc(r[2])+'<small>'+esc(r[7])+(r[5]?' · '+esc(r[5].replace(/^[A-Z]+ - /,'')):'')+'</small></td><td class="p">'+fp(r[8])+'</td></tr>';
+  });
+  if(rows.length>400)h+='<tr><td colspan="4" class="empty">400 premières lignes affichées sur '+rows.length+' — utilise la recherche.</td></tr>';
+  $('tab').innerHTML=h;
+}
+$('tab').addEventListener('click',function(e){
+  var tr=e.target.closest('tr.t');if(!tr||!CUR)return;
+  var nx=tr.nextElementSibling;
+  if(nx&&nx.classList.contains('det')){nx.remove();return}
+  var r=CUR.rows[+tr.getAttribute('data-i')];
+  var ep=r[9].map(function(p){return[CUR.epreuves[p[0]],p[1]]}).sort(function(a,b){return b[1]-a[1]});
+  var li=ep.length?ep.map(function(p){return '<li><span>'+esc(p[0])+'</span><b>'+fp(p[1])+'</b></li>'}).join(''):'<li>Aucun résultat détaillé.</li>';
+  var t=document.createElement('tr');t.className='det';
+  t.innerHTML='<td colspan="4"><div>'+esc(r[3])+' · '+esc(r[4])+' · licence club '+esc(r[6])+'</div><ul>'+li+'</ul></td>';
+  tr.parentNode.insertBefore(t,tr.nextSibling);
+});
+
+function loadAll(){
+  if(ALL)return Promise.resolve(ALL);
+  var ids=IX.classements.filter(function(x){return x.n>0}).map(function(x){return x.id}),i=0,out={};
+  $('gres').textContent='Chargement des classements…';
+  function next(){
+    if(i>=ids.length)return;var id=ids[i++];
+    return (CACHE[id]?Promise.resolve(CACHE[id]):gj('ffe/'+id+'.json')).then(function(d){CACHE[id]=d;out[id]=d;$('gres').textContent='Chargement… '+Object.keys(out).length+'/'+ids.length}).then(next);
+  }
+  var w=[next(),next(),next(),next()];
+  return Promise.all(w).then(function(){ALL=out;return out});
+}
+function gsearch(){
+  var q=norm($('gq').value.trim());if(q.length<2){$('gres').textContent='Tape au moins 2 lettres.';return}
+  loadAll().then(function(all){
+    var res=[];
+    IX.classements.forEach(function(x){var d=all[x.id];if(!d)return;
+      d.rows.forEach(function(r){if(norm(r[1]+' '+r[2]).indexOf(q)>-1)res.push([x,d,r])})});
+    if(!res.length){$('gres').textContent='Aucun tireur trouvé.';return}
+    res.sort(function(a,b){return NIV.indexOf(a[0].niveau)-NIV.indexOf(b[0].niveau)||a[2][0]-b[2][0]});
+    $('gres').innerHTML=res.slice(0,80).map(function(t){var r=t[2];
+      return '<div><span><b>'+esc(r[1])+' '+esc(r[2])+'</b> · '+esc(t[0].niveau)+'<br><small>'+esc(t[0].nom)+'</small></span><span>#'+esc(r[0])+' · '+fp(r[8])+'</span></div>'}).join('')+(res.length>80?'<div>… '+(res.length-80)+' autres</div>':'');
+  }).catch(function(e){$('gres').textContent='Erreur : '+e.message});
+}
+$('gb').onclick=gsearch;$('gq').addEventListener('keydown',function(e){if(e.key==='Enter')gsearch()});
+
+function init(){
+  gj('ffe/index.json').then(function(ix){
+    IX=ix;var s=load();
+    $('saison').textContent='saison 2026/2027';
+    $('built').textContent='Relevé des fiches FFE : '+fd(ix.built)+' · '+ix.classements.length+' classements';
+    opts($('fniv'),[['','Tous niveaux']].concat(NIV.map(function(n){return[n,n]})),s.n||'National');
+    opts($('fcat'),[['','Toutes catégories']].concat(CATS.map(function(c){return[c,lab(c)]})),s.c||'');
+    opts($('fgen'),[['','Tous genres'],['Hommes','Hommes'],['Dames','Dames'],['?','Mixte / non précisé']],s.g||'');
+    if(s.v===false)$('fvide').checked=false;
+    ['fniv','fcat','fgen','fvide'].forEach(function(i){$(i).addEventListener('change',function(){fillClassements('')})});
+    $('fcla').addEventListener('change',function(){save();showCla()});
+    $('q').addEventListener('input',render);
+    fillClassements(s.k||'');
+  }).catch(function(e){$('meta').textContent='Erreur de chargement : '+e.message});
+}
+init();
+</script>
+</body>
+</html>
