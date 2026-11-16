@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794833831";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794834033";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1374,13 +1374,13 @@ function impEpOpts(c,m,cur){
 function impSel(o,i){
   const m=o.x.m,hay=impHay(o.g,m),cur=o.x.key&&o.x.key!=="-"?o.x.key:"";
   const curC=cur?D.comps.find(c=>c.k===cur.split("|")[0]):null;
-  const dOk=c=>m.date&&m.date>=impAdd(c.d,-1)&&m.date<=impAdd(c.f||c.d,2);
-  const L=D.comps.filter(c=>!IGN[c.k]&&(inSeason(c)||c===curC)).map(c=>({c,vm:!!(egN(c.v)&&hay.includes(egN(c.v))||dOk(c)),ok:impEpOf(c,m)>=0}));
-  L.sort((a,b)=>(b.vm-a.vm)||(b.ok-a.ok)||b.c.d.localeCompare(a.c.d));
-  const sug=L.filter(x=>x.vm),rest=L.filter(x=>!x.vm);
-  const op=x=>`<option value="${esc(x.c.k)}"${curC===x.c?" selected":""}>${esc(impCompLab(x.c))}</option>`;
-  const first=curC||(sug[0]&&sug[0].c)||null;
-  return `<div class="ilab">① Compétition</div><select class="isel" data-impcomp="${i}"><option value="">— choisir la compétition —</option>${sug.length?`<optgroup label="${m.date?"Même date ou même ville":"Même ville"}">${sug.map(op).join("")}</optgroup>`:""}<optgroup label="Toute la saison">${rest.map(op).join("")}</optgroup></select>
+  const dOk=c=>!!(m.date&&m.date>=impAdd(c.d,-1)&&m.date<=impAdd(c.f||c.d,2));
+  const L=D.comps.filter(c=>!IGN[c.k]&&(inSeason(c)||c===curC)).map(c=>({c,vm:!!(egN(c.v)&&hay.includes(egN(c.v))),dm:dOk(c),ok:impEpOf(c,m)>=0}));
+  L.sort((a,b)=>(b.ok-a.ok)||b.c.d.localeCompare(a.c.d));
+  const G1=L.filter(x=>x.dm&&x.vm),G2=L.filter(x=>x.dm&&!x.vm),G3=L.filter(x=>x.vm&&!x.dm),G4=L.filter(x=>!x.dm&&!x.vm);
+  const op=x=>`<option value="${esc(x.c.k)}"${curC===x.c?" selected":""}>${esc(impCompLab(x.c))}${x.ok?"":" (autre catégorie)"}</option>`;
+  const grp=(t,A)=>A.length?`<optgroup label="${t}">${A.map(op).join("")}</optgroup>`:"";
+  return `<div class="ilab">① Compétition</div><select class="isel" data-impcomp="${i}"><option value="">— choisir la compétition —</option>${grp("★ Même date ET même ville",G1)}${grp("Même date",G2)}${grp("Même ville",G3)}${grp("Toute la saison",G4)}</select>
   <div class="ilab">② Épreuve</div><select class="isel" data-impep="${i}"><option value="">— d'abord la compétition —</option>${curC?impEpOpts(curC,m,cur):""}</select>
   <div class="btns"><button class="btn primary" data-imp="ok|${i}">Rattacher</button><button class="btn" data-imp="ign|${i}">Ignorer ce groupe</button></div>`}
 function impFiles(o){const pre=GH.f+"/"+o.g+"/";return [...new Set((o.x.files||[]).concat(Object.keys(IFILE).filter(p=>p.indexOf(pre)===0)))].filter(p=>IFILE[p]||(o.x.files||[]).indexOf(p)>=0)}
