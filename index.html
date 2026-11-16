@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794832417";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794833441";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -522,6 +522,7 @@ body.scr .screen>.lt .stamp{display:none}
   .tabbar button[aria-selected="true"]:hover .ti{background:var(--accent)}
   .card,.trow,button,[data-comp]{cursor:pointer}
 }
+.ilab{font-size:12px;font-weight:700;color:var(--sub,#777);margin-top:10px}.ipgs{margin:10px 0}.ipg{display:grid;grid-template-columns:20px 1fr auto auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line,#e5e5e5)}.ipg small{display:block;color:var(--sub,#777);font-size:11px}.ipg.del b{text-decoration:line-through;opacity:.5}.idot{font-weight:800;color:var(--accent,#d9531e)}
 .isel{width:100%;margin:8px 0;padding:9px;border:1px solid var(--line,#ccc);border-radius:10px;background:var(--card,#fff);color:inherit;font:inherit}
 </style>
 <div id="app">
@@ -1241,26 +1242,29 @@ function egIngest(id,v){
   catch(er){EGST.last={[id]:{t:"Échec : "+(er&&er.message||er),err:true}};egSet(EGCUR.ci,EGCUR.gi,EGST.last)}}
 /* ===== Import GitHub (extension Chrome « Envoi En Garde ») ===== */
 const GH={o:"rcampazzi-lang",r:"sabre-radar",b:"main",f:"imports"};
-let IMAP={},IDONE={},IGRP={},IMSG="",IBUSY=false;
+let IMAP={},IDONE={},IGRP={},IFILE={},IMSG="",IBUSY=false,ICM="",IOPEN={};
 try{IMAP=JSON.parse(localStorage.getItem("ffe-impmap")||"{}")}catch(e){}
 try{IDONE=JSON.parse(localStorage.getItem("ffe-impdone")||"{}")}catch(e){}
 try{IGRP=JSON.parse(localStorage.getItem("ffe-impgrp")||"{}")}catch(e){}
+try{IFILE=JSON.parse(localStorage.getItem("ffe-impfile")||"{}")}catch(e){}
+Object.values(IGRP).forEach(g=>{if(!Array.isArray(g.files))g.files=[]});
 const saveImpMap=()=>{try{localStorage.setItem("ffe-impmap",JSON.stringify(IMAP))}catch(e){}};
-const saveImp=()=>{try{localStorage.setItem("ffe-impdone",JSON.stringify(IDONE));localStorage.setItem("ffe-impgrp",JSON.stringify(IGRP))}catch(e){}};
+const saveImp=()=>{try{localStorage.setItem("ffe-impdone",JSON.stringify(IDONE));localStorage.setItem("ffe-impgrp",JSON.stringify(IGRP));localStorage.setItem("ffe-impfile",JSON.stringify(IFILE))}catch(e){}};
+const IKL={ins:"Inscrits",pou:"Poules",cls:"Résultats des poules",tab:"Tableau",fin:"Classement final"};
 function impMeta(html){
   const doc=new DOMParser().parseFromString(html,"text/html");
   const h=doc.querySelector("h1"),sm=h&&h.querySelector("small"),sub=egTx(sm);
   const name=h?egTx(h).replace(sub,"").trim():"";
   const t=egN(sub+" "+doc.title);
-  const wp=/sabre/.test(t)?"sabre":/epee/.test(t)?"epee":/fleuret/.test(t)?"fleuret":"";
-  const sex=/\b(dames?|femmes?)\b/.test(t)?"Dames":/\b(hommes?|messieurs)\b/.test(t)?"Hommes":/mixte/.test(t)?"Mixte":"";
+  const wp=/sabre/.test(t)?"sabre":/epee/.test(t)?"epee":/fleuret|foil/.test(t)?"fleuret":"";
+  const sex=/\b(dames?|femmes?|women|woman|ladies|girls?|filles?)\b/.test(t)?"Dames":/\b(hommes?|messieurs|men|man|boys?|garcons?)\b/.test(t)?"Hommes":/mixte|mixed/.test(t)?"Mixte":"";
   let cat="";const mm=/\bm\s?(\d{1,2})\b/.exec(t);
-  if(mm)cat="M"+mm[1];else if(/senior/.test(t))cat="SENIOR";else if(/\bvet|veteran|\bv[1-4]\b/.test(t))cat="VET";
+  if(mm)cat="M"+mm[1];else if(/cadet/.test(t))cat="M17";else if(/junior/.test(t))cat="M20";else if(/minime/.test(t))cat="M15";else if(/benjamin/.test(t))cat="M13";else if(/senior/.test(t))cat="SENIOR";else if(/\bvet|veteran|\bv[1-4]\b/.test(t))cat="VET";
   return {name,org:egTx(doc.querySelector(".org-title")),tour:egTx(doc.querySelector(".tounament-title")),wp,sex,cat,lab:sub||doc.title}}
 function impEpOf(c,m){return c.eps.findIndex(e=>e.s===m.sex&&String(e.c).split(/,\s*/).includes(m.cat))}
+function impHay(gid,m){return egN((m.org||"")+" "+(m.tour||"")+" "+gid.replace(/[_\-/]/g," "))}
 function impCands(gid,m){
-  const hay=egN((m.org||"")+" "+(m.tour||"")+" "+gid.replace(/[_\-/]/g," "));
-  const nm=egN(m.name).replace(/^epreuve /,"");
+  const hay=impHay(gid,m),nm=egN(m.name).replace(/^epreuve /,"");
   const now=Date.now(),day=864e5,out=[];
   D.comps.forEach((c,ci)=>{
     if(IGN[c.k])return;const ei=impEpOf(c,m);if(ei<0)return;
@@ -1281,67 +1285,123 @@ function egStore(key,p){
   const zz=(ENG[key]=ENG[key]||{z:{}}).z;
   if(p.kind==="tab"){zz.tab=zz.tab||{};zz.tab[p.N]=p.data}else zz[p.kind]=p.data;
   ENG[key].t=iso(new Date())+"T"+new Date().toTimeString().slice(0,5)}
+/* retire des résultats les données venues d'une page importée */
+function impUndo(path){
+  const F=IFILE[path];if(!F||F.st!=="ok"||!F.key)return false;
+  const o=ENG[F.key];if(o&&o.z){
+    if(F.kind==="tab"){if(o.z.tab){delete o.z.tab[F.N];if(!Object.keys(o.z.tab).length)delete o.z.tab}}else delete o.z[F.kind];
+    if(!Object.keys(o.z).length){delete ENG[F.key];if(RES)delete RES[F.key]}}
+  F.st="wait";delete IDONE[path];return true}
 async function impPool(L,n,fn){const q=L.slice();await Promise.all(Array.from({length:n},async()=>{while(q.length){const x=q.shift();await fn(x)}}))}
+const impRawURL=(path,ref)=>"https://raw.githubusercontent.com/"+GH.o+"/"+GH.r+"/"+(ref||GH.b)+"/"+path.split("/").map(encodeURIComponent).join("/");
+const impRaw=(path,ref)=>fetch(impRawURL(path,ref)).then(r=>{if(!r.ok)throw new Error("GitHub "+r.status);return r.text()});
 async function impRun(){
   if(IBUSY)return;IBUSY=true;IMSG="Lecture de GitHub…";impRefresh();
-  let nP=0,nE=new Set(),nSkip=0,nErr=0;
+  let nP=0,nE=new Set(),nErr=0;
   try{
     const api="https://api.github.com/repos/"+GH.o+"/"+GH.r;
     const cr=await fetch(api+"/commits/"+GH.b,{headers:{Accept:"application/vnd.github.sha"}});
-    if(!cr.ok)throw new Error("GitHub "+cr.status);const cm=(await cr.text()).trim();
+    if(!cr.ok)throw new Error("GitHub "+cr.status);const cm=ICM=(await cr.text()).trim();
     const tr=await (await fetch(api+"/git/trees/"+cm+"?recursive=1")).json();
     const files=(tr.tree||[]).filter(x=>x.type==="blob"&&x.path.indexOf(GH.f+"/")===0&&/\.html?$/.test(x.path));
     const groups={};
     files.forEach(x=>{const p=x.path.split("/");if(p.length!==5)return;const gid=p[1]+"/"+p[2]+"/"+p[3];(groups[gid]=groups[gid]||[]).push({path:x.path,name:p[4],sha:x.sha})});
-    const raw=f=>fetch("https://raw.githubusercontent.com/"+GH.o+"/"+GH.r+"/"+cm+"/"+f.path.split("/").map(encodeURIComponent).join("/")).then(r=>{if(!r.ok)throw new Error("GitHub "+r.status);return r.text()});
+    /* groupes dont toutes les pages ont disparu de GitHub */
+    Object.keys(IGRP).forEach(g=>{if(!groups[g]){Object.keys(IFILE).forEach(p=>{if(p.indexOf(GH.f+"/"+g+"/")===0){impUndo(p);delete IFILE[p];delete IDONE[p]}});delete IGRP[g]}});
     for(const gid of Object.keys(groups)){
-      const fl=groups[gid],todo=fl.filter(f=>IDONE[f.path]!==f.sha);
-      const G=IGRP[gid]=IGRP[gid]||{files:0};G.files=fl.length;G.t=G.t||0;
-      if(!todo.length&&G.key!==undefined)continue;
+      const fl=groups[gid],G=IGRP[gid]=IGRP[gid]||{};G.files=fl.map(f=>f.path);
+      fl.forEach(f=>{const F=IFILE[f.path];if(F&&F.sha&&F.sha!==f.sha&&F.st==="del"){delete IFILE[f.path]}});
+      /* une page modifiée sur GitHub : on relit */
+      const todo=fl.filter(f=>{const F=IFILE[f.path];if(F&&F.st==="del")return false;return IDONE[f.path]!==f.sha||!F||F.st==="wait"});
+      if(!todo.length&&G.m)continue;
       IMSG="Analyse de "+gid+"…";impRefresh();
-      let html0=null;
-      if(!G.m){html0={};const f0=todo[0]||fl[0];html0[f0.path]=await raw(f0);G.m=impMeta(html0[f0.path])}
-      if(G.m.wp&&G.m.wp!=="sabre"){G.key="-";todo.forEach(f=>IDONE[f.path]=f.sha);continue}
+      const H={};
+      await impPool(todo.length?todo:[fl[0]],4,async f=>{try{H[f.path]=await impRaw(f.path,cm)}catch(e){nErr++}});
+      if(!G.m){const k=Object.keys(H)[0];if(!k)continue;G.m=impMeta(H[k])}
+      if(G.m.wp&&G.m.wp!=="sabre"){G.key="-";todo.forEach(f=>{IDONE[f.path]=f.sha;IFILE[f.path]={sha:f.sha,st:"skip",why:"autre arme"}});continue}
       const man=IMAP[gid];
       if(man)G.key=man;else{const a=impAuto(gid,G.m);G.key=a.key;G.auto=!!a.key}
-      if(!G.key||G.key==="-")continue;
-      const [ck,ec,es]=G.key.split("|");const comp=D.comps.find(c=>c.k===ck);
-      if(!comp||!comp.eps.some(e=>e.c===ec&&e.s===es)){G.key=null;continue}
-      await impPool(todo,4,async f=>{
-        try{
-          if(/^(cla?s)?poules?([2-9])/.test(f.name)){IDONE[f.path]=f.sha;nSkip++;return}
-          const h=(html0&&html0[f.path])||await raw(f);
-          let p;try{p=egParse(h)}catch(e){IDONE[f.path]=f.sha;nSkip++;return}
-          egStore(G.key,p);IDONE[f.path]=f.sha;nP++;nE.add(G.key);G.t=Date.now()
-        }catch(e){nErr++}})
+      let key=G.key&&G.key!=="-"?G.key:null;
+      if(key){const [ck,ec,es]=key.split("|");const comp=D.comps.find(c=>c.k===ck);if(!comp||!comp.eps.some(e=>e.c===ec&&e.s===es)){G.key=null;key=null}}
+      for(const f of todo){
+        const h=H[f.path];if(h==null)continue;
+        const F=IFILE[f.path]={sha:f.sha,st:"wait"};
+        if(/^(cla?s)?poules?([2-9])/.test(f.name)){F.st="skip";F.why="tour de poules suivant";IDONE[f.path]=f.sha;continue}
+        let p;try{p=egParse(h)}catch(e){F.st="skip";F.why=String(e&&e.message||e).replace(/ : colle.*$/,"");IDONE[f.path]=f.sha;continue}
+        F.kind=p.kind;if(p.kind==="tab")F.N=p.N;
+        if(key){egStore(key,p);F.st="ok";F.key=key;IDONE[f.path]=f.sha;nP++;nE.add(key);G.t=Date.now()}
+      }
     }
     saveImp();if(nP){saveENG();applyEG();renderComps()}
     const pend=Object.values(IGRP).filter(g=>g.m&&!g.key).length;
-    IMSG=(nP?"✓ "+nP+" page"+(nP>1?"s":"")+" importée"+(nP>1?"s":"")+" ("+nE.size+" épreuve"+(nE.size>1?"s":"")+"). ":"Rien de nouveau. ")+(pend?pend+" épreuve"+(pend>1?"s":"")+" à rapprocher à la main (Admin → Import GitHub). ":"")+(nErr?nErr+" page"+(nErr>1?"s":"")+" en erreur (réessaie). ":"")
+    IMSG=(nP?"✓ "+nP+" page"+(nP>1?"s":"")+" importée"+(nP>1?"s":"")+" ("+nE.size+" épreuve"+(nE.size>1?"s":"")+"). ":"Rien de nouveau. ")+(pend?pend+" épreuve"+(pend>1?"s":"")+" à rapprocher à la main ci-dessous. ":"")+(nErr?nErr+" page"+(nErr>1?"s":"")+" en erreur (réessaie). ":"")
   }catch(e){IMSG="Échec : "+(e&&e.message||e)+". (Ce bouton ne marche pas depuis la page Claude : ouvre le site GitHub Pages.)";try{saveImp()}catch(_){}}
   IBUSY=false;impRefresh()}
 function impRefresh(){try{if(S.tab==="m"&&AT==="imp")renderAdmin();if(EGCUR&&document.getElementById("imp-msg"))document.getElementById("imp-msg").textContent=IMSG}catch(e){}}
-function impOptLab(c,ei){return c.v+" · "+fd(c.d)+" · "+c.n.replace(/^\[[^\]]*\]\s*/,"")+" · "+epLabel(c.eps[ei])}
+const impCompLab=c=>c.v+" · "+fd(c.d)+" · "+c.n.replace(/^\[[^\]]*\]\s*/,"");
+function impEpOpts(c,m,cur){
+  const ix=m?impEpOf(c,m):-1;
+  return c.eps.map((e,i)=>{const k=c.k+"|"+e.c+"|"+e.s;return `<option value="${esc(k)}"${k===cur||(!cur&&i===ix)?" selected":""}>${esc(epLabel(e))}${e.n?" · "+e.n+" inscrits":""}</option>`}).join("")}
+function impSel(o,i){
+  const m=o.x.m,hay=impHay(o.g,m),cur=o.x.key&&o.x.key!=="-"?o.x.key:"";
+  const curC=cur?D.comps.find(c=>c.k===cur.split("|")[0]):null;
+  const L=D.comps.filter(c=>!IGN[c.k]&&(inSeason(c)||c===curC)).map(c=>({c,vm:egN(c.v)&&hay.includes(egN(c.v)),ok:impEpOf(c,m)>=0}));
+  L.sort((a,b)=>(b.vm-a.vm)||(b.ok-a.ok)||b.c.d.localeCompare(a.c.d));
+  const sug=L.filter(x=>x.vm),rest=L.filter(x=>!x.vm);
+  const op=x=>`<option value="${esc(x.c.k)}"${curC===x.c?" selected":""}>${esc(impCompLab(x.c))}</option>`;
+  const first=curC||(sug[0]&&sug[0].c)||null;
+  return `<div class="ilab">① Compétition</div><select class="isel" data-impcomp="${i}"><option value="">— choisir la compétition —</option>${sug.length?`<optgroup label="Même ville">${sug.map(op).join("")}</optgroup>`:""}<optgroup label="Toute la saison">${rest.map(op).join("")}</optgroup></select>
+  <div class="ilab">② Épreuve</div><select class="isel" data-impep="${i}"><option value="">— d'abord la compétition —</option>${curC?impEpOpts(curC,m,cur):""}</select>
+  <div class="btns"><button class="btn primary" data-imp="ok|${i}">Rattacher</button><button class="btn" data-imp="ign|${i}">Ignorer ce groupe</button></div>`}
+function impPages(o,i){
+  return (o.x.files||[]).map(p=>{const F=IFILE[p]||{},nm=p.split("/").pop();
+    const lab=F.st==="del"?"Supprimée":F.kind?IKL[F.kind]+(F.N?" de "+F.N:""):F.st==="skip"?"Non utilisée ("+esc(F.why||"")+")":"…";
+    const dot=F.st==="ok"?"✓":F.st==="del"?"×":F.st==="skip"?"–":"·";
+    return `<div class="ipg${F.st==="del"?" del":""}"><span class="idot">${dot}</span><div><b>${esc(lab)}</b><small>${esc(nm)}</small></div><button class="btn sm" data-imp="view|${esc(p)}">Voir</button>${F.st==="del"?`<button class="btn sm" data-imp="back|${esc(p)}">Rétablir</button>`:`<button class="btn sm" data-imp="del|${esc(p)}">Supprimer</button>`}</div>`}).join("")}
 function renderImp(){
-  const L=Object.entries(IGRP).filter(([g,x])=>x.m&&x.key!=="-"||IMAP[g]==="-").map(([g,x])=>({g,x}));
+  const L=Object.entries(IGRP).filter(([g,x])=>x.m).map(([g,x])=>({g,x}));
   const pend=L.filter(o=>!o.x.key);
-  $("#a-intro").innerHTML="Les pages En Garde envoyées par l'extension Chrome sont lues sur GitHub, puis rapprochées automatiquement de la compétition et de l'épreuve (ville, nom de l'épreuve, catégorie, sexe). Si un doute subsiste, tu choisis ici l'épreuve : c'est mémorisé pour tous les appareils.";
-  const sel=(o,i)=>{const C=impCands(o.g,o.x.m).filter(x=>x.win||x.vm).slice(0,25);const cur=o.x.key;
-    const opts=C.map(x=>{const c=D.comps[x.ci],k=c.k+"|"+c.eps[x.ei].c+"|"+c.eps[x.ei].s;return `<option value="${esc(k)}"${k===cur?" selected":""}>${esc(impOptLab(c,x.ei))}</option>`}).join("");
-    return `<select data-impsel="${i}" class="isel"><option value="">— choisir l'épreuve —</option>${opts}<option value="-">Ignorer ce groupe</option></select><div class="btns"><button class="btn primary" data-imp="ok|${i}">Valider</button></div>`};
-  const card=(o,i)=>{const m=o.x.m,k=o.x.key,c=k&&D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);
-    if(k==="-")return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.lab)} · ignoré</div></div><details><summary>Changer</summary>${sel(o,i)}</details></div>`;
-    return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.org)} · ${esc(m.lab)}${m.name?" · "+esc(m.name):""}</div><div class="sub">${o.x.files} page${o.x.files>1?"s":""} sur GitHub</div></div>${k?`<div class="adone">${o.x.auto&&!IMAP[o.g]?"Rapproché automatiquement":"Rapproché"} : ${esc(c.v)} · ${esc(fd(c.d))} · ${esc(e?epLabel(e):"")}</div>`:`<div class="adone" style="color:var(--bad)">Aucune compétition trouvée avec certitude</div>`}<details${k?"":" open"}><summary>${k?"Changer":"Choisir"}</summary>${sel(o,i)}</details></div>`};
+  $("#a-intro").innerHTML="Les pages En Garde envoyées par l'extension Chrome sont lues sur GitHub, puis rapprochées automatiquement de la compétition et de l'épreuve. Pour chaque groupe tu peux voir chaque page, la supprimer, ou rattacher le groupe à la bonne compétition et épreuve. Le type de chaque page (poules, tableau…) est reconnu à son contenu. Tes rattachements sont mémorisés pour tous les appareils.";
+  const card=(o,i)=>{const m=o.x.m,k=o.x.key,c=k&&k!=="-"&&D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);
+    const st=k==="-"?`<div class="adone">Groupe ignoré</div>`:c?`<div class="adone">${o.x.auto&&!IMAP[o.g]?"Rapproché automatiquement":"Rapproché"} : ${esc(c.v)} · ${esc(fd(c.d))} · ${esc(e?epLabel(e):"")}</div>`:`<div class="adone" style="color:var(--bad)">Aucune compétition trouvée avec certitude</div>`;
+    const ci=c?D.comps.indexOf(c):-1,ei=c?c.eps.indexOf(e):-1;
+    return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.org)} · ${esc(m.lab)}${m.name?" · "+esc(m.name):""}</div></div>${st}
+      <div class="ipgs">${impPages(o,i)}</div>
+      <div class="btns">${e?`<button class="btn sm primary" data-res="${ci}:${ei}::0">Voir les résultats</button>`:""}<button class="btn sm" data-imp="delg|${i}">Tout supprimer</button></div>
+      <details${(!k||IOPEN[o.g])?" open":""}><summary>${k&&k!=="-"?"Changer le rattachement":"Rattacher à une compétition"}</summary>${impSel(o,i)}</details></div>`};
   const all=pend.concat(L.filter(o=>o.x.key));
-  $("#a-list").innerHTML=`<div class="acard"><div class="btns"><button class="btn primary" data-imp="run"${IBUSY?" disabled":""}>${IBUSY?"Import en cours…":"Importer depuis GitHub"}</button></div>${IMSG?`<div class="sub" id="imp-msg" style="margin-top:8px">${esc(IMSG)}</div>`:""}</div>`+(all.length?all.map((o,i)=>card(o,L.indexOf(o))).join(""):`<div class="empty">Aucune page reçue pour l'instant. Utilise l'extension Chrome sur une page En Garde, puis reviens ici.</div>`);
+  $("#a-list").innerHTML=`<div class="acard"><div class="btns"><button class="btn primary" data-imp="run"${IBUSY?" disabled":""}>${IBUSY?"Import en cours…":"Importer depuis GitHub"}</button></div>${IMSG?`<div class="sub" id="imp-msg" style="margin-top:8px">${esc(IMSG)}</div>`:""}</div>`+(all.length?all.map(o=>card(o,L.indexOf(o))).join(""):`<div class="empty">Aucune page reçue pour l'instant. Utilise l'extension Chrome sur une page En Garde, puis reviens ici.</div>`);
   renderImp.L=L}
+const IVCSS="body{font:13px/1.4 system-ui,sans-serif;margin:8px;color:#222}table{border-collapse:collapse;margin:8px 0}td,th{border:1px solid #cfcfcf;padding:3px 7px;vertical-align:top}h1{font-size:18px}small{font-weight:400;color:#666}a{color:inherit;text-decoration:none}";
+async function impView(path){
+  sheet("Page importée<div class=\"sub\">"+esc(path.split("/").pop())+"</div>",`<div class="mini" id="iv-st">Chargement…</div>`);
+  try{
+    const h=await impRaw(path,ICM||GH.b);const doc=new DOMParser().parseFromString(h,"text/html");
+    const body=doc.querySelector("#reloadable,.competition-content")||doc.body;
+    const src="<!doctype html><meta charset=utf-8><style>"+IVCSS+"</style>"+body.innerHTML;
+    sheet("Page importée<div class=\"sub\">"+esc(path.split("/").pop())+"</div>",`<iframe sandbox="" srcdoc="${esc(src)}" style="width:100%;height:calc(100vh - 170px);min-height:420px;border:1px solid var(--line,#ddd);border-radius:12px;background:#fff"></iframe>`);
+    if(window.matchMedia&&matchMedia("(min-width:1000px)").matches){const s=$("#sheet");if(s)s.dataset.wide="1"}
+  }catch(e){const s=document.getElementById("iv-st");if(s)s.textContent="Impossible de charger la page : "+(e&&e.message||e)}}
+function impAfterChange(){saveImp();saveENG();applyEG();renderComps();try{if(S.tab==="k")renderKlass()}catch(e){}}
 function impAct(a){
   const [act,i]=a.split("|");
   if(act==="run"){impRun();return}
-  if(act==="ok"){const o=renderImp.L[+i];if(!o)return;const s=document.querySelector('select[data-impsel="'+i+'"]');if(!s||!s.value)return;
-    IMAP[o.g]=s.value;saveImpMap();o.x.key=s.value==="-"?"-":null;o.x.auto=false;
-    /* force la relecture des pages de ce groupe */
-    Object.keys(IDONE).forEach(p=>{if(p.indexOf(GH.f+"/"+o.g+"/")===0)delete IDONE[p]});saveImp();impRun()}}
+  if(act==="view"){impView(i);return}
+  if(act==="del"){const F=IFILE[i]=IFILE[i]||{};const sha=F.sha;impUndo(i);IFILE[i]={sha,kind:F.kind,N:F.N,st:"del"};IDONE[i]=sha;impAfterChange();renderAdmin();return}
+  if(act==="back"){delete IFILE[i];delete IDONE[i];saveImp();impRun();return}
+  if(act==="delg"){const o=renderImp.L[+i];if(!o||!confirm("Supprimer toutes les pages de ce groupe et les résultats qui en viennent ?"))return;
+    (o.x.files||[]).forEach(p=>{const F=IFILE[p]||{};const sha=F.sha;impUndo(p);IFILE[p]={sha,kind:F.kind,N:F.N,st:"del"};IDONE[p]=sha});impAfterChange();renderAdmin();return}
+  if(act==="ign"||act==="ok"){const o=renderImp.L[+i];if(!o)return;
+    let v="-";
+    if(act==="ok"){const s=document.querySelector('select[data-impep="'+i+'"]');v=s&&s.value;if(!v)return}
+    (o.x.files||[]).forEach(p=>{impUndo(p);delete IDONE[p];if(IFILE[p]&&IFILE[p].st!=="del")IFILE[p].st="wait"});
+    IMAP[o.g]=v;saveImpMap();o.x.key=null;o.x.auto=false;IOPEN[o.g]=0;impAfterChange();impRun()}}
+document.addEventListener("change",e=>{
+  const s=e.target;if(!s||!s.dataset||s.dataset.impcomp===undefined)return;
+  const o=renderImp.L&&renderImp.L[+s.dataset.impcomp];const ep=document.querySelector('select[data-impep="'+s.dataset.impcomp+'"]');if(!o||!ep)return;
+  const c=D.comps.find(z=>z.k===s.value);
+  ep.innerHTML=c?impEpOpts(c,o.x.m,""):`<option value="">— d'abord la compétition —</option>`;
+  if(c&&ep.selectedIndex<0)ep.selectedIndex=0;if(c&&!ep.value&&ep.options.length)ep.selectedIndex=0});
 
 function egBindZones(){
   document.querySelectorAll("textarea[data-egz]").forEach(ta=>{
