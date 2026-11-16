@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794818864";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794819686";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1124,6 +1124,10 @@ function applyEG(){
     const o=ENG[c.k+"|"+e.c+"|"+e.s];if(o&&o.z&&o.z.ins&&o.z.ins.length&&!e._n0){e.n=o.z.ins.length;e._egl=o.z.ins}}
   if(!RES)RES={};
   for(const k in ENG){const o=ENG[k];if(!o||!o.z)continue;try{RES[k]={src:"engarde",gids:[],res:[egBuild(o.z)],t:o.t,done:true,local:true,eg:true}}catch(e){}}
+  /* inscrits = nombre de classés au classement final dès qu'il existe (la FFE peut en manquer) */
+  for(const c of D.comps)for(const e of c.eps){const R=RES[c.k+"|"+e.c+"|"+e.s];if(!R||!R.res)continue;
+    const u=new Set();R.res.forEach(r=>(r.final||[]).forEach(f=>{const p=r.players&&r.players[f.id];if(p)u.add(egN(p[0]+" "+p[1]).split(" ").sort().join(" "))}));
+    if(u.size&&u.size!==e.n){e._nres=e.n||0;e.n=u.size}}
 }
 const EGZ=[["ins","Inscrits","ins"],["pou","Poules","pou"],["cls","Résultats poules","cls"],["t256","Tableau de 256 (si il existe)","tab"],["t128","Tableau de 128 (si il existe)","tab"],["t16","Tableau de 16","tab"],["fin","Classement final","fin"]];
 function egzInfo(z,id){
