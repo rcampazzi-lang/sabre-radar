@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794834033";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794835174";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -700,7 +700,7 @@ var E={applying:false,KEYS:KEYS,onset:function(k){T[k]=Date.now();saveT();if(ON)
  boot:function(){if(ON){if(S.code)sync(true);else if(KEYS.some(function(k){return get(k)!=null}))create()}}};
 ENG.push(E);return E}
 var PERS=mk(["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-dec","ffe-coef","ffe-k"],"ffe-sync-code","ffe-sync-t","ffe-sync-last");
-var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx","ffe-impmap"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
+var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx","ffe-impmap","ffe-implab"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
 if(_set)Storage.prototype.setItem=function(k,v){
   _set.call(this,k,v);
   try{if(this===localStorage)ENG.forEach(function(E){if(!E.applying&&E.KEYS.indexOf(k)>-1)E.onset(k)})}catch(e){}
@@ -1189,13 +1189,27 @@ function egBuild(z){
   }
   return R;
 }
+const egBase=k=>String(k).split("#")[0];
 function applyEG(){
   for(const c of D.comps)for(const e of c.eps){if(e._n0===undefined)e._n0=e.n;e.n=e._n0;delete e._egl;
-    const o=ENG[c.k+"|"+e.c+"|"+e.s];if(o&&o.z&&o.z.ins&&o.z.ins.length&&!e._n0){e.n=o.z.ins.length;e._egl=o.z.ins}}
+    const bk=c.k+"|"+e.c+"|"+e.s;const ok=Object.keys(ENG).filter(k=>egBase(k)===bk).sort((x,y)=>x===bk?-1:y===bk?1:x.localeCompare(y));
+    const o=ok.map(k=>ENG[k]).find(o=>o&&o.z&&o.z.ins&&o.z.ins.length);
+    if(o&&!e._n0){e.n=o.z.ins.length;e._egl=o.z.ins}}
   if(!RES)RES={};
-  for(const k in ENG){const o=ENG[k];if(!o||!o.z)continue;try{RES[k]={src:"engarde",gids:[],res:[egBuild(o.z)],t:o.t,done:true,local:true,eg:true}}catch(e){}}
+  /* plusieurs épreuves En Garde réelles (ex. National + Tournoi Open) peuvent être rattachées à une même épreuve de l'app : elles deviennent des onglets */
+  const by={};Object.keys(ENG).forEach(k=>{const o=ENG[k];if(o&&o.z)(by[egBase(k)]=by[egBase(k)]||[]).push(k)});
+  for(const base in RES){if(RES[base]&&RES[base].eg&&!by[base])delete RES[base]}
+  for(const base in by){
+    const ks=by[base].sort((x,y)=>x===base?-1:y===base?1:x.localeCompare(y));
+    const res=[],os=[];
+    ks.forEach(k=>{try{const R=egBuild(ENG[k].z);R.sub=k===base?"":k;res.push(R);os.push(ENG[k])}catch(e){}});
+    if(!res.length)continue;
+    let L=os.map(o=>o.lab||o.tour||"Résultats");
+    if(new Set(L).size<L.length)L=os.map((o,i)=>(o.lab||"Résultats")+(o.tour&&o.tour!==o.lab?" · "+o.tour:""));
+    if(new Set(L).size<L.length)L=L.map((x,i)=>x+" ("+(i+1)+")");
+    RES[base]={src:"engarde",gids:[],res,labels:res.length>1?L:undefined,t:os.map(o=>o.t||"").sort().pop(),done:true,local:true,eg:true}}
   /* inscrits = nombre de classés au classement final dès qu'il existe (la FFE peut en manquer) */
-  for(const c of D.comps)for(const e of c.eps){const R=RES[c.k+"|"+e.c+"|"+e.s];if(!R||!R.res)continue;
+  for(const c of D.comps)for(const e of c.eps){const R=RES[c.k+"|"+e.c+"|"+e.s];if(!R||!R.res||(R.eg&&R.res.length>1))continue;
     const u=new Set();R.res.forEach(r=>(r.final||[]).forEach(f=>{const p=r.players&&r.players[f.id];if(p)u.add(egN(p[0]+" "+p[1]).split(" ").sort().join(" "))}));
     if(u.size&&u.size!==e.n){e._nres=e.n||0;e.n=u.size}}
 }
@@ -1243,6 +1257,9 @@ function egIngest(id,v){
   catch(er){EGST.last={[id]:{t:"Échec : "+(er&&er.message||er),err:true}};egSet(EGCUR.ci,EGCUR.gi,EGST.last)}}
 /* ===== Import GitHub (extension Chrome « Envoi En Garde ») ===== */
 const GH={o:"rcampazzi-lang",r:"sabre-radar",b:"main",f:"imports"};
+let IMLAB={};try{IMLAB=JSON.parse(localStorage.getItem("ffe-implab")||"{}")}catch(e){}
+const saveImpLab=()=>{try{localStorage.setItem("ffe-implab",JSON.stringify(IMLAB))}catch(e){}};
+function impRelabel(){Object.entries(IGRP).forEach(([g,G])=>{const o=G.sk&&ENG[G.sk];if(o&&G.m){o.lab=IMLAB[g]||G.m.name||G.m.tour||"";o.tour=G.m.tour||""}})}
 let IMAP={},IDONE={},IGRP={},IFILE={},IMSG="",IBUSY=false,ICM="",IOPEN={};
 try{IMAP=JSON.parse(localStorage.getItem("ffe-impmap")||"{}")}catch(e){}
 try{IDONE=JSON.parse(localStorage.getItem("ffe-impdone")||"{}")}catch(e){}
@@ -1315,7 +1332,7 @@ function impUndo(path){
   const F=IFILE[path];if(!F||F.st!=="ok"||!F.key)return false;
   const o=ENG[F.key];if(o&&o.z){
     if(F.kind==="tab"){if(o.z.tab){delete o.z.tab[F.N];if(!Object.keys(o.z.tab).length)delete o.z.tab}}else delete o.z[F.kind];
-    if(!Object.keys(o.z).length){delete ENG[F.key];if(RES)delete RES[F.key]}}
+    if(!Object.keys(o.z).length){delete ENG[F.key];if(RES&&!Object.keys(ENG).some(k=>egBase(k)===egBase(F.key)))delete RES[egBase(F.key)]}}
   F.st="wait";delete IDONE[path];return true}
 async function impPool(L,n,fn){const q=L.slice();await Promise.all(Array.from({length:n},async()=>{while(q.length){const x=q.shift();await fn(x)}}))}
 const impRawURL=(path,ref)=>"https://raw.githubusercontent.com/"+GH.o+"/"+GH.r+"/"+(ref||GH.b)+"/"+path.split("/").map(encodeURIComponent).join("/");
@@ -1350,6 +1367,10 @@ async function impRun(){
       if(man)G.key=man;else{const a=impAuto(gid,G.m);G.key=a.key;G.auto=!!a.key}
       let key=G.key&&G.key!=="-"?G.key:null;
       if(key){const [ck,ec,es]=key.split("|");const comp=D.comps.find(c=>c.k===ck);if(!comp||!comp.eps.some(e=>e.c===ec&&e.s===es)){G.key=null;key=null}}
+      let sk=key;
+      if(key){
+        if(!(G.sk&&G.skFor===key)){const taken=Object.entries(IGRP).some(([g,X])=>g!==gid&&X.skFor===key&&X.sk===key);sk=taken?key+"#"+gid:key;G.sk=sk;G.skFor=key}
+        sk=G.sk}
       for(const f of todo){
         const h=H[f.path];if(h==null)continue;
         const F=IFILE[f.path]={sha:f.sha,st:"wait"};
@@ -1357,10 +1378,10 @@ async function impRun(){
         let p;try{p=egParse(h)}catch(e){F.st="skip";F.why=String(e&&e.message||e).replace(/ : colle.*$/,"");IDONE[f.path]=f.sha;continue}
         F.kind=p.kind;if(p.kind==="tab")F.N=p.N;
         try{const dd=impMeta(h).date;if(dd){F.date=dd;if(!G.m.date||dd>G.m.date)G.m.date=dd}}catch(e){}
-        if(key){egStore(key,p);F.st="ok";F.key=key;IDONE[f.path]=f.sha;nP++;nE.add(key);G.t=Date.now()}
+        if(key){egStore(sk,p);ENG[sk].lab=IMLAB[gid]||G.m.name||G.m.tour||"";ENG[sk].tour=G.m.tour||"";F.st="ok";F.key=sk;IDONE[f.path]=f.sha;nP++;nE.add(sk);G.t=Date.now()}
       }
     }
-    saveImp();if(nP){saveENG();applyEG();renderComps()}
+    impRelabel();saveImp();if(nP){saveENG();applyEG();renderComps()}
     let nPurge=0;if(ghAuto()&&ghTok())nPurge=await impPurge();
     const pend=Object.values(IGRP).filter(g=>g.m&&!g.key).length;
     IMSG=(nP?"✓ "+nP+" page"+(nP>1?"s":"")+" importée"+(nP>1?"s":"")+" ("+nE.size+" épreuve"+(nE.size>1?"s":"")+"). ":"Rien de nouveau. ")+(pend?pend+" épreuve"+(pend>1?"s":"")+" à rapprocher à la main ci-dessous. ":"")+(nPurge?nPurge+" page"+(nPurge>1?"s":"")+" retirée"+(nPurge>1?"s":"")+" de GitHub. ":"")+(nErr?nErr+" page"+(nErr>1?"s":"")+" en erreur (réessaie). ":"")
@@ -1382,9 +1403,11 @@ function impSel(o,i){
   const grp=(t,A)=>A.length?`<optgroup label="${t}">${A.map(op).join("")}</optgroup>`:"";
   return `<div class="ilab">① Compétition</div><select class="isel" data-impcomp="${i}"><option value="">— choisir la compétition —</option>${grp("★ Même date ET même ville",G1)}${grp("Même date",G2)}${grp("Même ville",G3)}${grp("Toute la saison",G4)}</select>
   <div class="ilab">② Épreuve</div><select class="isel" data-impep="${i}"><option value="">— d'abord la compétition —</option>${curC?impEpOpts(curC,m,cur):""}</select>
+  <div class="ilab">③ Nom de l'onglet (facultatif)</div><input class="isel" data-implab="${i}" placeholder="ex. National, Tournoi Open, N2…" value="${esc(IMLAB[o.g]||"")}">
+  <div class="mini">Plusieurs groupes peuvent être rattachés à la même épreuve (par exemple un National et un Tournoi Open en Sénior) : ils s'affichent alors comme des onglets séparés dans les résultats.</div>
   <div class="btns"><button class="btn primary" data-imp="ok|${i}">Rattacher</button><button class="btn" data-imp="ign|${i}">Ignorer ce groupe</button></div>`}
 function impFiles(o){const pre=GH.f+"/"+o.g+"/";return [...new Set((o.x.files||[]).concat(Object.keys(IFILE).filter(p=>p.indexOf(pre)===0)))].filter(p=>IFILE[p]||(o.x.files||[]).indexOf(p)>=0)}
-function impEpTxt(k){if(!k||k==="-")return "";const c=D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);return c?c.v+" · "+fd(c.d)+" · "+(e?epLabel(e):""):""}
+function impEpTxt(k){if(!k||k==="-")return "";k=egBase(k);const c=D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);return c?c.v+" · "+fd(c.d)+" · "+(e?epLabel(e):""):""}
 function impPages(o,i){
   return impFiles(o).map(p=>{const F=IFILE[p]||{},nm=p.split("/").pop();
     const lab=F.st==="del"?"Supprimée":F.kind?IKL[F.kind]+(F.N?" de "+F.N:""):F.st==="skip"?"Non utilisée ("+esc(F.why||"")+")":"À analyser";
@@ -1396,7 +1419,7 @@ function renderImp(){
   const pend=L.filter(o=>!o.x.key);
   $("#a-intro").innerHTML="Les pages En Garde envoyées par l'extension Chrome sont lues sur GitHub, puis rapprochées automatiquement de la compétition et de l'épreuve. Pour chaque groupe tu peux voir chaque page, la supprimer, ou rattacher le groupe à la bonne compétition et épreuve. Le type de chaque page (poules, tableau…) est reconnu à son contenu. Tes rattachements sont mémorisés pour tous les appareils.";
   const card=(o,i)=>{const m=o.x.m,k=o.x.key,c=k&&k!=="-"&&D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);
-    const st=k==="-"?`<div class="adone">Groupe ignoré</div>`:c?`<div class="adone">${o.x.auto&&!IMAP[o.g]?"Rapproché automatiquement":"Rapproché"} : ${esc(c.v)} · ${esc(fd(c.d))} · ${esc(e?epLabel(e):"")}</div>`:`<div class="adone" style="color:var(--bad)">Aucune compétition trouvée avec certitude</div>`;
+    const st=k==="-"?`<div class="adone">Groupe ignoré</div>`:c?`<div class="adone">${o.x.auto&&!IMAP[o.g]?"Rapproché automatiquement":"Rapproché"} : ${esc(c.v)} · ${esc(fd(c.d))} · ${esc(e?epLabel(e):"")}</div>${(()=>{const sib=L.filter(z=>z!==o&&z.x.key===k);return sib.length?`<div class="sub">Onglet « ${esc(IMLAB[o.g]||m.name||m.tour||"")} » · même épreuve que : ${esc(sib.map(z=>IMLAB[z.g]||z.x.m.name||z.x.m.tour).join(", "))}</div>`:""})()}`:`<div class="adone" style="color:var(--bad)">Aucune compétition trouvée avec certitude</div>`;
     const ci=c?D.comps.indexOf(c):-1,ei=c?c.eps.indexOf(e):-1;
     return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.org)} · ${esc(m.lab)}${m.name?" · "+esc(m.name):""}${m.date?" · page du "+esc(fd(m.date)):""}</div></div>${st}
       <div class="ipgs">${impPages(o,i)}</div>
@@ -1433,7 +1456,9 @@ function impAct(a){
     let v="-";
     if(act==="ok"){const s=document.querySelector('select[data-impep="'+i+'"]');v=s&&s.value;if(!v)return}
     impFiles(o).forEach(p=>{if(IFILE[p]&&IFILE[p].gone)return;impUndo(p);delete IDONE[p];if(IFILE[p]&&IFILE[p].st!=="del")IFILE[p].st="wait"});
-    IMAP[o.g]=v;saveImpMap();o.x.key=null;o.x.auto=false;IOPEN[o.g]=0;impAfterChange();impRun()}}
+    IMAP[o.g]=v;saveImpMap();o.x.key=null;o.x.auto=false;delete o.x.sk;delete o.x.skFor;
+    if(act==="ok"){const li=document.querySelector('input[data-implab="'+i+'"]');const lv=li?li.value.trim():"";if(lv)IMLAB[o.g]=lv;else delete IMLAB[o.g];saveImpLab()}
+    IOPEN[o.g]=0;impAfterChange();impRun()}}
 document.addEventListener("change",e=>{
   const s=e.target;
   if(s&&s.id==="gh-tok"){try{localStorage.setItem("ffe-ghtok",s.value.trim())}catch(_){}renderAdmin();return}
@@ -1800,7 +1825,7 @@ function statsAll(){
         const cp=((r.classement_poules||[]).find(x=>x.tour===1)||(r.classement_poules||[])[0]||{}).rows||[];
         const fin={};(r.final||[]).forEach(f=>{fin[f.id]=f.pl});const n=(r.final||[]).length;
         new Set([...Object.keys(A),...Object.keys(fin)]).forEach(id=>{
-          const p=pl[id];if(!p)return;const sk=(r.gid&&r.gid!=="eg"?r.gid:c.k+"|"+e.c+"|"+e.s)+"|"+id;if(seen.has(sk))return;seen.add(sk);
+          const p=pl[id];if(!p)return;const sk=(r.gid&&r.gid!=="eg"?r.gid:c.k+"|"+e.c+"|"+e.s+(r.sub?"|"+r.sub:""))+"|"+id;if(seen.has(sk))return;seen.add(sk);
           const nk=nkey(p[0],p[1]);const o=get(nk,p[1]+" "+p[0],p[2]);o.club=p[2]||o.club;o.ne++;
           const pc=pcat(p[3])||single;if(pc)o.cat[pc]=(o.cat[pc]||0)+1;if(e.s!=="Mixte")o.sx[e.s]=(o.sx[e.s]||0)+1;
           const a=A[id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,opp:{}};
@@ -2023,7 +2048,7 @@ function klassData(){
         if(!r.final||!r.final.length)return;
         r.final.forEach(f=>{
           const p=r.players[f.id];if(!p)return;
-          const sk=(r.gid&&r.gid!=="eg"?r.gid:c.k+"|"+e.c+"|"+e.s)+"|"+f.id;if(seen.has(sk))return;seen.add(sk)
+          const sk=(r.gid&&r.gid!=="eg"?r.gid:c.k+"|"+e.c+"|"+e.s+(r.sub?"|"+r.sub:""))+"|"+f.id;if(seen.has(sk))return;seen.add(sk)
           let pc=pcat(p[3])||single;if(!pc||!KCATS.includes(pc))return;
           const gap=minr&&KRK[pc]?Math.max(0,minr-KRK[pc]):0;
           const coef=lv.coef*(1+COEF.sur*gap),base=ptsOf(f.pl);
