@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794839539";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794840105";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -838,7 +838,7 @@ function dlInfo(c){
   if(left<=3)return `<span class="pill warn">Inscription avant ${fd(c.dl)}</span>`;
   return `<span class="pill ok">Inscription avant ${fd(c.dl)}</span>`;
 }
-function epLabel(e){return (e.c.replace(/SENIOR/g,"Sén.").replace(/VET/g,"Vétérans").replace(/, /g," ")) + " " + (SX[e.s]||e.s)}
+function epLabel(e){return (e.c.replace(/SENIOR/g,"Sén.").replace(/VET/g,"Vétérans").replace(/, /g," ")) + " " + (SX[e.s]||e.s) + (EQ(e)?" · Équipes":"")}
 function openPill(c){
   if(c.eps.some(e=>e.o))return '<span class="pill open">Open</span>';
   if(c.nt)return '<span class="pill mute">Non open</span>';
@@ -927,7 +927,7 @@ function egSet(ci,gi,msg){
   let body=linkBlock(c,gi,EGST.tab);
   if(EGST.tab==="eg"&&list.length){
     const it=list[EGST.ep],multi=cs.length>1;
-    body+=`<div class="sec">Épreuves</div>${list.length>1?`<div class="chips">${list.map((x,i)=>chip((multi?fd(x.c.d).replace(/^\S+ /,"")+" · ":"")+epLabel(x.e)+(ENG[x.c.k+"|"+x.e.c+"|"+x.e.s]?" ✓":""),i===EGST.ep,`data-ege="${i}"`)).join("")}</div>`:`<div class="mini" style="margin-bottom:8px">${esc(epLabel(it.e))}</div>`}${egZonesHTML(it,msg)}<div class="sec">Import automatique</div><div class="btns"><button class="btn" data-imp="run">Importer depuis GitHub</button></div><div class="mini" id="imp-msg">${esc(IMSG||"Pages envoyées par l'extension Chrome, rapprochées automatiquement.")}</div>`;
+    body+=`<div class="sec">Épreuves</div>${list.length>1?`<div class="chips">${list.map((x,i)=>chip((multi?fd(x.c.d).replace(/^\S+ /,"")+" · ":"")+epLabel(x.e)+(ENG[EK(x.c,x.e)]?" ✓":""),i===EGST.ep,`data-ege="${i}"`)).join("")}</div>`:`<div class="mini" style="margin-bottom:8px">${esc(epLabel(it.e))}</div>`}${egZonesHTML(it,msg)}<div class="sec">Import automatique</div><div class="btns"><button class="btn" data-imp="run">Importer depuis GitHub</button></div><div class="mini" id="imp-msg">${esc(IMSG||"Pages envoyées par l'extension Chrome, rapprochées automatiquement.")}</div>`;
   }else if(EGST.tab!=="eg")body+=`<div class="mini" style="margin-top:14px">L'import des pages de ce site arrive plus tard.</div>`;
   sheet(`Réglages<div class="sub">${esc(c.v)}</div>`,`${tabs}${body}`);
   BACK=()=>reopen(ci);
@@ -1189,10 +1189,11 @@ function egBuild(z){
   }
   return R;
 }
+const EQ=e=>/equipe/i.test((e&&e.u)||"")?"|Eq":"",EK=(c,e)=>c.k+"|"+e.c+"|"+e.s+EQ(e);
 const egBase=k=>String(k).split("#")[0];
 function applyEG(){
   for(const c of D.comps)for(const e of c.eps){if(e._n0===undefined)e._n0=e.n;e.n=e._n0;delete e._egl;
-    const bk=c.k+"|"+e.c+"|"+e.s;const ok=Object.keys(ENG).filter(k=>egBase(k)===bk).sort((x,y)=>x===bk?-1:y===bk?1:x.localeCompare(y));
+    const bk=EK(c,e);const ok=Object.keys(ENG).filter(k=>egBase(k)===bk).sort((x,y)=>x===bk?-1:y===bk?1:x.localeCompare(y));
     const o=ok.map(k=>ENG[k]).find(o=>o&&o.z&&o.z.ins&&o.z.ins.length);
     if(o&&!e._n0){e.n=o.z.ins.length;e._egl=o.z.ins}}
   if(!RES)RES={};
@@ -1209,7 +1210,7 @@ function applyEG(){
     if(new Set(L).size<L.length)L=L.map((x,i)=>x+" ("+(i+1)+")");
     RES[base]={src:"engarde",gids:[],res,labels:res.length>1?L:undefined,t:os.map(o=>o.t||"").sort().pop(),done:true,local:true,eg:true}}
   /* inscrits = nombre de classés au classement final dès qu'il existe (la FFE peut en manquer) */
-  for(const c of D.comps)for(const e of c.eps){const R=RES[c.k+"|"+e.c+"|"+e.s];if(!R||!R.res||(R.eg&&R.res.length>1))continue;
+  for(const c of D.comps)for(const e of c.eps){const R=RES[EK(c,e)];if(!R||!R.res||(R.eg&&R.res.length>1))continue;
     const u=new Set();R.res.forEach(r=>(r.final||[]).forEach(f=>{const p=r.players&&r.players[f.id];if(p)u.add(egN(p[0]+" "+p[1]).split(" ").sort().join(" "))}));
     if(u.size&&u.size!==e.n){e._nres=e.n||0;e.n=u.size}}
 }
@@ -1222,7 +1223,7 @@ function egzInfo(z,id){
   const t=z.tab&&z.tab[id.slice(1)];return t?t.matches.length+" matchs":""}
 let EGCUR=null;const EGST={tab:"eg",ep:0};
 const egItem=()=>{const L=EGCUR.list;return L[Math.min(EGST.ep,L.length-1)]};
-function egDel(b){const it=egItem(),c=it.c,e=it.e,key=c.k+"|"+e.c+"|"+e.s,o=ENG[key];if(!o)return;
+function egDel(b){const it=egItem(),c=it.c,e=it.e,key=EK(c,e),o=ENG[key];if(!o)return;
   if(b.dataset.egtdel){delete o.z.tab[b.dataset.egtdel];if(!Object.keys(o.z.tab).length)delete o.z.tab}else delete o.z[b.dataset.egzdel];
   if(!Object.keys(o.z).length)delete ENG[key];
   if(!ENG[key]&&RES)delete RES[key];
@@ -1240,13 +1241,13 @@ function egTabDetail(z){
   const open=EGST.tabOpen;
   return `<button class="tgl" data-egtog="1">${open?"Masquer":"Voir"} le détail des tableaux ${open?"▴":"▾"}</button>${open?`<div class="tdet">${ns.map(n=>{const t=T[n];return `<div class="tr2${t?" ok":""}"><span>Tableau de ${n}</span><small>${t?"✓ "+t.matches.length+" matchs":"—"}</small>${t?`<button class="x2" data-egtdel="${n}" aria-label="Effacer">×</button>`:""}</div>`}).join("")}</div>`:""}`}
 function egZonesHTML(it,msg){
-  const c=it.c,e=it.e,key=c.k+"|"+e.c+"|"+e.s,z=(ENG[key]||{z:{}}).z;
+  const c=it.c,e=it.e,key=EK(c,e),z=(ENG[key]||{z:{}}).z;
   const rows=EGU.map(([id,lab])=>{const inf=egInfo(z,id);const m=(msg&&msg[id])||(EGST.last&&EGST.last[id]);
     return `<div class="zr${inf?" ok":""}"><div class="zl"><b>${lab}</b><small${m&&m.err?' style="color:var(--bad)"':""}>${m?esc(m.t):inf?"✓ "+esc(inf):"À coller"}</small></div>${inf?`<button class="x2" data-egzdel="${id}" aria-label="Effacer">×</button>`:""}<button class="btn sm${inf&&id!=="tab"?"":" primary"}" data-egpaste="${id}">${id==="tab"?(inf?"Ajouter":"Coller"):inf?"Remplacer":"Coller"}</button></div><textarea class="egta" data-egz="${id}" rows="3" hidden placeholder="Colle ici la page (HTML)"></textarea>${id==="tab"?egTabDetail(z):""}`}).join("");
   const has=Object.keys(z).length>0;
   return `${rows}${has?`<div class="btns" style="margin-top:6px"><button class="btn primary" data-res="${D.comps.indexOf(c)}:${c.eps.indexOf(e)}::0">Voir les résultats</button></div>`:""}`}
 function egIngest(id,v){
-  const it=egItem(),c=it.c,e=it.e,key=c.k+"|"+e.c+"|"+e.s;
+  const it=egItem(),c=it.c,e=it.e,key=EK(c,e);
   try{const p=egParse(v);const kind=EGU.find(x=>x[0]===id)[0];
     if(p.kind!==kind)throw new Error("C'est la page « "+({ins:"Inscrits",pou:"Poules",cls:"Résultats des poules",tab:"Tableaux",fin:"Classement final"})[p.kind]+" », pas celle-ci.");
     const zz=(ENG[key]=ENG[key]||{z:{}}).z;
@@ -1322,7 +1323,7 @@ function impAuto(gid,m){
   if(P.length>1&&!m.date){P.sort((a,b)=>a.age-b.age);if(P[1].age-P[0].age<14)P=[]; else P=[P[0]]}
   if(P.length===1&&!m.date&&!P[0].vm&&!P[0].nmm)P=[];
   const x=P.length===1?P[0]:null;
-  return {key:x?D.comps[x.ci].k+"|"+D.comps[x.ci].eps[x.ei].c+"|"+D.comps[x.ci].eps[x.ei].s:null,C}}
+  return {key:x?EK(D.comps[x.ci],D.comps[x.ci].eps[x.ei]):null,C}}
 function egStore(key,p){
   const zz=(ENG[key]=ENG[key]||{z:{}}).z;
   if(p.kind==="tab"){zz.tab=zz.tab||{};zz.tab[p.N]=p.data}else zz[p.kind]=p.data;
@@ -1366,7 +1367,7 @@ async function impRun(){
       const man=IMAP[gid];
       if(man)G.key=man;else{const a=impAuto(gid,G.m);G.key=a.key;G.auto=!!a.key}
       let key=G.key&&G.key!=="-"?G.key:null;
-      if(key){const [ck,ec,es]=key.split("|");const comp=D.comps.find(c=>c.k===ck);if(!comp||!comp.eps.some(e=>e.c===ec&&e.s===es)){G.key=null;key=null}}
+      if(key){const ck=key.split("|")[0];const comp=D.comps.find(c=>c.k===ck);if(!comp||!comp.eps.some(e=>EK(comp,e)===key)){G.key=null;key=null}}
       let sk=key;
       if(key){
         if(!(G.sk&&G.skFor===key)){const taken=Object.entries(IGRP).some(([g,X])=>g!==gid&&X.skFor===key&&X.sk===key);sk=taken?key+"#"+gid:key;G.sk=sk;G.skFor=key}
@@ -1391,7 +1392,7 @@ function impRefresh(){try{if(S.tab==="m"&&AT==="imp")renderAdmin();if(EGCUR&&doc
 const impCompLab=c=>c.v+" · "+fd(c.d)+" · "+c.n.replace(/^\[[^\]]*\]\s*/,"");
 function impEpOpts(c,m,cur){
   const ix=m?impEpOf(c,m):-1;
-  return c.eps.map((e,i)=>{const k=c.k+"|"+e.c+"|"+e.s;return `<option value="${esc(k)}"${k===cur||(!cur&&i===ix)?" selected":""}>${esc(epLabel(e))}${e.n?" · "+e.n+" inscrits":""}</option>`}).join("")}
+  return c.eps.map((e,i)=>{const k=EK(c,e);return `<option value="${esc(k)}"${k===cur||(!cur&&i===ix)?" selected":""}>${esc(epLabel(e))}${e.n?" · "+e.n+" inscrits":""}</option>`}).join("")}
 function impSel(o,i){
   const m=o.x.m,hay=impHay(o.g,m),cur=o.x.key&&o.x.key!=="-"?o.x.key:"";
   const curC=cur?D.comps.find(c=>c.k===cur.split("|")[0]):null;
@@ -1407,7 +1408,7 @@ function impSel(o,i){
   <div class="mini">Plusieurs groupes peuvent être rattachés à la même épreuve (par exemple un National et un Tournoi Open en Sénior) : ils s'affichent alors comme des onglets séparés dans les résultats.</div>
   <div class="btns"><button class="btn primary" data-imp="ok|${i}">Rattacher</button><button class="btn" data-imp="ign|${i}">Ignorer ce groupe</button></div>`}
 function impFiles(o){const pre=GH.f+"/"+o.g+"/";return [...new Set((o.x.files||[]).concat(Object.keys(IFILE).filter(p=>p.indexOf(pre)===0)))].filter(p=>IFILE[p]||(o.x.files||[]).indexOf(p)>=0)}
-function impEpTxt(k){if(!k||k==="-")return "";k=egBase(k);const c=D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);return c?c.v+" · "+fd(c.d)+" · "+(e?epLabel(e):""):""}
+function impEpTxt(k){if(!k||k==="-")return "";k=egBase(k);const c=D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>EK(c,z)===k);return c?c.v+" · "+fd(c.d)+" · "+(e?epLabel(e):""):""}
 function impPages(o,i){
   return impFiles(o).map(p=>{const F=IFILE[p]||{},nm=p.split("/").pop();
     const lab=F.st==="del"?"Supprimée":F.kind?IKL[F.kind]+(F.N?" de "+F.N:""):F.st==="skip"?"Non utilisée ("+esc(F.why||"")+")":"À analyser";
@@ -1418,7 +1419,7 @@ function renderImp(){
   const L=Object.entries(IGRP).filter(([g,x])=>x.m).map(([g,x])=>({g,x}));
   const pend=L.filter(o=>!o.x.key);
   $("#a-intro").innerHTML="Les pages En Garde envoyées par l'extension Chrome sont lues sur GitHub, puis rapprochées automatiquement de la compétition et de l'épreuve. Pour chaque groupe tu peux voir chaque page, la supprimer, ou rattacher le groupe à la bonne compétition et épreuve. Le type de chaque page (poules, tableau…) est reconnu à son contenu. Tes rattachements sont mémorisés pour tous les appareils.";
-  const card=(o,i)=>{const m=o.x.m,k=o.x.key,c=k&&k!=="-"&&D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);
+  const card=(o,i)=>{const m=o.x.m,k=o.x.key,c=k&&k!=="-"&&D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>EK(c,z)===k);
     const st=k==="-"?`<div class="adone">Groupe ignoré</div>`:c?`<div class="adone">${o.x.auto&&!IMAP[o.g]?"Rapproché automatiquement":"Rapproché"} : ${esc(c.v)} · ${esc(fd(c.d))} · ${esc(e?epLabel(e):"")}</div>${(()=>{const sib=L.filter(z=>z!==o&&z.x.key===k);return sib.length?`<div class="sub">Onglet « ${esc(IMLAB[o.g]||m.name||m.tour||"")} » · même épreuve que : ${esc(sib.map(z=>IMLAB[z.g]||z.x.m.name||z.x.m.tour).join(", "))}</div>`:""})()}`:`<div class="adone" style="color:var(--bad)">Aucune compétition trouvée avec certitude</div>`;
     const ci=c?D.comps.indexOf(c):-1,ei=c?c.eps.indexOf(e):-1;
     return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.org)} · ${esc(m.lab)}${m.name?" · "+esc(m.name):""}${m.date?" · page du "+esc(fd(m.date)):""}</div></div>${st}
@@ -1476,7 +1477,7 @@ function egPaste(id){
   const show=why=>{const ta=document.querySelector('textarea[data-egz="'+id+'"]');if(ta){ta.hidden=false;const st=ta.closest(".zr")||ta.previousElementSibling;const sm=document.querySelector('[data-egpaste="'+id+'"]').closest(".zr").querySelector("small");if(sm){sm.textContent=why;sm.style.color="var(--accent)"}ta.focus()}};
   if(navigator.clipboard&&navigator.clipboard.readText){let done=false;const to=setTimeout(()=>{if(!done)show("Touche la zone ci-dessous, puis « Coller ».")},2500);navigator.clipboard.readText().then(t=>{done=true;clearTimeout(to);if(t&&t.length>=200)egIngest(id,t);else show("Presse-papiers vide ou trop court : touche la zone ci-dessous, puis « Coller ».")},()=>{done=true;clearTimeout(to);show("Touche la zone ci-dessous, puis « Coller ».")})}else show("Touche la zone ci-dessous, puis « Coller ».")}
 let RES=null;
-function resOf(c,e){return RES&&RES[c.k+"|"+e.c+"|"+e.s]||null}
+function resOf(c,e){return RES&&RES[EK(c,e)]||null}
 const RS={};
 function rview(R){const a=[];if(R.poules&&R.poules.length)a.push(["poules","Poules"]);if(R.classement_poules&&R.classement_poules.length)a.push(["apres","Après poules"]);if(R.tableau&&R.tableau.some(t=>t.matches.some(m=>m.a&&m.a.name)))a.push(["tableau","Tableau"]);if(R.final&&R.final.length)a.push(["final","Classement final"]);return a}
 function pname(R,id,short){const p=R.players[id];if(!p)return "#"+id;return short?`${p[0]} ${p[1]}`:`${p[0]} ${p[1]}`}
@@ -1678,7 +1679,7 @@ function applyDec(){applyEG();
 }
 function pendInfo(p,idx){
   const ci=D.comps.findIndex(c=>c.k===p.k);if(ci<0)return null;
-  const ei=D.comps[ci].eps.findIndex(e=>e.c===p.cat&&e.s===p.s);if(ei<0)return null;
+  const ei=D.comps[ci].eps.findIndex(e=>EK(D.comps[ci],e)===p.key);if(ei<0)return null;
   return {ci,ei,c:D.comps[ci],e:D.comps[ci].eps[ei],p,idx};
 }
 function renderAdmin(){
@@ -1825,7 +1826,7 @@ function statsAll(){
         const cp=((r.classement_poules||[]).find(x=>x.tour===1)||(r.classement_poules||[])[0]||{}).rows||[];
         const fin={};(r.final||[]).forEach(f=>{fin[f.id]=f.pl});const n=(r.final||[]).length;
         new Set([...Object.keys(A),...Object.keys(fin)]).forEach(id=>{
-          const p=pl[id];if(!p)return;const sk=(r.gid&&r.gid!=="eg"?r.gid:c.k+"|"+e.c+"|"+e.s+(r.sub?"|"+r.sub:""))+"|"+id;if(seen.has(sk))return;seen.add(sk);
+          const p=pl[id];if(!p)return;const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+id;if(seen.has(sk))return;seen.add(sk);
           const nk=nkey(p[0],p[1]);const o=get(nk,p[1]+" "+p[0],p[2]);o.club=p[2]||o.club;o.ne++;
           const pc=pcat(p[3])||single;if(pc)o.cat[pc]=(o.cat[pc]||0)+1;if(e.s!=="Mixte")o.sx[e.s]=(o.sx[e.s]||0)+1;
           const a=A[id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,opp:{}};
@@ -2048,7 +2049,7 @@ function klassData(){
         if(!r.final||!r.final.length)return;
         r.final.forEach(f=>{
           const p=r.players[f.id];if(!p)return;
-          const sk=(r.gid&&r.gid!=="eg"?r.gid:c.k+"|"+e.c+"|"+e.s+(r.sub?"|"+r.sub:""))+"|"+f.id;if(seen.has(sk))return;seen.add(sk)
+          const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+f.id;if(seen.has(sk))return;seen.add(sk)
           let pc=pcat(p[3])||single;if(!pc||!KCATS.includes(pc))return;
           const gap=minr&&KRK[pc]?Math.max(0,minr-KRK[pc]):0;
           const coef=lv.coef*(1+COEF.sur*gap),base=ptsOf(f.pl);
@@ -2408,7 +2409,7 @@ setInterval(()=>{
   if(document.hidden||$("#sheet").hidden||RS.ci==null||!RES||!$("#sheet").querySelector(".rtabs"))return;
   const c=D.comps[RS.ci],e=c&&c.eps[RS.ei],X=e&&resOf(c,e);if(!X||X.done)return;
   fetch("resultats.json?"+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(!j||!j.eps)return;
-    const N=j.eps[c.k+"|"+e.c+"|"+e.s];if(!N||N.t===X.t)return;
+    const N=j.eps[EK(c,e)];if(!N||N.t===X.t)return;
     RES=j.eps;applyDec();if(!$("#sheet").hidden&&!document.activeElement.matches?.("input"))results(RS.ci,RS.ei,RS.view,RS.gi);renderComps()}).catch(()=>{});
 },60000);
 
