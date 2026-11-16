@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794844242";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794844569";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -700,7 +700,7 @@ var E={applying:false,KEYS:KEYS,onset:function(k){T[k]=Date.now();saveT();if(ON)
  boot:function(){if(ON){if(S.code)sync(true);else if(KEYS.some(function(k){return get(k)!=null}))create()}}};
 ENG.push(E);return E}
 var PERS=mk(["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-dec","ffe-coef","ffe-k"],"ffe-sync-code","ffe-sync-t","ffe-sync-last");
-var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx","ffe-impmap","ffe-implab","ffe-fie"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
+var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx","ffe-impmap","ffe-implab"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
 if(_set)Storage.prototype.setItem=function(k,v){
   _set.call(this,k,v);
   try{if(this===localStorage)ENG.forEach(function(E){if(!E.applying&&E.KEYS.indexOf(k)>-1)E.onset(k)})}catch(e){}
@@ -1612,7 +1612,42 @@ FIE.fixCc=function(poolres,results){const mp={};(results||[]).forEach(r=>{if(r.c
 
 /* ===== Import des PDF FIE (dépôt de fichiers) ===== */
 let FIEL={},FMSG="",FBUSY=false;try{FIEL=JSON.parse(localStorage.getItem("ffe-fie")||"{}")}catch(e){}
-const saveFie=()=>{try{localStorage.setItem("ffe-fie",JSON.stringify(FIEL))}catch(e){FMSG="Stockage plein : "+e.message}};
+let FIEDEL={};try{FIEDEL=JSON.parse(localStorage.getItem("ffe-fiedel")||"{}")}catch(e){}
+let FGH="",FLOADED=false,FREM="",FTM=null;
+const saveFie=()=>{try{localStorage.setItem("ffe-fie",JSON.stringify(FIEL));localStorage.setItem("ffe-fiedel",JSON.stringify(FIEDEL))}catch(e){FMSG="Stockage plein : "+e.message}fieSched()};
+/* ---- sauvegarde / lecture sur GitHub (fie/fie.json) : visible depuis tous les appareils ---- */
+const FPATH="fie/fie.json",FAPI=()=>"https://api.github.com/repos/"+GH.o+"/"+GH.r+"/contents/"+FPATH;
+function fiePayload(){const g={};for(const k in FIEL){const x=FIEL[k];g[k]={meta:x.meta,parts:x.parts,key:x.key||null,seeded:x.seeded||[]}}return JSON.stringify({v:1,groups:g,del:FIEDEL})}
+function fieMerge(j){let ch=false;if(!j||!j.groups)return false;
+  for(const g in (j.del||{})){if(!FIEDEL[g]||FIEDEL[g]<j.del[g]){FIEDEL[g]=j.del[g]}}
+  for(const g in j.groups){if(FIEDEL[g]&&!(FIEL[g]&&FIEL[g].added>FIEDEL[g]))continue;const r=j.groups[g];const x=FIEL[g];
+    if(!x){FIEL[g]=r;ch=true;continue}
+    for(const k in r.parts)if(!x.parts[k]){x.parts[k]=r.parts[k];ch=true}
+    if(!x.key&&r.key){x.key=r.key;ch=true}}
+  for(const g in FIEDEL)if(FIEL[g]&&!(FIEL[g].added>FIEDEL[g])){delete FIEL[g];ch=true}
+  return ch}
+async function fieGhLoad(){
+  try{const r=await fetch(FAPI()+"?ref="+GH.b+"&t="+Date.now(),{headers:{Accept:"application/vnd.github.raw"}});
+    if(r.status===404){FLOADED=true;FREM="";FGH="Pas encore de sauvegarde sur GitHub.";fieSched();return}
+    if(!r.ok)throw new Error("GitHub "+r.status);
+    const txt=await r.text();FREM=txt;const j=JSON.parse(txt);FLOADED=true;
+    const ch=fieMerge(j);if(ch){try{localStorage.setItem("ffe-fie",JSON.stringify(FIEL));localStorage.setItem("ffe-fiedel",JSON.stringify(FIEDEL))}catch(e){}applyEG();renderComps();try{renderTir();renderParcours()}catch(e){}if(S.tab==="m"&&AT==="fie")renderAdmin()}
+    FGH="Synchronisé avec GitHub.";fieSched()}
+  catch(e){FGH="Lecture GitHub impossible : "+(e&&e.message||e)}}
+function fieSched(){if(!FLOADED)return;clearTimeout(FTM);FTM=setTimeout(fiePush,1500)}
+const fieB64=s=>{const b=new TextEncoder().encode(s);let o="";for(let i=0;i<b.length;i+=0x8000)o+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(o)};
+async function fiePush(){
+  const body=fiePayload();if(body===FREM)return;
+  const t=ghTok();if(!t){FGH="Jeton GitHub absent : ces résultats ne sont que sur cet appareil.";if(S.tab==="m"&&AT==="fie")renderAdmin();return}
+  const H={Authorization:"Bearer "+t,Accept:"application/vnd.github+json"};
+  try{for(let k=0;k<2;k++){
+      let sha;const g=await fetch(FAPI()+"?ref="+GH.b+"&t="+Date.now(),{headers:H});if(g.ok)sha=(await g.json()).sha;else if(g.status!==404)throw new Error("GitHub "+g.status+(g.status===401||g.status===403?" (jeton refusé)":""));
+      const r=await fetch(FAPI(),{method:"PUT",headers:H,body:JSON.stringify({message:"Résultats FIE importés (app)",content:fieB64(body),sha,branch:GH.b})});
+      if(r.ok){FREM=body;FGH="Sauvegardé sur GitHub à "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})+".";break}
+      if(r.status!==409&&r.status!==422)throw new Error("GitHub "+r.status+(r.status===401||r.status===403?" (jeton refusé)":""))}}
+  catch(e){FGH="Sauvegarde GitHub échouée : "+(e&&e.message||e)}
+  if(S.tab==="m"&&AT==="fie")renderAdmin()}
+
 const FCITY={cairo:"le caire",tashkent:"tachkent",padua:"padoue",athens:"athenes",warsaw:"varsovie",livorno:"livourne",segovia:"segovie",panagyurishte:"sofia",seoul:"seoul",budapest:"budapest","new delhi":"new delhi","sao paulo":"sao paulo"};
 const fday=s=>Date.parse(s+"T12:00:00Z")/864e5;
 function fieMatch(m){
@@ -1657,7 +1692,7 @@ async function fieIngest(files){
       if(m.ev==="T"){log.push(f.name+" : ignoré (épreuve par équipes)");continue}
       if(!m.cat||!m.s){log.push(f.name+" : catégorie ou sexe illisible");continue}
       const g=[m.place,m.date,m.cat,m.s].join("|");
-      const x=FIEL[g]||(FIEL[g]={meta:m,parts:{},key:null});x.meta=m;x.parts[r.kind]={data:r.data,name:f.name};ok++
+      delete FIEDEL[g];const x=FIEL[g]||(FIEL[g]={meta:m,parts:{},key:null,added:Date.now()});x.meta=m;x.parts[r.kind]={data:r.data,name:f.name};ok++
     }catch(e){log.push(f.name+" : "+(e&&e.message||e))}}
   FBUSY=false;saveFie();applyEG();renderComps();
   FMSG=ok+" PDF lu"+(ok>1?"s":"")+(log.length?" · "+log.join(" · "):"");renderAdmin()}
@@ -1683,19 +1718,19 @@ function renderFie(){
     return `<div class="acard"><div><b>${esc(m.place)} · ${esc(FCAT[m.cat]||m.cat)} ${m.s==="Dames"?"Dames":"Hommes"}</b><div class="sub">${esc(m.comp||"")} · ${esc(m.date)}</div></div><div class="chips" style="margin:0">${chips}</div>${st}${x.derived?`<div class="sub">Classement final déduit du tableau (PDF « Résultats » absent).</div>`:""}${warn.length?`<div class="sub" style="color:var(--warn,#b8860b)">⚠ ${warn.map(esc).join("<br>⚠ ")}</div>`:""}<div class="btns">${e&&RES&&RES[k]?`<button class="btn sm primary" data-res="${ci}:${ei}::0">Voir les résultats</button>`:""}<button class="btn sm" data-fie="del|${esc(g)}">Supprimer</button></div>${sel}</div>`};
   const ic0=D.comps.filter(z=>z.ty==="international"||z.fie).sort((a,b)=>a.d.localeCompare(b.d));
   const paste=`<details class="acard"><summary><b>Coller un texte copié sur fie.org</b></summary><div class="sub" style="margin:8px 0">Si un PDF est illisible, copie le tableau « Résultats des poules » ou « Résultats » depuis la page fie.org et colle-le ici (même traduit par le navigateur). Choisis l'épreuve, puis colle les deux textes l'un après l'autre.</div><div class="btns" style="flex-wrap:wrap"><select data-fietcomp="1" class="inp"><option value="">— compétition —</option>${ic0.map(z=>`<option value="${esc(z.k)}">${esc(z.v)} · ${esc(fd(z.d))}</option>`).join("")}</select><select id="fie-tep" class="inp"><option value="">— d'abord la compétition —</option></select></div><textarea id="fie-txt" rows="4" class="inp" style="width:100%;margin-top:8px" placeholder="Colle ici le texte…"></textarea><div class="btns"><button class="btn sm primary" data-fie="txt|">Intégrer ce texte</button></div></details>`;
-  $("#a-list").innerHTML=paste+`<div class="acard"><div id="fie-drop" style="border:2px dashed var(--line);border-radius:14px;padding:26px 12px;text-align:center;cursor:pointer"><b>${FBUSY?"Lecture en cours…":"Dépose tes PDF FIE ici"}</b><div class="sub">ou touche pour choisir les fichiers</div></div><input type="file" id="fie-file" accept="application/pdf,.pdf" multiple hidden>${FMSG?`<div class="sub" style="margin-top:8px">${esc(FMSG)}</div>`:""}</div>`+(gs.length?gs.map(card).join(""):`<div class="empty">Aucun PDF FIE importé pour l'instant.</div>`)}
+  $("#a-list").innerHTML=paste+`<div class="acard"><div id="fie-drop" style="border:2px dashed var(--line);border-radius:14px;padding:26px 12px;text-align:center;cursor:pointer"><b>${FBUSY?"Lecture en cours…":"Dépose tes PDF FIE ici"}</b><div class="sub">ou touche pour choisir les fichiers</div></div><input type="file" id="fie-file" accept="application/pdf,.pdf" multiple hidden>${FMSG?`<div class="sub" style="margin-top:8px">${esc(FMSG)}</div>`:""}<div class="sub" style="margin-top:8px">${esc(FGH||"")}</div>${ghTok()?"":`<div class="sub" style="margin-top:6px">Pour sauvegarder sur GitHub et retrouver ces résultats sur tous tes appareils, colle ton jeton GitHub (le même que pour l'extension) :</div><input id="fie-tok" class="isel" type="password" autocomplete="off" placeholder="github_pat_…">`}</div>`+(gs.length?gs.map(card).join(""):`<div class="empty">Aucun PDF FIE importé pour l'instant.</div>`)}
 function fieTxt(){
   const ta=document.getElementById("fie-txt"),sel=document.getElementById("fie-tep"),key=sel&&sel.value;
   if(!key){FMSG="Choisis d'abord la compétition et l'épreuve.";renderAdmin();return}
   const r=FIE.parseText(ta&&ta.value);if(!r){FMSG="Texte non reconnu (attendu : résultats des poules ou résultats).";renderAdmin();return}
   const c=D.comps.find(z=>key.startsWith(z.k+"|")),e=c&&c.eps.find(z=>EK(c,z)===key);if(!e)return;
   let g=Object.keys(FIEL).find(q=>FIEL[q].cur===key);
-  if(!g){g="TXT|"+key;FIEL[g]={meta:{comp:c.n,place:c.v,date:c.d,cat:e.c.split(", ")[0],weapon:"S",s:e.s,ev:"I",type:""},parts:{},key:key}}
+  if(!g){g="TXT|"+key;FIEL[g]={meta:{comp:c.n,place:c.v,date:c.d,cat:e.c.split(", ")[0],weapon:"S",s:e.s,ev:"I",type:""},parts:{},key:key,added:Date.now()}}
   const x=FIEL[g];x.parts[r.kind]={data:r.data,name:"texte collé"};
   const pr=x.parts.poolres&&x.parts.poolres.data,rs=x.parts.results&&x.parts.results.data;if(pr&&rs)FIE.fixCc(pr,rs);else if(pr&&!rs)FIE.fixCc(pr,[]);
   saveFie();applyEG();renderComps();FMSG="Texte intégré : "+(r.kind==="results"?"résultats":"résultats des poules")+" ("+r.data.length+" lignes). "+(r.kind==="poolres"&&!rs?"Colle aussi le texte « Résultats » pour les pays.":"");renderAdmin()}
 function fieAct(a){if(a==="txt|"){fieTxt();return}const [op,g]=[a.slice(0,a.indexOf("|")),a.slice(a.indexOf("|")+1)];const x=FIEL[g];if(!x)return;
-  if(op==="del"){delete FIEL[g]}
+  if(op==="del"){delete FIEL[g];FIEDEL[g]=Date.now()}
   else if(op==="ign"){x.key="-"}
   else if(op==="ok"){const s=document.querySelector('select[data-fieep="'+g.replace(/"/g,'\\"')+'"]');if(!s||!s.value)return;x.key=s.value}
   saveFie();applyEG();renderComps();renderAdmin()}
@@ -1703,6 +1738,7 @@ document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#fi
 document.addEventListener("dragover",e=>{if(e.target.closest&&e.target.closest("#fie-drop"))e.preventDefault()});
 document.addEventListener("drop",e=>{if(e.target.closest&&e.target.closest("#fie-drop")){e.preventDefault();fieIngest(e.dataTransfer.files)}});
 document.addEventListener("change",e=>{const s=e.target;if(!s)return;
+  if(s.id==="fie-tok"){try{localStorage.setItem("ffe-ghtok",s.value.trim())}catch(_){}FGH="Jeton enregistré sur cet appareil.";fiePush().then(()=>renderAdmin());return}
   if(s.id==="fie-file"){fieIngest(s.files);s.value="";return}
   if(s.dataset&&s.dataset.fietcomp!==undefined){const ep=document.getElementById("fie-tep");const c=D.comps.find(z=>z.k===s.value);
     ep.innerHTML=c?c.eps.filter(z=>!EQ(z)).map(z=>`<option value="${esc(EK(c,z))}">${esc(epLabel(z))}</option>`).join(""):`<option value="">— d'abord la compétition —</option>`;return}
@@ -2623,7 +2659,7 @@ function xclick(b){
   if(b.dataset.dup){dupAct(b.dataset.dup);return true}
   if(b.dataset.imp){impAct(b.dataset.imp);return true}
   if(b.dataset.fie){fieAct(b.dataset.fie);return true}
-  if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();if(AT==="imp"&&!window.__impAuto){window.__impAuto=1;impRun()}return true}
+  if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();if(AT==="imp"&&!window.__impAuto){window.__impAuto=1;impRun()}if(AT==="fie")fieGhLoad();return true}
   if(b.dataset.acf){ACF=b.dataset.acf;renderAdmin();return true}
   if(b.dataset.aty!==undefined){const [id,t]=b.dataset.aty.split("|");const c=D.comps.find(x=>x.id===+id);if(!c)return true;if(t)TYO[c.k]=t;else delete TYO[c.k];saveTyo();applyTypes();renderAdmin();renderComps();return true}
   if(b.dataset.hero!==undefined){compSheet(Number(b.dataset.hero));return true}
@@ -2646,6 +2682,7 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
 applyTypes();applySeason();
 applyEG();renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
 fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
+fieGhLoad();
 fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();admBadge();if(S.tab==="m")renderAdmin()}}).catch(()=>{});
 setInterval(()=>{
   if(document.hidden||$("#sheet").hidden||RS.ci==null||!RES||!$("#sheet").querySelector(".rtabs"))return;
