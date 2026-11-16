@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794819686";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794820634";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -399,7 +399,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 :root{--c-gr:#F8DCE6;--t-gr:#9B2457;--t-gr-bg:#F8DCE6}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}}
 :root[data-theme="dark"]{--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}
-#a-seg button{font-size:12.5px;padding:9px 2px}/* bandeau de titre fixe */
+#a-seg{overflow-x:auto;scrollbar-width:none}#a-seg::-webkit-scrollbar{display:none}#a-seg button{font-size:12px;padding:9px 8px;white-space:nowrap;flex:1 0 auto}/* bandeau de titre fixe */
 .screen>.lt{position:sticky;top:env(safe-area-inset-top,0px);z-index:21;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px)}
 body.scr .screen>.lt{padding-top:8px;padding-bottom:8px;align-items:center}
 body.scr .screen>.lt h1{font-size:24px}
@@ -632,7 +632,7 @@ var E={applying:false,KEYS:KEYS,onset:function(k){T[k]=Date.now();saveT();if(ON)
  boot:function(){if(ON){if(S.code)sync(true);else if(KEYS.some(function(k){return get(k)!=null}))create()}}};
 ENG.push(E);return E}
 var PERS=mk(["ffe-fav","ffe-favc","ffe-profil","ffe-state","ffe-season","ffe-dec","ffe-coef","ffe-k"],"ffe-sync-code","ffe-sync-t","ffe-sync-last");
-var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
+var SHR=mk(["ffe-engarde","ffe-links","ffe-engres","ffe-engarde-ep","ffe-tyo","ffe-grpo","ffe-grpn","ffe-ign","ffe-ali","ffe-alx"],"ffe-shr2-code","ffe-shr2-t","ffe-shr2-last","JHFNCYSJGC5LQ3JM4T6Z7NCM",function(){return get("ffe-admin")!=="0"});
 if(_set)Storage.prototype.setItem=function(k,v){
   _set.call(this,k,v);
   try{if(this===localStorage)ENG.forEach(function(E){if(!E.applying&&E.KEYS.indexOf(k)>-1)E.onset(k)})}catch(e){}
@@ -1299,6 +1299,59 @@ const saveTyo=()=>{try{localStorage.setItem("ffe-tyo",JSON.stringify(TYO))}catch
 function applyTypes(){for(const c of D.comps){if(c._t0===undefined){c._t0=c.ty;c._w0=c.tw}
   const o=TYO[c.k];if(o&&TYL[o]){c.ty=o;c.tw="choisi par toi"}else{c.ty=c._t0;c.tw=c._w0}}}
 const tyDoubt=c=>!c.go&&!IGN[c.k]&&!TYO[c.k]&&/défaut|vérifier|même note/i.test(c._w0||c.tw||"");
+let ALI={},ALX=[];try{ALI=JSON.parse(localStorage.getItem("ffe-ali")||"{}");ALX=JSON.parse(localStorage.getItem("ffe-alx")||"[]")}catch(e){}
+const saveAli=()=>{try{localStorage.setItem("ffe-ali",JSON.stringify(ALI));localStorage.setItem("ffe-alx",JSON.stringify(ALX))}catch(e){}};
+/* ===== Doublons de noms (rapprochements manuels, partagés) ===== */
+const DPART=["DE","DA","DO","DOS","DAS","DU","DES","LE","LA","VAN","VON","DI","DEL"];
+const dTok=s=>nkeyRaw(s,"").split(" ").filter(w=>w&&!DPART.includes(w));
+function dLev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m||!n)return Math.max(m,n);let p=[...Array(n+1).keys()];for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+const dRes=k=>{let n=0;while(ALI[k]&&n++<5)k=ALI[k];return k};
+function dUniverse(){
+  const U=new Map();
+  const add=(nom,pre,club,lic)=>{const k=nkeyRaw(nom,pre);if(!k)return null;let o=U.get(k);if(!o){o={k,nom,pre,club:"",lic:"",n:0,tok:dTok(nom+" "+pre)};U.set(k,o)}if(lic)o.lic=lic;if(club&&!o.club)o.club=club;return o};
+  D.tir.forEach(t=>add(t[0],t[1],String(t[6]||"").split(" / ").pop(),t[2]));
+  if(RES)Object.values(RES).forEach(R=>(R.res||[]).forEach(r=>{for(const id in r.players||{}){const p=r.players[id],o=add(p[0],p[1],p[2],"");if(o)o.n++}}));
+  return U;
+}
+function dupCands(){
+  const U=dUniverse(),idx=new Map(),seen=new Set(),out=[];
+  U.forEach(o=>o.tok.forEach(w=>{if(w.length>=3){if(!idx.has(w))idx.set(w,[]);idx.get(w).push(o)}}));
+  const club=s=>nkeyRaw(s,"").replace(/ /g,"");
+  const evalP=(a,b)=>{
+    if(a.k===b.k||(a.lic&&b.lic)||(!a.n&&!b.n))return null;
+    if(dRes(a.k)===dRes(b.k))return null;
+    if(ALX.includes(a.k+"||"+b.k)||ALX.includes(b.k+"||"+a.k))return null;
+    const A=[...new Set(a.tok)],B=[...new Set(b.tok)],sa=new Set(A),sb=new Set(B);
+    const com=A.filter(x=>sb.has(x));
+    if(A.length===B.length&&A.slice().sort().join(" ")===B.slice().sort().join(" "))return {s:3,why:"Mêmes mots dans un autre ordre"};
+    const [S,L,sS,sL]=A.length<=B.length?[A,B,sa,sb]:[B,A,sb,sa];
+    if(S.length>=2&&S.every(x=>sL.has(x))&&L.length-S.length<=2)return {s:2,why:"Un nom contient l'autre"};
+    if(A.length===B.length&&A.length>=2&&com.length===A.length-1){const x=A.find(w=>!sb.has(w)),y=B.find(w=>!sa.has(w));if(x&&y&&Math.max(x.length,y.length)>=5&&dLev(x,y)<=1)return {s:1,why:"Orthographe proche"}}
+    return null};
+  idx.forEach(L=>{if(L.length>150)return;for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++){
+    const a=L[i],b=L[j],pk=a.k<b.k?a.k+"||"+b.k:b.k+"||"+a.k;if(seen.has(pk))continue;seen.add(pk);
+    const r=evalP(a,b);if(r){const sc=club(a.club)&&club(a.club)===club(b.club);out.push({a,b,s:r.s+(sc?.5:0),why:r.why,sc})}}});
+  return out.sort((x,y)=>y.s-x.s||(y.a.n+y.b.n)-(x.a.n+x.b.n));
+}
+function dupSide(o){return `<div class="acand"><div><b>${esc(o.nom)} ${esc(o.pre)}</b><div class="sub">${esc(o.club||"club inconnu")} · ${o.lic?"licencié FFE "+esc(o.lic):"vu seulement dans les résultats"} · ${o.n} résultat${o.n>1?"s":""}</div></div></div>`}
+function renderDup(){
+  const C=dupCands(),U=dUniverse();
+  $("#a-intro").innerHTML="Un même tireur peut apparaître sous deux noms selon les compétitions (par exemple un nom de famille composé). Je te propose ici les noms proches : dis-moi s'il s'agit de la même personne. Ton choix est enregistré pour tous les appareils.";
+  const mine=Object.entries(ALI);
+  const nm=k=>{const o=U.get(k);return o?esc(o.nom+" "+o.pre):esc(k)};
+  $("#a-list").innerHTML=(C.length?C.slice(0,40).map(x=>`<div class="acard"><div class="sub"><b>${esc(x.why)}</b>${x.sc?" · même club":""}</div>${dupSide(x.a)}${dupSide(x.b)}<div class="btns"><button class="btn primary" data-dup="ok|${esc(x.a.k)}|${esc(x.b.k)}">Même personne</button><button class="btn" data-dup="no|${esc(x.a.k)}|${esc(x.b.k)}">Personnes différentes</button></div></div>`).join("")+(C.length>40?`<div class="mini">${C.length-40} autres propositions après celles-ci.</div>`:""):`<div class="empty">Aucun doublon à vérifier.</div>`)+
+    (mine.length?`<div class="sec">Mes rapprochements</div>`+mine.map(([v,c])=>`<div class="acard"><div class="sub">${nm(v)} → <b>${nm(c)}</b></div><div class="btns"><button class="btn" data-dup="un|${esc(v)}">Défaire</button></div></div>`).join(""):"");
+}
+function dupAct(a){
+  const [act,k1,k2]=a.split("|");
+  if(act==="ok"){const U=dUniverse(),x=U.get(k1),y=U.get(k2);if(!x||!y)return;
+    const pick=x.lic?x:y.lic?y:(x.tok.length>y.tok.length?x:y.tok.length>x.tok.length?y:(x.n>=y.n?x:y));const oth=pick===x?y:x;
+    const c=dRes(pick.k);ALI[oth.k]=c;for(const v in ALI)if(ALI[v]===oth.k)ALI[v]=c}
+  else if(act==="no"){if(!ALX.includes(k1+"||"+k2))ALX.push(k1+"||"+k2)}
+  else if(act==="un"){delete ALI[k1]}
+  saveAli();STC=null;renderAdmin();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass();
+}
+
 let AT="rap",ACF="chk",AQ="";
 /* Accès admin : pour l'instant un simple réglage (?admin=0 le masque, ?admin=1 le réaffiche). Une vraie restriction par compte viendra plus tard. */
 function isAdmin(){try{const q=new URLSearchParams(location.search).get("admin");if(q==="0"||q==="1")localStorage.setItem("ffe-admin",q)}catch(e){}try{return localStorage.getItem("ffe-admin")!=="0"}catch(e){return true}}
@@ -1332,10 +1385,11 @@ function pendInfo(p,idx){
 }
 function renderAdmin(){
   const ndc=D.comps.filter(tyDoubt).length;
-  const ngr=grpClusters().length;
-  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"');
+  const ngr=grpClusters().length;let nd2=0;try{nd2=dupCands().length}catch(e){}
+  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"')+seg("Doublons"+(nd2?" ("+nd2+")":""),AT==="dup",'data-atab="dup"');
   if(AT==="cls")return renderCls();
   if(AT==="grp")return renderGrp();
+  if(AT==="dup")return renderDup();
   const A=$("#a-list");
   if(!CAND){$("#a-intro").textContent="Chargement…";A.innerHTML="";return}
   const L=CAND.pend.map(pendInfo).filter(Boolean);
@@ -1598,7 +1652,8 @@ const KCATS=["M9","M11","M13","M15","M17","M20","SENIOR","V1","V2","V3","V4"];
 const KL=c=>/^V\d/.test(c)?"Vét. "+c[1]:c==="SENIOR"?"Senior":c;
 const KRK={M9:1,M11:2,M13:3,M15:4,M17:5,M20:6,SENIOR:7};
 const pcat=s=>{s=String(s||"");let m;if(m=s.match(/^M\d+/))return m[0];if(/s[ée]nior/i.test(s))return"SENIOR";if(m=s.match(/v[ée]t[ée]rans?\s*(\d)/i))return"V"+m[1];return""};
-const nkey=(n,p)=>(n+" "+p).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z]+/g," ").trim();
+const nkeyRaw=(n,p)=>(n+" "+p).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z]+/g," ").trim();
+const nkey=(n,p)=>{const k=nkeyRaw(n,p);return ALI[k]||k};
 const ptsOf=p=>p>512?0:Math.max(0,100-10*Math.ceil(Math.log2(p)));
 function levelOf(c){
   if(c.ty==="formation"||c.ty==="stage"||c.ty==="open")return null;
@@ -1955,6 +2010,7 @@ function xclick(b){
     saveGrp();GSEL={};renderAdmin();renderComps();return true}
   if(b.dataset.f==="adm"){setTab("m");return true}
   if(b.dataset.f==="admback"){setTab("a");return true}
+  if(b.dataset.dup){dupAct(b.dataset.dup);return true}
   if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();return true}
   if(b.dataset.acf){ACF=b.dataset.acf;renderAdmin();return true}
   if(b.dataset.aty!==undefined){const [id,t]=b.dataset.aty.split("|");const c=D.comps.find(x=>x.id===+id);if(!c)return true;if(t)TYO[c.k]=t;else delete TYO[c.k];saveTyo();applyTypes();renderAdmin();renderComps();return true}
