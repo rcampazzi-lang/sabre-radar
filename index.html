@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794824528";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794831427";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -458,6 +458,40 @@ body.scr .screen>.lt .stamp{display:none}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-op:#12312E;--t-op:#8AD8CF}}
 :root[data-theme="dark"]{--c-op:#12312E;--t-op:#8AD8CF}
 .card.ty-grandreg{background:var(--c-gr)}.pill.ty-grandreg{color:var(--t-gr)}:not(.card)>.tags .pill.ty-grandreg,.sheet .pill.ty-grandreg,#sheet .pill.ty-grandreg{background:var(--t-gr-bg)}
+
+/* ===== Version ordinateur (écran large) : menu à gauche, fiches dans un volet à droite ===== */
+@media (min-width:1000px){
+  body{padding-left:120px;padding-right:28px;padding-bottom:40px}
+  body.lock{overflow:auto!important;padding-right:calc(560px + 28px)}
+  body::after{display:none}
+  .screen{max-width:1500px;margin:0}
+  .screen>.lt,.screen>.bar{margin-left:0;margin-right:0;padding-left:0;padding-right:0}
+  .rowscroll{margin-left:0;margin-right:0;padding-left:0;padding-right:0}
+  .lt h1{font-size:38px}
+  /* menu vertical */
+  .tabbar{left:0;right:auto;top:0;bottom:0;width:92px;padding:22px 0;border-radius:0;flex-direction:column;justify-content:flex-start;align-items:center;gap:10px;box-shadow:none}
+  .tabbar button{flex:none;width:100%;height:56px}
+  .tabbar .badge{left:calc(50% + 8px)}
+  /* listes en colonnes */
+  #c-list,#t-list,#k-list,#p-list,#h-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;align-items:start}
+  #c-list>.empty,#t-list>.empty,#k-list>.pod,#k-list>.ffeh,#k-list>.mini,#k-list>.ffefoot,#k-list>.empty,#p-list>.empty,#h-list>.chgh,#h-list>.empty,#h-list>.note,#c-list>.note{grid-column:1/-1}
+  .bar{max-width:760px}
+  .hero{max-width:760px}
+  /* volet de droite pour les fiches */
+  .sheet{position:fixed;inset:0 0 0 auto;width:560px;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;display:block;pointer-events:none;z-index:40}
+  .sheet>.panel{pointer-events:auto;height:100%;max-height:none;max-width:none;width:100%;border-radius:0;box-shadow:-8px 0 32px rgba(60,30,10,.14);border-left:1px solid var(--line);padding-bottom:0}
+  .grab{display:none}
+  .sheet>.panel header{padding-top:22px}
+}
+@media (min-width:1000px) and (prefers-reduced-motion:no-preference){.sheet>.panel{animation:rin .22s cubic-bezier(.2,.8,.2,1)}@keyframes rin{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}}
+@media (min-width:1000px) and (hover:hover){
+  .card,.trow,.er,.chgg,.rrow{transition:transform .12s,box-shadow .12s}
+  .card:hover,.trow:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(60,30,10,.14)}
+  .chip:hover,.btn:hover,.rs:hover,.pk:hover,.fbtn:hover{filter:brightness(.97)}
+  .tabbar button:hover .ti{background:rgba(255,255,255,.1)}
+  .tabbar button[aria-selected="true"]:hover .ti{background:var(--accent)}
+  .card,.trow,button,[data-comp]{cursor:pointer}
+}
 </style>
 <div id="app">
 <section id="v-c" class="screen">
