@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Usage: python3 build_site.py PAGE_HTML RESULTATS_JSON CANDIDATS_JSON
+"""Usage: python3 build_site.py PAGE_HTML RESULTATS_JSON CANDIDATS_JSON [FFE_CLASSEMENTS_JSON]
 Met à jour index.html, resultats.json et candidats.json à la racine du dépôt (les icônes et le manifest y sont déjà)."""
 import sys,os,shutil
 page,res,cand=sys.argv[1:4]
@@ -17,4 +17,5 @@ s=open(page,encoding='utf-8').read()
 assert '<title>Sabre Radar</title>' in s[:200] and 'const D=' in s, "page inattendue"
 open(os.path.join(here,'index.html'),'w',encoding='utf-8').write(HEAD+s)
 shutil.copy(res,os.path.join(here,'resultats.json'));shutil.copy(cand,os.path.join(here,'candidats.json'))
+if len(sys.argv)>4 and os.path.exists(sys.argv[4]): shutil.copy(sys.argv[4],os.path.join(here,"ffe_classements.json"))
 print("ok")
