@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794833614";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794833831";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -523,7 +523,7 @@ body.scr .screen>.lt .stamp{display:none}
   .card,.trow,button,[data-comp]{cursor:pointer}
 }
 .ilab{font-size:12px;font-weight:700;color:var(--sub,#777);margin-top:10px}.ipgs{margin:10px 0}.ipg{display:grid;grid-template-columns:20px 1fr auto auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line,#e5e5e5)}.ipg small{display:block;color:var(--sub,#777);font-size:11px}.ipg.del b{text-decoration:line-through;opacity:.5}.idot{font-weight:800;color:var(--accent,#d9531e)}
-.ichk{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px}.ig{color:var(--sub,#777);font-size:11px;grid-column:3/5}
+.ito{display:block;font-size:13px;color:var(--accent,#d9531e);font-weight:600}.ichk{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px}.ig{color:var(--sub,#777);font-size:11px;grid-column:3/5}
 .isel{width:100%;margin:8px 0;padding:9px;border:1px solid var(--line,#ccc);border-radius:10px;background:var(--card,#fff);color:inherit;font:inherit}
 </style>
 <div id="app">
@@ -1266,7 +1266,11 @@ async function impPurge(only){
     if(!F||F.gone||!F.sha||!(F.st==="ok"||F.st==="del"||F.st==="skip"))continue;
     try{await ghDelete(p,F.sha);F.gone=true;n++}catch(e){IMSG="Échec du nettoyage : "+(e&&e.message||e);break}}
   saveImp();return n}
-const IKL={ins:"Inscrits",pou:"Poules",cls:"Résultats des poules",tab:"Tableau",fin:"Classement final"};
+const IDBN="ffe-imp";
+function idb(){return new Promise((ok,ko)=>{try{const r=indexedDB.open(IDBN,1);r.onupgradeneeded=()=>r.result.createObjectStore("p");r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error)}catch(e){ko(e)}})}
+async function idbPut(k,v){try{const d=await idb();await new Promise((ok,ko)=>{const t=d.transaction("p","readwrite");t.objectStore("p").put(v,k);t.oncomplete=ok;t.onerror=()=>ko(t.error)})}catch(e){}}
+async function idbGet(k){try{const d=await idb();return await new Promise((ok,ko)=>{const q=d.transaction("p").objectStore("p").get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)})}catch(e){return undefined}}
+const IKL={ins:"Inscrits",pou:"Poules (pool)",cls:"Résultats des poules",tab:"Tableau",fin:"Classement final"};
 function impMeta(html){
   const doc=new DOMParser().parseFromString(html,"text/html");
   const h=doc.querySelector("h1"),sm=h&&h.querySelector("small"),sub=egTx(sm);
@@ -1276,25 +1280,30 @@ function impMeta(html){
   const sex=/\b(dames?|femmes?|women|woman|ladies|girls?|filles?)\b/.test(t)?"Dames":/\b(hommes?|messieurs|men|man|boys?|garcons?)\b/.test(t)?"Hommes":/mixte|mixed/.test(t)?"Mixte":"";
   let cat="";const mm=/\bm\s?(\d{1,2})\b/.exec(t);
   if(mm)cat="M"+mm[1];else if(/cadet/.test(t))cat="M17";else if(/junior/.test(t))cat="M20";else if(/minime/.test(t))cat="M15";else if(/benjamin/.test(t))cat="M13";else if(/senior/.test(t))cat="SENIOR";else if(/\bvet|veteran|\bv[1-4]\b/.test(t))cat="VET";
-  return {name,org:egTx(doc.querySelector(".org-title")),tour:egTx(doc.querySelector(".tounament-title")),wp,sex,cat,lab:sub||doc.title}}
+  let date="";const dm=/(?:last update|derni[eè]re mise [àa] jour|mise [àa] jour)\s*[-:]?\s*(\d{1,2})\/(\d{1,2})\/(\d{4})/i.exec(egTx(doc.body)||"");
+  if(dm)date=dm[3]+"-"+dm[2].padStart(2,"0")+"-"+dm[1].padStart(2,"0");
+  return {date,name,org:egTx(doc.querySelector(".org-title")),tour:egTx(doc.querySelector(".tounament-title")),wp,sex,cat,lab:sub||doc.title}}
 function impEpOf(c,m){return c.eps.findIndex(e=>e.s===m.sex&&String(e.c).split(/,\s*/).includes(m.cat))}
 function impHay(gid,m){return egN((m.org||"")+" "+(m.tour||"")+" "+gid.replace(/[_\-/]/g," "))}
+const impAdd=(d,n)=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return iso(x)};
 function impCands(gid,m){
   const hay=impHay(gid,m),nm=egN(m.name).replace(/^epreuve /,"");
   const now=Date.now(),day=864e5,out=[];
   D.comps.forEach((c,ci)=>{
     if(IGN[c.k])return;const ei=impEpOf(c,m);if(ei<0)return;
     const dt=new Date(c.d+"T12:00:00").getTime(),age=(now-dt)/day;
-    const win=age>=-2&&age<=150;
+    /* la date de la page (« Last Update ») doit tomber pendant la compétition ; sinon, repli sur une fenêtre autour d'aujourd'hui */
+    const win=m.date?(m.date>=impAdd(c.d,-1)&&m.date<=impAdd(c.f||c.d,2)):(age>=-2&&age<=150);
     const v=egN(c.v),vm=!!v&&hay.includes(v),nmm=!!nm&&egN(c.n).replace(/^epreuve /,"")===nm;
-    out.push({ci,ei,vm,nmm,win,age,s:(vm?4:0)+(nmm?3:0)+(win?1:0)})});
+    out.push({ci,ei,vm,nmm,win,age,s:(win?6:0)+(vm?4:0)+(nmm?3:0)})});
   out.sort((a,b)=>b.s-a.s||a.age-b.age);return out}
 function impAuto(gid,m){
   if(!m.cat||!m.sex)return {key:null,C:[]};
-  const C=impCands(gid,m);let P=C.filter(x=>x.win&&x.vm);
-  if(!P.length)P=C.filter(x=>x.win&&x.nmm);
+  const C=impCands(gid,m);let P=C.filter(x=>x.win);
+  if(P.length>1){const n=P.filter(x=>x.vm);if(n.length)P=n}
   if(P.length>1){const n=P.filter(x=>x.nmm);if(n.length)P=n}
-  if(P.length>1){P.sort((a,b)=>a.age-b.age);if(P[1].age-P[0].age<14)P=[]; else P=[P[0]]}
+  if(P.length>1&&!m.date){P.sort((a,b)=>a.age-b.age);if(P[1].age-P[0].age<14)P=[]; else P=[P[0]]}
+  if(P.length===1&&!m.date&&!P[0].vm&&!P[0].nmm)P=[];
   const x=P.length===1?P[0]:null;
   return {key:x?D.comps[x.ci].k+"|"+D.comps[x.ci].eps[x.ei].c+"|"+D.comps[x.ci].eps[x.ei].s:null,C}}
 function egStore(key,p){
@@ -1334,7 +1343,7 @@ async function impRun(){
       if(!todo.length&&G.m)continue;
       IMSG="Analyse de "+gid+"…";impRefresh();
       const H={};
-      await impPool(todo.length?todo:[fl[0]],4,async f=>{try{H[f.path]=await impRaw(f.path,cm)}catch(e){nErr++}});
+      await impPool(todo.length?todo:[fl[0]],4,async f=>{try{H[f.path]=await impRaw(f.path,cm);idbPut(f.path,H[f.path])}catch(e){nErr++}});
       if(!G.m){const k=Object.keys(H)[0];if(!k)continue;G.m=impMeta(H[k])}
       if(G.m.wp&&G.m.wp!=="sabre"){G.key="-";todo.forEach(f=>{IDONE[f.path]=f.sha;IFILE[f.path]={sha:f.sha,st:"skip",why:"autre arme"}});continue}
       const man=IMAP[gid];
@@ -1347,6 +1356,7 @@ async function impRun(){
         if(/^(cla?s)?poules?([2-9])/.test(f.name)){F.st="skip";F.why="tour de poules suivant";IDONE[f.path]=f.sha;continue}
         let p;try{p=egParse(h)}catch(e){F.st="skip";F.why=String(e&&e.message||e).replace(/ : colle.*$/,"");IDONE[f.path]=f.sha;continue}
         F.kind=p.kind;if(p.kind==="tab")F.N=p.N;
+        try{const dd=impMeta(h).date;if(dd){F.date=dd;if(!G.m.date||dd>G.m.date)G.m.date=dd}}catch(e){}
         if(key){egStore(key,p);F.st="ok";F.key=key;IDONE[f.path]=f.sha;nP++;nE.add(key);G.t=Date.now()}
       }
     }
@@ -1364,20 +1374,23 @@ function impEpOpts(c,m,cur){
 function impSel(o,i){
   const m=o.x.m,hay=impHay(o.g,m),cur=o.x.key&&o.x.key!=="-"?o.x.key:"";
   const curC=cur?D.comps.find(c=>c.k===cur.split("|")[0]):null;
-  const L=D.comps.filter(c=>!IGN[c.k]&&(inSeason(c)||c===curC)).map(c=>({c,vm:egN(c.v)&&hay.includes(egN(c.v)),ok:impEpOf(c,m)>=0}));
+  const dOk=c=>m.date&&m.date>=impAdd(c.d,-1)&&m.date<=impAdd(c.f||c.d,2);
+  const L=D.comps.filter(c=>!IGN[c.k]&&(inSeason(c)||c===curC)).map(c=>({c,vm:!!(egN(c.v)&&hay.includes(egN(c.v))||dOk(c)),ok:impEpOf(c,m)>=0}));
   L.sort((a,b)=>(b.vm-a.vm)||(b.ok-a.ok)||b.c.d.localeCompare(a.c.d));
   const sug=L.filter(x=>x.vm),rest=L.filter(x=>!x.vm);
   const op=x=>`<option value="${esc(x.c.k)}"${curC===x.c?" selected":""}>${esc(impCompLab(x.c))}</option>`;
   const first=curC||(sug[0]&&sug[0].c)||null;
-  return `<div class="ilab">① Compétition</div><select class="isel" data-impcomp="${i}"><option value="">— choisir la compétition —</option>${sug.length?`<optgroup label="Même ville">${sug.map(op).join("")}</optgroup>`:""}<optgroup label="Toute la saison">${rest.map(op).join("")}</optgroup></select>
+  return `<div class="ilab">① Compétition</div><select class="isel" data-impcomp="${i}"><option value="">— choisir la compétition —</option>${sug.length?`<optgroup label="${m.date?"Même date ou même ville":"Même ville"}">${sug.map(op).join("")}</optgroup>`:""}<optgroup label="Toute la saison">${rest.map(op).join("")}</optgroup></select>
   <div class="ilab">② Épreuve</div><select class="isel" data-impep="${i}"><option value="">— d'abord la compétition —</option>${curC?impEpOpts(curC,m,cur):""}</select>
   <div class="btns"><button class="btn primary" data-imp="ok|${i}">Rattacher</button><button class="btn" data-imp="ign|${i}">Ignorer ce groupe</button></div>`}
 function impFiles(o){const pre=GH.f+"/"+o.g+"/";return [...new Set((o.x.files||[]).concat(Object.keys(IFILE).filter(p=>p.indexOf(pre)===0)))].filter(p=>IFILE[p]||(o.x.files||[]).indexOf(p)>=0)}
+function impEpTxt(k){if(!k||k==="-")return "";const c=D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);return c?c.v+" · "+fd(c.d)+" · "+(e?epLabel(e):""):""}
 function impPages(o,i){
   return impFiles(o).map(p=>{const F=IFILE[p]||{},nm=p.split("/").pop();
-    const lab=F.st==="del"?"Supprimée":F.kind?IKL[F.kind]+(F.N?" de "+F.N:""):F.st==="skip"?"Non utilisée ("+esc(F.why||"")+")":"…";
+    const lab=F.st==="del"?"Supprimée":F.kind?IKL[F.kind]+(F.N?" de "+F.N:""):F.st==="skip"?"Non utilisée ("+esc(F.why||"")+")":"À analyser";
     const dot=F.st==="ok"?"✓":F.st==="del"?"×":F.st==="skip"?"–":"·";
-    return `<div class="ipg${F.st==="del"?" del":""}"><span class="idot">${dot}</span><div><b>${esc(lab)}</b><small>${esc(nm)}</small></div>${F.gone?`<small class="ig">retirée de GitHub</small>`:`<button class="btn sm" data-imp="view|${esc(p)}">Voir</button>`}${F.st==="del"?`<button class="btn sm" data-imp="back|${esc(p)}">Rétablir</button>`:`<button class="btn sm" data-imp="del|${esc(p)}">Supprimer</button>`}</div>`}).join("")}
+    const to=F.st==="ok"?"→ "+impEpTxt(F.key):F.st==="wait"?"→ pas encore rattachée":"";
+    return `<div class="ipg${F.st==="del"?" del":""}"><span class="idot">${dot}</span><div><b>${esc(lab)}</b><span class="ito">${esc(to)}</span><small>${esc(nm)}${F.date?" · page du "+esc(fd(F.date)):""}${F.gone?" · retirée de GitHub":""}</small></div><button class="btn sm" data-imp="view|${esc(p)}">Voir</button>${F.st==="del"?`<button class="btn sm" data-imp="back|${esc(p)}">Rétablir</button>`:`<button class="btn sm" data-imp="del|${esc(p)}">Supprimer</button>`}</div>`}).join("")||`<div class="mini">Clique sur « Importer depuis GitHub » pour lister les pages.</div>`}
 function renderImp(){
   const L=Object.entries(IGRP).filter(([g,x])=>x.m).map(([g,x])=>({g,x}));
   const pend=L.filter(o=>!o.x.key);
@@ -1385,7 +1398,7 @@ function renderImp(){
   const card=(o,i)=>{const m=o.x.m,k=o.x.key,c=k&&k!=="-"&&D.comps.find(z=>z.k===k.split("|")[0]);const e=c&&c.eps.find(z=>z.c===k.split("|")[1]&&z.s===k.split("|")[2]);
     const st=k==="-"?`<div class="adone">Groupe ignoré</div>`:c?`<div class="adone">${o.x.auto&&!IMAP[o.g]?"Rapproché automatiquement":"Rapproché"} : ${esc(c.v)} · ${esc(fd(c.d))} · ${esc(e?epLabel(e):"")}</div>`:`<div class="adone" style="color:var(--bad)">Aucune compétition trouvée avec certitude</div>`;
     const ci=c?D.comps.indexOf(c):-1,ei=c?c.eps.indexOf(e):-1;
-    return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.org)} · ${esc(m.lab)}${m.name?" · "+esc(m.name):""}</div></div>${st}
+    return `<div class="acard"><div><b>${esc(m.tour||o.g)}</b><div class="sub">${esc(m.org)} · ${esc(m.lab)}${m.name?" · "+esc(m.name):""}${m.date?" · page du "+esc(fd(m.date)):""}</div></div>${st}
       <div class="ipgs">${impPages(o,i)}</div>
       <div class="btns">${e?`<button class="btn sm primary" data-res="${ci}:${ei}::0">Voir les résultats</button>`:""}<button class="btn sm" data-imp="delg|${i}">Tout supprimer</button></div>
       <details${(!k||IOPEN[o.g])?" open":""}><summary>${k&&k!=="-"?"Changer le rattachement":"Rattacher à une compétition"}</summary>${impSel(o,i)}</details></div>`};
@@ -1397,7 +1410,8 @@ const IVCSS="body{font:13px/1.4 system-ui,sans-serif;margin:8px;color:#222}table
 async function impView(path){
   sheet("Page importée<div class=\"sub\">"+esc(path.split("/").pop())+"</div>",`<div class="mini" id="iv-st">Chargement…</div>`);
   try{
-    const h=await impRaw(path,ICM||GH.b);const doc=new DOMParser().parseFromString(h,"text/html");
+    let h=await idbGet(path);
+    if(h==null){const F=IFILE[path]||{};if(F.gone)throw new Error("cette page a été retirée de GitHub et n'était pas gardée sur cet appareil");h=await impRaw(path,ICM||GH.b);idbPut(path,h)}const doc=new DOMParser().parseFromString(h,"text/html");
     const body=doc.querySelector("#reloadable,.competition-content")||doc.body;
     const src="<!doctype html><meta charset=utf-8><style>"+IVCSS+"</style>"+body.innerHTML;
     sheet("Page importée<div class=\"sub\">"+esc(path.split("/").pop())+"</div>",`<iframe sandbox="" srcdoc="${esc(src)}" style="width:100%;height:calc(100vh - 170px);min-height:420px;border:1px solid var(--line,#ddd);border-radius:12px;background:#fff"></iframe>`);
@@ -2341,7 +2355,7 @@ function xclick(b){
   if(b.dataset.f==="admback"){setTab("a");return true}
   if(b.dataset.dup){dupAct(b.dataset.dup);return true}
   if(b.dataset.imp){impAct(b.dataset.imp);return true}
-  if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();return true}
+  if(b.dataset.atab){AT=b.dataset.atab;renderAdmin();if(AT==="imp"&&!window.__impAuto){window.__impAuto=1;impRun()}return true}
   if(b.dataset.acf){ACF=b.dataset.acf;renderAdmin();return true}
   if(b.dataset.aty!==undefined){const [id,t]=b.dataset.aty.split("|");const c=D.comps.find(x=>x.id===+id);if(!c)return true;if(t)TYO[c.k]=t;else delete TYO[c.k];saveTyo();applyTypes();renderAdmin();renderComps();return true}
   if(b.dataset.hero!==undefined){compSheet(Number(b.dataset.hero));return true}
