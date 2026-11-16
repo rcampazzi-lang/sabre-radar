@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794822542";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794824528";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1638,13 +1638,20 @@ function epStats(ci,ei,ti){
   const line=[a.pp?`Poule ${a.pp.no} : ${a.pp.pl}${a.pp.pl===1?"er":"e"} sur ${a.pp.sz}`:"",cr?`Après les poules : ${cr.pl}${cr.pl===1?"er":"e"} sur ${G.cp.length}`:"",fp&&cr?`Place gagnée ou perdue : ${cr.pl-fp>0?"+":""}${cr.pl-fp}`:""].filter(Boolean).join(" · ");
   const ms=a.ms.slice().sort((x,y)=>y.r-x.r).map(m=>`<div class="li"><div><b>${esc(RLAB[m.r]||"Tour "+m.r)}</b>${m.tp&&+m.tp>1?` <small>· tableau des places ${esc(m.tp)} et suivantes</small>`:""}<br><small>contre ${esc(m.on)}</small></div><span class="rk ${m.s1>m.s2?"g3":""}" style="${m.s1>m.s2?"background:var(--good-soft);color:var(--good)":"background:var(--bad-soft);color:var(--bad)"}">${m.s1>m.s2?"V":"D"} ${m.s1}-${m.s2}</span></div>`).join("");
   sheet(head,`<div class="stats">${tiles}${line?`<div class="mini" style="margin:0 0 8px">${esc(line)}</div>`:""}
-  <div class="sec">Comparé aux autres tireurs de l'épreuve</div>
+  ${a.pm?`<div class="sec">Poules (comparé aux autres tireurs de l'épreuve)</div>`:""}
   ${cRow("Victoires en poule",rate(a.pw,a.pm,3),F(x=>rate(x.pw,x.pm,3)),1,pct)}
-  ${cRow("Indice moyen en poule",a.pm>=3?(a.ptd-a.ptr)/a.pm:null,F(x=>x.pm>=3?(x.ptd-x.ptr)/x.pm:null),1,sg)}
-  ${cRow("Touches données par match",all>=3?(a.ptd+a.ttd)/all:null,F(x=>x.pm+x.tw+x.tl>=3?(x.ptd+x.ttd)/(x.pm+x.tw+x.tl):null),1,d1)}
-  ${cRow("Touches reçues par match",all>=3?(a.ptr+a.ttr)/all:null,F(x=>x.pm+x.tw+x.tl>=3?(x.ptr+x.ttr)/(x.pm+x.tw+x.tl):null),0,d1)}
+  ${cRow("Indice moyen par match",a.pm>=3?(a.ptd-a.ptr)/a.pm:null,F(x=>x.pm>=3?(x.ptd-x.ptr)/x.pm:null),1,sg)}
+  ${cRow("Touches données par match",a.pm>=3?a.ptd/a.pm:null,F(x=>x.pm>=3?x.ptd/x.pm:null),1,d1)}
+  ${cRow("Touches reçues par match",a.pm>=3?a.ptr/a.pm:null,F(x=>x.pm>=3?x.ptr/x.pm:null),0,d1)}
+  ${tm?`<div class="sec">Tableau (comparé aux autres tireurs de l'épreuve)</div>
+  ${cRow("Victoires en tableau",rate(a.tw,tm,1),F(x=>rate(x.tw,x.tw+x.tl,1)),1,pct)}
+  ${cRow("Touches données par match",a.ttd/tm,F(x=>x.tw+x.tl>=1?x.ttd/(x.tw+x.tl):null),1,d1)}
+  ${cRow("Touches reçues par match",a.ttr/tm,F(x=>x.tw+x.tl>=1?x.ttr/(x.tw+x.tl):null),0,d1)}`:""}
+  ${a.pm&&tm?`<div class="sec">Total poule et tableau</div>
+  ${cRow("Touches données par match",(a.ptd+a.ttd)/all,F(x=>x.pm+x.tw+x.tl>=3?(x.ptd+x.ttd)/(x.pm+x.tw+x.tl):null),1,d1)}
+  ${cRow("Touches reçues par match",(a.ptr+a.ttr)/all,F(x=>x.pm+x.tw+x.tl>=3?(x.ptr+x.ttr)/(x.pm+x.tw+x.tl):null),0,d1)}`:""}
   ${a.pm?`<div class="sec">Poules</div><div class="mini">${a.pw} victoire${a.pw>1?"s":""} sur ${a.pm} match${a.pm>1?"s":""} · ${a.ptd} touches données, ${a.ptr} reçues</div>`:""}
-  ${tm?`<div class="sec">Tableau (${a.tw} V, ${a.tl} D)</div><div class="list">${ms}</div><div class="mini" style="margin-top:6px">${a.ttd} touches données, ${a.ttr} reçues en tableau</div>`:`<div class="mini" style="margin-top:8px">Pas de match de tableau enregistré.</div>`}</div>`);
+  ${tm?`<div class="sec">Matchs du tableau (${a.tw} V, ${a.tl} D)</div><div class="list">${ms}</div><div class="mini" style="margin-top:6px">${a.ttd} touches données, ${a.ttr} reçues en tableau</div>`:`<div class="mini" style="margin-top:8px">Pas de match de tableau enregistré.</div>`}</div>`);
   BACK=()=>tireur(ti);
 }
 
