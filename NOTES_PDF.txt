@@ -1,0 +1,29 @@
+SABRE RADAR - NOTES PIPELINE (maj 16/11/2026)
+
+Tache quotidienne trig_01WQYpc4Kgop5UGha5VGjWzE (05:47 Paris). Etapes : A FFE (update.py) > B Greg (greg_match/greg_run) > B1 PDF FFE > B2 classements officiels > C republication Artifact > D push GitHub (build_site.py).
+
+B1 PDF FFE
+- Fichiers publies avec la page : pdf_resultats.json (+ cle chk, built), pdf_results.py.txt, bellepoule.py.txt, ocr_results.py.txt, pdf_run.py.txt, merge_pdf.py.txt.
+- pdf_run.py FFE_HTML PREV.json OUT.json WORKDIR [--all] : liste des competitions passees, extrait les liens engagement/telecharger/2/<id> (id = /engages/<id>- de ep.u), telecharge, saute si sha identique, parse (pool de 4), ecrit {src:"pdf",gids,res:[R],w:nb_avertissements,parts}. --all = relecture complete (historique, deja faite le 16/11).
+- merge_pdf.py RESULTATS PDF OUT : idempotent. PDF propre (w=0) remplace Greg ; w>0 = poules retirees, utilise seulement si rien d'autre ; sinon Greg conserve.
+- Formats : En Garde (pdfplumber, noms/clubs tronques completes via engages D.tir), BellePoule (bellepoule.py), texte double (dedupe_chars), PDF sans texte (OCR tesseract fra, ocr_results.py : rangs recales, noms rapproches des engages), Fencing Time (Chinon veterans) NON lu.
+- Tableaux : score = sous le vainqueur (nom precedent le plus proche, <=25 pt) ; DNF/ABD = V/D sans score ; tableaux sur plusieurs pages (page x/y, y>1) ignores.
+- Reste connu : ~13 PDF avec avertissements de poules (BellePoule poules 6-7 tireurs, En Garde Brest/Clamart), 10 Chinon illisibles. Resultats locaux (En Garde importes, validations Greg) restent prioritaires dans l'appli.
+- Pieges : merge_pdf doit etre lance apres greg_run (greg_run ecrit resultats.json) ; build_site.py ne doit pas recevoir les fichiers du depot comme arguments (SameFileError) ; ocr_results.py ne doit pas contenir le caractere U+FFFD (refus de publication).
+
+Import GitHub (extension Chrome v1.1) : voir README de l'extension ; depot public rcampazzi-lang/sabre-radar, dossier imports/.
+
+CLES DE RESULTATS (16/11/2026, correctif Chinon)
+- Cle = <compKey>|<cat>|<sexe> ; pour les epreuves PAR EQUIPES (url ep contenant "equipe") on ajoute "|Eq". Sans cela, epreuve individuelle et equipes (ex. Chinon vets, M15 ind/equipe) ecrasaient le meme resultat. Applique dans l'appli (fonction EK/EQ), greg_match.py (champ eq), greg_run.py (key) et pdf_run.py.
+- Plusieurs epreuves individuelles de meme cat/sexe dans une competition (ex. Chinon V40..V70) partagent une cle : Greg = onglets V1..V4 ; PDF = onglets "Epreuve i" (champs shas/ws par pid dans pdf_resultats.json).
+
+CALENDRIER FIE (16/11/2026)
+- Source : PDF officiel fie.org (« competitions.pdf », bouton "PDF Download calendar" de https://fie.org/events) ; parse_fie_pdf.py.txt -> fie_calendar.json (sabre individuel ; cadet=M17, junior=M20, senior ; équipes, satellites et championnats de zone "OTHER" ignorés).
+- fie_sync.py.txt FFE_HTML FIE_JSON : étape A2 de la tâche quotidienne, APRES update.py (qui reconstruit D depuis la FFE et efface les ajouts FIE). Idempotent : ajoute les épreuves manquantes aux compétitions internationales FFE (même ville, dates +-3 j, drapeau fie=1) ou crée la compétition (k "FIE|date|ville", go=1, fie=1).
+- fie.org n'est PAS joignable par curl/scripts (proxy), seulement par l'outil WebFetch ; l'URL du PDF n'a pas pu être trouvée -> le calendrier n'est pas téléchargeable automatiquement : redemander le PDF à l'utilisateur en cas de changement (relancer parse_fie_pdf.py puis publier fie_calendar.json).
+
+== Import PDF FIE (fie.org) — dans l'app ==
+Admin > "Import FIE" : zone de dépôt (plusieurs PDF d'un coup). Lecteur pdf.js chargé à la demande depuis vendor/ (publié avec la page et dans le dépôt GitHub Pages ; build_site.py copie pub/vendor/).
+Parseur JS = fie_pdf.js (inliné dans ffe.html, copie fie_pdf.js.txt). Le tableau d'en-tête de chaque PDF donne compétition/ville/date/catégorie (J=M20, C=M17, S=SENIOR)/arme/sexe/type.
+Types reconnus : Pools, Pool results, Tableau, Results. Groupe = ville|date|cat|sexe, rapproché auto à la compétition de l'app (alias de villes, dates ±5 j), sinon rattachement manuel. Stockage localStorage "ffe-fie" (synchronisé via SHR). RES clé normale, src "fie", local:true. Stats : seuls les FRA des résultats FIE comptent.
+Classement final déduit du tableau si le PDF Résultats manque. Pas de téléchargement auto (fie.org inaccessible hors WebFetch) : les PDF restent à déposer à la main.
