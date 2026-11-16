@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794817750";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794818864";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1073,10 +1073,11 @@ function egParse(html){
   if(lt){
     const rows=[...lt.rows],hd=[...rows[0].cells].map(x=>egN(egTx(x))),body=rows.slice(1).map(r=>[...r.cells].map(egTx));
     const ix=re=>hd.findIndex(h=>re.test(h));
-    const I={rg:ix(/^(rg|rk|cl|rang)/),n:ix(/^n(#|°|o)/),serie:ix(/serie|seed/),nom:ix(/^(nom|name|last)/),pre:ix(/^(prenom|first)/),nat:ix(/nation|pays|country/),club:ix(/club|structure/),vm:ix(/vic|v\/m/),ind:ix(/^ind/),td:ix(/^td/)};
+    const I={rg:ix(/^(rg|rk|rang|clt$|cl$|clas)/),n:ix(/^n(#|°|o)/),serie:ix(/serie|seed/),nom:ix(/^(nom|name|last)/),pre:ix(/^(prenom|first)/),nat:ix(/nation|pays|country/),club:ix(/club|structure/),vm:ix(/vic|v\/m/),ind:ix(/^ind/),td:ix(/^td/)};
     if(I.nom<0||I.pre<0)throw new Error("Colonnes Nom / Prénom introuvables dans cette page.");
     const g=(c,k)=>I[k]>=0?(c[I[k]]||""):"";
     const base=c=>({nom:g(c,"nom"),pre:g(c,"pre"),nat:g(c,"nat"),club:g(c,"club")});
+    if(I.rg>=0&&!body.some(c=>/^\d+$/.test((c[I.rg]||"").replace(/\u00a0/g," ").trim())))I.rg=-1;
     if(I.rg>=0&&I.vm>=0)return {kind:"cls",data:body.map(c=>({...base(c),rg:parseInt(g(c,"rg")),vm:parseFloat(g(c,"vm"))||0,ind:parseInt(g(c,"ind"))||0,td:parseInt(g(c,"td"))||0}))};
     if(I.rg>=0)return {kind:"fin",data:body.map(c=>({...base(c),rg:parseInt(g(c,"rg"))}))};
     return {kind:"ins",data:body.map((c,k)=>({...base(c),n:g(c,"n")||String(k+1),serie:g(c,"serie")}))};
@@ -1171,8 +1172,8 @@ function egBindZones(){
     const h=()=>{if(ta.value.length>=200)egIngest(ta.dataset.egz,ta.value)};
     ta.addEventListener("input",()=>setTimeout(h,50));ta.addEventListener("paste",()=>setTimeout(h,150))})}
 function egPaste(id){
-  const show=why=>{const ta=document.querySelector('textarea[data-egz="'+id+'"]');if(ta){ta.hidden=false;const st=ta.closest(".zr")||ta.previousElementSibling;const sm=document.querySelector('[data-egpaste="'+id+'"]').closest(".zr").querySelector("small");if(sm){sm.textContent=why;sm.style.color="var(--bad)"}ta.focus()}};
-  if(navigator.clipboard&&navigator.clipboard.readText)navigator.clipboard.readText().then(t=>{if(t&&t.length>=200)egIngest(id,t);else show("Le presse-papiers est vide ou trop court. Colle la page dans la zone ci-dessous.")},()=>show("L'iPhone a refusé la lecture du presse-papiers. Colle la page dans la zone ci-dessous."));else show("Colle la page dans la zone ci-dessous.")}
+  const show=why=>{const ta=document.querySelector('textarea[data-egz="'+id+'"]');if(ta){ta.hidden=false;const st=ta.closest(".zr")||ta.previousElementSibling;const sm=document.querySelector('[data-egpaste="'+id+'"]').closest(".zr").querySelector("small");if(sm){sm.textContent=why;sm.style.color="var(--accent)"}ta.focus()}};
+  if(navigator.clipboard&&navigator.clipboard.readText){let done=false;const to=setTimeout(()=>{if(!done)show("Touche la zone ci-dessous, puis « Coller ».")},2500);navigator.clipboard.readText().then(t=>{done=true;clearTimeout(to);if(t&&t.length>=200)egIngest(id,t);else show("Presse-papiers vide ou trop court : touche la zone ci-dessous, puis « Coller ».")},()=>{done=true;clearTimeout(to);show("Touche la zone ci-dessous, puis « Coller ».")})}else show("Touche la zone ci-dessous, puis « Coller ».")}
 let RES=null;
 function resOf(c,e){return RES&&RES[c.k+"|"+e.c+"|"+e.s]||null}
 const RS={};
