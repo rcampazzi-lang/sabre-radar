@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794928816";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794929898";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1157,6 +1157,7 @@ function sheet(title,inner){
 }
 let PREV=null;
 function closeSheet(){if(BACK){const f=BACK;BACK=null;f();return}PREV=null;$("#sheet").hidden=true;$("#sheet").innerHTML="";$("#fsheet").hidden=true;document.body.classList.remove("lock")}
+const eloEng=(t,e,c)=>{try{const i=D.tir.indexOf(t),k=nkey(t[0],t[1]),ee=e||(c&&c.eps.find(x=>x.l.includes(i))),g=ee?epG(ee):"";return g?ratingIn(k,g):ratingOf(t)}catch(x){return null}};
 function engages(ci,ei){
   const c=D.comps[ci];
   const withN=c.eps.map((e,i)=>[e,i]).filter(([e])=>e.n);
@@ -1169,7 +1170,7 @@ function engages(ci,ei){
   const evo=hn&&hn.length>1?`<div class="mini">Évolution des inscrits : ${hn.map(([d,n])=>fd(d).replace(/^\S+ /,"")+" : "+n).join(" · ")}</div>`:"";
   const vn=!all&&c.eps[ei].vn?`<div class="mini">Par catégorie : ${Object.entries(c.eps[ei].vn).map(([k,n])=>k+" : "+n).join(" · ")}</div>`:"";
   const chips=withN.length>1?`<div class="chips">${chip("Tous",all,`data-eng="${ci}:all"`)}${withN.map(([e,i])=>chip(epLabel(e)+" · "+e.n,!all&&i===Number(ei),`data-eng="${ci}:${i}"`)).join("")}</div>`:"";
-  const body=chips+evo+vn+(rows.length?`<div class="mini">${rows.length} tireur${rows.length>1?"s":""}</div>`+rows.map(t=>t.eg?`<div class="li"><div>${esc(t[0])} ${esc(t[1])}<br><small>${esc(t[6])}</small></div></div>`:`<div class="li"><div><button data-t="${D.tir.indexOf(t)}">${esc(t[0])} ${esc(t[1])}</button> ${gradeTag(ratingOf(t))}<br><small>${esc(t[6])} · <button class="lnk2" data-ts="${D.tir.indexOf(t)}">voir ses stats</button></small></div><span class="tag">${t[3]?CATL[t[3]]:"–"}${t[4]?" ↑ "+CATL[t[4]]:""}</span></div>`).join("")+(all||!resOf(c,c.eps[ei])?"":`<button class="btn primary" style="margin-top:6px" data-res="${ci}:${ei}::0">Résultats</button>`)+(all||!c.eps[ei].u?"":`<a class="btn" style="margin-top:6px;text-align:center" href="${esc(c.eps[ei].u)}" target="_blank" rel="noopener">Page FFE des engagés</a>`):`<div class="empty">Aucun engagé pour l'instant.</div>`);
+  const body=chips+evo+vn+(rows.length?`<div class="mini">${rows.length} tireur${rows.length>1?"s":""}</div>`+rows.map(t=>t.eg?`<div class="li"><div>${esc(t[0])} ${esc(t[1])}<br><small>${esc(t[6])}</small></div></div>`:`<div class="li"><div><button data-t="${D.tir.indexOf(t)}">${esc(t[0])} ${esc(t[1])}</button> ${gradeTag(eloEng(t,all?null:c.eps[ei],c))}<br><small>${esc(t[6])} · <button class="lnk2" data-ts="${D.tir.indexOf(t)}">voir ses stats</button></small></div><span class="tag">${t[3]?CATL[t[3]]:"–"}${t[4]?" ↑ "+CATL[t[4]]:""}</span></div>`).join("")+(all||!resOf(c,c.eps[ei])?"":`<button class="btn primary" style="margin-top:6px" data-res="${ci}:${ei}::0">Résultats</button>`)+(all||!c.eps[ei].u?"":`<a class="btn" style="margin-top:6px;text-align:center" href="${esc(c.eps[ei].u)}" target="_blank" rel="noopener">Page FFE des engagés</a>`):`<div class="empty">Aucun engagé pour l'instant.</div>`);
   const keep=$("#sheet").querySelector(".inner");const st=keep?keep.scrollTop:0;
   sheet(`${esc(c.v)} · ${esc(title)}<div class="sub" style="font-weight:400">${esc(fd(c.d))} · ${esc(c.n)}</div>`,body);
 }
@@ -2276,11 +2277,14 @@ const sMet={
 /* Force (type Elo) : ajustement global sur tous les matchs des 12 derniers mois (poules et tableaux, saison en cours + archive).
    Résultat d'un match = 0,75 + 0,25 × marge normalisée pour le gagnant ((touches gagnant − perdant) ÷ plus gros score), le complément pour le perdant.
    Un pool par sexe et catégorie ; prior centré sur 1500 ; la fiabilité (± et « ? ») dépend du nombre de matchs. */
-const FS=400/Math.LN10;let FRC=null;const FNAME={},FCATN={},FCATD={};
+const FS=400/Math.LN10;let FRC=null;const FNAME={},FCATN={},FCATD={};let FALT={};
 const epG=e=>{const cs=e.c.split(", ").map(x=>pcat(x)||x);return cs.length===1&&KCATS.includes(cs[0])?e.s+"|"+cs[0]:""};
 let CURG="";
+const MLAD=["M9","M11","M13","M15","M17","M20"];
+const feeds=(X,cn)=>{if(!cn||X===cn)return false;if(MLAD.includes(X))return MLAD.indexOf(cn)>=0&&MLAD.indexOf(cn)<MLAD.indexOf(X);if(X==="SENIOR")return MLAD.includes(cn)||/^V/.test(cn);return false};
+function catNow(k){const i=tirIdx(k);if(i!==undefined){const c=pcat(D.tir[i][3]);if(c&&KCATS.includes(c))return c}if(FCATN[k])return FCATN[k];const a=FALT[k];return a?Object.keys(a).sort((x,y)=>a[y]-a[x])[0]:""}
 function forceMatches(){
-  const W=kWin(),G={},done=new Set();
+  FALT={};const W=kWin(),ALL=[],PL={},done=new Set();
   D.comps.concat(HIST).forEach(c=>{
     if(IGN[c.k]||c.d<=W.from||c.d>W.ref)return;
     c.eps.forEach(e=>{
@@ -2295,9 +2299,11 @@ function forceMatches(){
       X.res.forEach(r=>{
         if(r.src==="fie")return;/* résultats internationaux FIE : non pris en compte pour l'instant */
         const pl=r.players||{},by={};for(const id in pl){by[nkey(pl[id][0],pl[id][1])]=id;by[nkey(pl[id][1],pl[id][0])]=id}
-        const info=id=>{const p=pl[id];if(!p)return null;const nk0=nkey(p[0],p[1]);if(!FNAME[nk0])FNAME[nk0]=[p[0]+" "+p[1],p[2]||""];const pc0=pcat(p[3]);if(pc0&&(!FCATD[nk0]||c.d>=FCATD[nk0])){FCATN[nk0]=pc0;FCATD[nk0]=c.d}return [nk0,pc0||single]};
-        const add=(a,b,sa,sb)=>{const A=info(a),B=info(b);if(!A||!B||A[0]===B[0])return;const gc=single?single:(A[1]&&A[1]===B[1]?A[1]:"");if(!gc||!KCATS.includes(gc))return;if(sa===null||sb===null||sa===sb)return;
-          const [x,y,sw,sl]=sa>sb?[A,B,sa,sb]:[B,A,sb,sa];const g=e.s+"|"+gc;(G[g]=G[g]||[]).push([x[0],y[0],(sw-sl)/Math.max(sw,sl),c.d])};
+        const info=id=>{const p=pl[id];if(!p)return null;const nk0=nkey(p[0],p[1]);if(!FNAME[nk0])FNAME[nk0]=[p[0]+" "+p[1],p[2]||""];const pc0=pcat(p[3]);if(pc0&&(!FCATD[nk0]||c.d>=FCATD[nk0])){FCATN[nk0]=pc0;FCATD[nk0]=c.d}if(!pc0&&single){const a=FALT[nk0]||(FALT[nk0]={});a[single]=(a[single]||0)+1}return [nk0,pc0||single]};
+        const add=(a,b,sa,sb)=>{const A=info(a),B=info(b);if(!A||!B||A[0]===B[0])return;
+          if(single){(PL[A[0]]=PL[A[0]]||new Set()).add(single);(PL[B[0]]=PL[B[0]]||new Set()).add(single)}
+          if(sa===null||sb===null||sa===sb)return;
+          const [x,y,sw,sl]=sa>sb?[A,B,sa,sb]:[B,A,sb,sa];ALL.push([x[0],y[0],(sw-sl)/Math.max(sw,sl),c.d,e.s])};
         (r.poules||[]).forEach(po=>{const rows=po.rows||[],n=rows.length;if(!rows.every(x=>(x.m||[]).length===n))return;
           for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const ci=rows[i].m[j],cj=rows[j].m[i];if(!ci||!cj||ci[0]===cj[0]||!/^[VD]/.test(ci)||!/^[VD]/.test(cj))continue;
             const iw=ci[0]==="V",cw=iw?ci:cj,cl=iw?cj:ci;let sw=sNum(cw.slice(1)),sl=sNum(cl.slice(1));
@@ -2307,6 +2313,12 @@ function forceMatches(){
           const ia=m.a.id||by[nkey(m.a.name,"")],ib=m.b.id||by[nkey(m.b.name,"")];if(!ia||!ib)return;
           const tn=s=>{const q=String(s||"").match(/(\d+)/);return q?+q[1]:null};add(ia,ib,tn(m.a.sc),tn(m.b.sc))}));
       })})});
+  /* Un match compte dans l'Elo d'une catégorie X si les deux tireurs en font partie cette saison :
+     tireurs de la catégorie X (annuaire) + surclassés qui y ont tiré (vétérans : surclassement = Sénior). */
+  const CN={},cn=k=>CN[k]!==undefined?CN[k]:(CN[k]=catNow(k));
+  const E=(k,X)=>{const c=cn(k);if(c===X)return true;return !!(c&&PL[k]&&PL[k].has(X)&&feeds(X,c))};
+  const G={};
+  ALL.forEach(m=>{for(const X of KCATS){if(E(m[0],X)&&E(m[1],X)){const g=m[4]+"|"+X;(G[g]=G[g]||[]).push([m[0],m[1],m[2],m[3]])}}});
   return G;
 }
 function fitG(ms){
@@ -2333,7 +2345,7 @@ function forceAll(){
       const o={e:Math.round(1500+E[i]),se:Math.round(FS/Math.sqrt(h[i])),nm:nm[i],nw:nw[i],pc:Math.round((lo+eq/2)/n*100),rk:1+n-lo-eq,n,g,prov:nm[i]<5};
       (RG[g]=RG[g]||{})[k]=o})}
   const per={};for(const g in RG)for(const k in RG[g])(per[k]=per[k]||[]).push(RG[g][k]);
-  for(const k in per){const arr=per[k],own=FCATN[k]?arr.find(o=>o.g.split("|")[1]===FCATN[k]):null;R[k]=own||arr.slice().sort((a,b)=>b.nm-a.nm)[0]}
+  for(const k in per){const arr=per[k],own=catNow(k)?arr.find(o=>o.g.split("|")[1]===catNow(k)):null,best=arr.slice().sort((a,b)=>b.nm-a.nm)[0];R[k]=own&&(own.nm>=5||best.nm<=own.nm*2)?own:best}
   FRC={sig,R,G,RG};return R;
 }
 const EH={};
@@ -2351,6 +2363,7 @@ const ratingIn=(k,g)=>{if(!g)return null;const G=ratingG()[g];return G?G[k]||nul
 const ratingOf=t=>{try{return ratingAll()[nkey(t[0],t[1])]||null}catch(e){return null}};
 const ratingK=k=>{try{return ratingAll()[k]||null}catch(e){return null}};
 const tirI=r=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));let i=TIRK.get(nkey(r[1],r[2]));if(i===undefined)i=TIRK.get(nkey(r[2],r[1]));if(i===undefined)i=LICI.get(r[5]);return i};
+const ratingRowF=(r,l)=>{try{const i=tirI(r);if(i===undefined)return null;const t=D.tir[i],k=nkey(t[0],t[1]),c=l?String(l.cat||"").split(" / "):[];if(l&&c.length===1&&KCATS.includes(c[0])&&(l.sx==="Hommes"||l.sx==="Dames"))return ratingIn(k,l.sx+"|"+c[0]);return ratingOf(t)}catch(e){return null}};
 const ratingRow=r=>{try{const i=tirI(r);return i===undefined?null:ratingOf(D.tir[i])}catch(e){return null}};
 const HGI='<svg class="hg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/></svg>';
 const gradeTag=r=>r?`<span class="gr elo ${r.prov?"prov ":""}${r.pc>=67?"gr-A":r.pc<=33?"gr-C":"gr-B"}" title="Force estimée ${r.e} ± ${r.se} · ${r.nm} match${r.nm>1?"s":""}${r.prov?" (estimation provisoire, peu de matchs)":""} · ${r.rk}ᵉ sur ${r.n} (${KL(r.g.split("|")[1])})">${r.e}${r.prov?HGI:""}</span>`:"";
@@ -2464,7 +2477,7 @@ function statsHTML(t,idx){
   L.slice(0,3).forEach(x=>{const r=x.rows.find(y=>y[5]===t[2]);rk+=`<div class="rkc ffe"><span class="fb"><i></i>FFE officiel</span><b>${r[0]}${r[0]===1?"er":"e"}</b><small>${esc(x.niv)} · ${esc(KL(x.cat.split(" / ")[0]))} · ${fPts(r[4])} pts · ${x.rows.length} classés</small></div>`});
   if(sx&&cat&&RES){try{const B=klassData()[sx+"|"+cat]||{};const E=Object.values(B).map(v=>kScore(v.res,cat).tot);const mine=B[nk]?kScore(B[nk].res,cat).tot:0;if(B[nk]&&mine>0)rk+=`<div class="rkc sr"><span class="fb"><i></i>Sabre Radar</span><b>${1+E.filter(x=>x>mine).length}${E.filter(x=>x>mine).length===0?"er":"e"}</b><small>${esc(KL(cat))} ${sx==="Dames"?"dames":"hommes"} · ${Math.round(mine)} pts · ${E.length} classés</small></div>`}catch(e){}}
   const OG=rt?Object.keys(ratingG()).filter(g=>g!==rt.g&&ratingG()[g][nk]).map(g=>{const r=ratingG()[g][nk];return KL(g.split("|")[1])+" : "+r.e+(r.prov?" (provisoire)":"")+" · "+r.nm+" matchs"}):[];
-  const rtc=rt?`<div class="card2"><div class="sr-h"><span>Force estimée (type Elo)</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.pc)}%"></i></div><div class="h">${rt.e} ± ${rt.se} · ${rt.rk}${rt.rk===1?"er":"ᵉ"} sur ${rt.n} tireurs ${esc(rt.g.split("|")[0]==="Dames"?"dames":"hommes")} ${esc(KL(rt.g.split("|")[1]))} · ${rt.nm} matchs sur les 12 derniers mois${rt.prov?" · peu de matchs (sablier) : estimation provisoire":""}</div>${OG.length?`<div class="h">Dans d’autres catégories où il a tiré : ${esc(OG.join(" · "))}.</div>`:""}<details class="cmpd"><summary>Comment est calculée la force ?</summary><div class="h">Un Elo par catégorie d’épreuve, centré sur 1500. Seuls les matchs joués dans une même épreuve se comparent : un surclassé a donc un Elo dans sa catégorie et un autre dans la catégorie supérieure où il tire. Calculé sur les victoires, défaites et écarts de touches des 12 derniers mois.</div></details></div>`:`<div class="card2"><div class="sr-h"><span>Force estimée (type Elo)</span><b>–</b></div><div class="h">Pas encore de match sur les 12 derniers mois.</div></div>`;
+  const rtc=rt?`<div class="card2"><div class="sr-h"><span>Force estimée (type Elo)</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.pc)}%"></i></div><div class="h">${rt.e} ± ${rt.se} · ${rt.rk}${rt.rk===1?"er":"ᵉ"} sur ${rt.n} tireurs ${esc(rt.g.split("|")[0]==="Dames"?"dames":"hommes")} ${esc(KL(rt.g.split("|")[1]))} · ${rt.nm} matchs sur les 12 derniers mois${rt.prov?" · peu de matchs (sablier) : estimation provisoire":""}</div>${OG.length?`<div class="h">Dans d’autres catégories où il a tiré : ${esc(OG.join(" · "))}.</div>`:""}<details class="cmpd"><summary>Comment est calculée la force ?</summary><div class="h">Un Elo par catégorie, centré sur 1500. Il ne compare que les tireurs qui sont dans la catégorie cette saison, plus les surclassés qui y ont tiré (pour les vétérans, le surclassement est Sénior). Les matchs contre des tireurs partis dans une catégorie supérieure ne comptent plus. Calculé sur les victoires, défaites et écarts de touches des 12 derniers mois.</div></details></div>`:`<div class="card2"><div class="sr-h"><span>Force estimée (type Elo)</span><b>–</b></div><div class="h">Pas encore de match sur les 12 derniers mois.</div></div>`;
   /* points forts / à travailler */
   const IN=["pw","pi","pq","tw","ts","pp"].map(k=>{const c=sCmp(me,all,k);return c&&c.pct!==undefined?{l:sMet[k].l,c}:null}).filter(Boolean);
   const good=IN.filter(x=>x.c.pct>=65).sort((a,b)=>b.c.pct-a.c.pct).slice(0,2),weak=IN.filter(x=>x.c.pct<=35).sort((a,b)=>a.c.pct-b.c.pct).slice(0,2);
@@ -2634,7 +2647,7 @@ function ffeDetail(lid,fi){
     it.push({nm:m?m[1]:nm,d:m?m[4]+"-"+m[3]+"-"+m[2]:"",v:pts[k+1],keep})}
   const row=x=>`<div class="li ${x.keep?"":"off"}"><div><b>${esc(x.nm)}</b>${x.d?`<br><small>${esc(fd(x.d))}</small>`:""}</div><b class="${x.keep?"":"nr"}">${x.keep?"":"["}${fPts(x.v)}${x.keep?"":"]"}</b></div>`;
   const kept=it.filter(x=>x.keep).sort((a,b)=>b.v-a.v),drop=it.filter(x=>!x.keep).sort((a,b)=>b.v-a.v);
-  sheet(`${esc(fNm(r))} ${gradeTag(ratingRow(r))}<div class="sub">${esc(r[3])}</div><div class="sub">${esc(L.n)}</div>`,
+  sheet(`${esc(fNm(r))} ${gradeTag(ratingRowF(r,L))}<div class="sub">${esc(r[3])}</div><div class="sub">${esc(L.n)}</div>`,
    `<div class="tiles"><div class="hi"><b>${r[0]}${r[0]===1?"er":"e"}</b><small>rang</small></div><div><b>${fPts(r[4])}</b><small>points</small></div><div><b>${kept.length}</b><small>retenu${kept.length>1?"s":""} sur ${it.length}</small></div></div>`+
    (i!==undefined?`<div class="btns"><button class="btn" data-t="${i}">Fiche tireur</button><button class="btn" data-ts="${i}">Voir stats</button></div>`:"")+
    (it.length?`<div class="sec">Points retenus</div><div class="list">${kept.map(row).join("")||'<div class="mini">Aucun.</div>'}</div>`+
@@ -2652,10 +2665,10 @@ function renderFfeList(cur){
   const rows=flt?cur.rows.filter(r=>(!q||(r[1]+" "+r[2]+" "+r[3]).toLowerCase().includes(q))&&tvPass(tirI(r),r[3],true)):cur.rows;
   $("#t-count").textContent=rows.length+" tireur"+(rows.length>1?"s":"")+(flt?" trouvé"+(rows.length>1?"s":""):" classé"+(rows.length>1?"s":""));
   const head=`<div class="ffeh"><span class="fb"><i></i>FFE officiel</span><h2>${esc(cur.n)}</h2><div class="fs">${esc(cur.niv)} · ${esc(cur.sx)} ${esc(KL(K.cat))}${cur.maj?" · mis à jour le "+fmtJ(cur.maj):""}</div></div>`;
-  const pc=(r,n)=>{const nm=fNm(r).split(" ");return `<button type="button" class="pp p${n}" data-fr="${esc(r[5])}" data-fl="${cur.id}" data-fi="${cur.rows.indexOf(r)}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(r[5]||r[1])}">${esc((r[2][0]||"")+(r[1][0]||""))}</span><span class="pn">${esc(fNm(r))}</span>${gradeTag(ratingRow(r))}${stRow(r)}<span class="pt">${fPts(r[4])} pts</span><span class="pb">${r[0]}</span></button>`};
+  const pc=(r,n)=>{const nm=fNm(r).split(" ");return `<button type="button" class="pp p${n}" data-fr="${esc(r[5])}" data-fl="${cur.id}" data-fi="${cur.rows.indexOf(r)}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(r[5]||r[1])}">${esc((r[2][0]||"")+(r[1][0]||""))}</span><span class="pn">${esc(fNm(r))}</span>${gradeTag(ratingRowF(r,cur))}${stRow(r)}<span class="pt">${fPts(r[4])} pts</span><span class="pb">${r[0]}</span></button>`};
   const top=!flt&&rows.length>=3&&rows[0][0]===1?rows.slice(0,3):[];
   const pod=top.length?`<div class="pod ffe"><div class="pc">${pc(top[1],2)}${pc(top[0],1)}${pc(top[2],3)}</div></div>`:"";
-  const body=rows.slice(top.length,300).map(r=>`<button class="trow" data-fr="${esc(r[5])}" data-fl="${cur.id}" data-fi="${cur.rows.indexOf(r)}"><span class="krank ffe ${r[0]<=3?"top":""}">${r[0]}</span><div style="min-width:0"><div class="nm">${esc(fNm(r))} <span class="eg">${gradeTag(ratingRow(r))}${stRow(r)}</span></div><div class="sub">${esc(r[3])}</div></div><div class="kpts">${fPts(r[4])}<small>pts</small></div></button>`).join("");
+  const body=rows.slice(top.length,300).map(r=>`<button class="trow" data-fr="${esc(r[5])}" data-fl="${cur.id}" data-fi="${cur.rows.indexOf(r)}"><span class="krank ffe ${r[0]<=3?"top":""}">${r[0]}</span><div style="min-width:0"><div class="nm">${esc(fNm(r))} <span class="eg">${gradeTag(ratingRowF(r,cur))}${stRow(r)}</span></div><div class="sub">${esc(r[3])}</div></div><div class="kpts">${fPts(r[4])}<small>pts</small></div></button>`).join("");
   $("#t-list").innerHTML=head+pod+(body?TH(["#","Tireur","Club","Points",""]):"")+body+(rows.length>300?`<div class="mini">300 premiers affichés sur ${rows.length}. Utilise la recherche pour trouver un tireur.</div>`:"")+`<div class="ffefoot">Classement officiel publié par la FFE (ffescrime.fr), mis à jour chaque semaine. Distinct de l’indicateur Sabre Radar, calculé à partir des résultats Greg.</div>`;
 }
 const JEU=["M9","M11","M13"];
@@ -2833,7 +2846,7 @@ function renderElo(){
   $("#t-intro").textContent="Force estimée type Elo · 12 derniers mois, poules et tableaux";
   const R=ratingAll(),g=K.sx+"|"+K.cat,q=S.tq.trim().toLowerCase(),flt=!!q||tvAny()||K.hp;
   let L=Object.entries(ratingG()[g]||{}).map(([k,v])=>{const i=tirIdx(k),t=i!==undefined?D.tir[i]:null,f=FNAME[k]||["",""];
-    return {k,v,i,name:t?t[0]+" "+t[1]:f[0],club:t?clubOf(t):f[1],sur:KCATS.indexOf(FCATN[k])>=0&&KCATS.indexOf(FCATN[k])<KCATS.indexOf(K.cat)}});
+    return {k,v,i,name:t?t[0]+" "+t[1]:f[0],club:t?clubOf(t):f[1],sur:feeds(K.cat,catNow(k))}});
   L.sort((a,b)=>b.v.e-a.v.e||a.name.localeCompare(b.name));
   let rk=0,last=null;L.forEach((x,n)=>{if(x.v.e!==last){rk=n+1;last=x.v.e}x.rk=rk});
   const tot=L.length;
@@ -2909,11 +2922,11 @@ function renderSR(){
   $("#t-intro").textContent=RES?"Classement glissant sur 12 mois · résultats du "+fd(kWin().from)+" au "+fd(kWin().ref):"chargement…";
   $("#t-count").textContent=L.length?L.length+" tireur"+(L.length>1?"s":"")+(flt?" trouvé":" classé")+(L.length>1?"s":""):"";
   const POD=!flt&&L.length>=3?L.slice(0,3):[];
-  const pcell=(x,n)=>{const nm=x.name.split(" ");return `<button type="button" class="pp p${n}" data-kt="${esc(x.k)}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(x.k)}">${esc((nm[0][0]||"")+((nm[1]||"")[0]||""))}</span><span class="pn">${esc(x.name)}</span>${gradeTag(ratingK(x.k))}${stK(x.k)}<span class="pt">${Math.round(x.tot)} pts</span><span class="pb">${x.rk}</span></button>`};
+  const pcell=(x,n)=>{const nm=x.name.split(" ");return `<button type="button" class="pp p${n}" data-kt="${esc(x.k)}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(x.k)}">${esc((nm[0][0]||"")+((nm[1]||"")[0]||""))}</span><span class="pn">${esc(x.name)}</span>${gradeTag(ratingIn(x.k,K.sx+"|"+K.cat))}${stK(x.k)}<span class="pt">${Math.round(x.tot)} pts</span><span class="pb">${x.rk}</span></button>`};
   const podHTML=POD.length?`<div class="pod"><div class="pc">${pcell(POD[1],2)}${pcell(POD[0],1)}${pcell(POD[2],3)}</div></div>`:"";
   $("#t-list").innerHTML=podHTML+(L.length?TH(["#","Tireur","Club · résultats","Points",""]):"")+(L.length?L.slice(POD.length,150).map((x,i)=>{
     const nm=x.name.split(" ");const ini=(nm[0][0]||"")+((nm[1]||"")[0]||"");
-    return `<button class="trow" data-kt="${esc(x.k)}"><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)} <span class="eg">${gradeTag(ratingK(x.k))}${stK(x.k)}</span></div><div class="sub">${esc(x.club||"")} · ${x.L.length} résultat${x.L.length>1?"s":""}</div></div><div class="kpts">${Math.round(x.tot)}<small>pts</small></div></button>`}).join(""):`<div class="empty">Aucun résultat pour ${esc(K.sx)} ${esc(KL(K.cat))} cette saison.</div>`);
+    return `<button class="trow" data-kt="${esc(x.k)}"><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)} <span class="eg">${gradeTag(ratingIn(x.k,K.sx+"|"+K.cat))}${stK(x.k)}</span></div><div class="sub">${esc(x.club||"")} · ${x.L.length} résultat${x.L.length>1?"s":""}</div></div><div class="kpts">${Math.round(x.tot)}<small>pts</small></div></button>`}).join(""):`<div class="empty">Aucun résultat pour ${esc(K.sx)} ${esc(KL(K.cat))} cette saison.</div>`);
 }
 function kDetail(k){
   const x=klassList().find(y=>y.k===k);if(!x)return;
