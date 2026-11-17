@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794947342";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794947615";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2819,7 +2819,7 @@ function renderRec(){
       const g1=epG(m.e)||K.sx+"|"+K.cat,rt=ratingIn(o.nk,g1),qq=ratingIn(m.on,g1);if(rt&&qq&&m.s1>m.s2){if(winP(rt.e,qq.e)<.35)ex++;if(!bw||qq.e>bw.e)bw={e:qq.e,nm:m.nm}}});
     RW.push({o,i,club,n,vn,vs,ds,ex,st,bw,pi:o.pm>=10?(o.ptd-o.ptr)/o.pm:null,pf:o.pf,rem:o.dl.length?Math.max(...o.dl):null});
   });
-  const CARDS=[
+  const CARDS0=[
     ["Plus belle victoire","Le meilleur adversaire battu, selon la force Elo.",r=>r.bw?r.bw.e:null,v=>String(v),"Elo",r=>"contre "+r.bw.nm],
     ["Meilleur indice en poule","Touches données moins touches reçues, par match (au moins 10 matchs de poule).",r=>r.pi,v=>(v>0?"+":"")+v.toFixed(1).replace(".",","),"par match",r=>r.club],
     ["Poules parfaites","Poules gagnées sans aucune défaite.",r=>r.pf>0?r.pf:null,v=>String(v),"poules",r=>r.club],
@@ -2829,9 +2829,10 @@ function renderRec(){
     ["Exploits","Victoires contre un adversaire nettement plus fort que lui.",r=>r.ex>0?r.ex:null,v=>String(v),"exploits",r=>r.club],
     ["Plus forte remontée","Places gagnées entre la fin des poules et le classement final, sur une épreuve.",r=>r.rem>0?r.rem:null,v=>"+"+v,"places",r=>r.club]
   ];
-  const ri=Math.min(Math.max(+S.rec||0,0),CARDS.length-1),[t,d,f,fm,u,sub]=CARDS[ri];
+  const PB=["M9","M11"].includes(K.cat),HID=c=>PB&&(c[0]==="Meilleur indice en poule"||c[0]==="Poules parfaites");
+  let ri=Math.min(Math.max(+S.rec||0,0),CARDS0.length-1);if(HID(CARDS0[ri]))ri=0;const [t,d,f,fm,u,sub]=CARDS0[ri];
   const L=RW.map(r=>({r,v:f(r)})).filter(x=>x.v!==null).sort((a,b)=>b.v-a.v||a.r.o.name.localeCompare(b.r.o.name)).slice(0,20);
-  let h=`<div class="wrapchips" style="margin-bottom:10px">${CARDS.map((c,n)=>`<button class="chip wr" aria-pressed="${n===ri}" data-f="tvrec" data-v="${n}">${c[0]}</button>`).join("")}</div><div class="mini" style="margin:0 2px 8px">${d}</div>`;
+  let h=`<div class="wrapchips" style="margin-bottom:10px">${CARDS0.map((c,n)=>HID(c)?"":`<button class="chip wr" aria-pressed="${n===ri}" data-f="tvrec" data-v="${n}">${c[0]}</button>`).join("")}</div><div class="mini" style="margin:0 2px 8px">${d}</div>${PB?`<div class="mini" style="margin:0 2px 8px">En M9 et M11, les records de poules (indice, poules parfaites) sont masqués : le format des poules varie trop d’une épreuve à l’autre (poules de 4, de 5, second tour à 8).</div>`:""}`;
   h+=L.length?L.map((x,n)=>`<button class="trow" ${x.r.i!==undefined?`data-t="${x.r.i}"`:""}><span class="krank ${n<3?"top":""}">${n+1}</span><div style="min-width:0"><div class="nm">${esc(x.r.o.name)} <span class="eg">${stBtn(x.r.i)}</span></div><div class="sub">${esc(sub(x.r)||"")}</div></div><div class="kpts">${fm(x.v)}<small>${u}</small></div></button>`).join(""):`<div class="empty">Aucun résultat pour ce record dans cette catégorie.</div>`;
   $("#t-count").textContent=RW.length?RW.length+" tireur"+(RW.length>1?"s":"")+" avec des résultats":"";
   $("#t-list").innerHTML=RW.length?h:`<div class="empty">Pas encore de résultats pour ${esc(K.sx)} ${esc(KL(K.cat))}${tvAny()||q?" avec ces filtres":""}.</div>`;
