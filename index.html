@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794895054";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794896827";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -449,6 +449,7 @@ body.scr .screen>.lt .stamp{display:none}
 .gr{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;padding:0 7px;border-radius:11px;font:700 12px var(--font-body);vertical-align:middle;background:var(--fill);color:var(--ink)}
 .gr-Ap,.gr-A{background:var(--good-soft);color:var(--good)}.gr-Bp,.gr-B{background:var(--accent-soft);color:var(--accent)}.gr-Cp,.gr-C{background:var(--warn-soft);color:var(--warn)}
 .sr-h .gr{height:28px;min-width:40px;font-size:16px;border-radius:14px}
+.pod .gr{margin-top:4px}
 .lnk2{all:unset;cursor:pointer;color:var(--accent);font-weight:600}
 .xw{display:none;margin-right:8px}.xw svg{width:16px;height:16px}
 .tbh{display:none}
@@ -1073,7 +1074,7 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
 function renderTir(){
   const L=tirQ();const _s=JSON.stringify([S.tq,[...S.tcats],S.fav,S.surcl,S.sort]);if(_s!==TSIG){TSIG=_s;TLIM=100}
   $("#t-count").textContent=L.length+" tireur"+(L.length>1?"s":"");
-  $("#t-list").innerHTML=(L.length?TH(["","Tireur","Club","Catégories",""]):"")+(L.length?L.slice(0,TLIM).map(([t,i])=>`<button class="trow" data-t="${i}">${av(t)}<div style="min-width:0"><div class="nm">${FAV.has(t[2])?"★ ":""}${esc(t[0])} ${esc(t[1])}</div><div class="sub">${esc(t[6])}</div><div class="cats">${t[3]?`<span class="tag n">${CATL[t[3]]}</span>`:""}${t[4]?`<span class="tag">↑ ${CATL[t[4]]}</span>`:""}<span class="tag">${t[5]} participation${t[5]>1?"s":""}</span></div></div>${ICON.chev}</button>`).join("")+(L.length>TLIM?`<button class="btn" id="t-more" type="button" style="width:100%;margin:6px 0 12px">Afficher la suite · ${L.length-TLIM} restants</button>`:""):`<div class="empty">Aucun tireur.</div>`);
+  $("#t-list").innerHTML=(L.length?TH(["","Tireur","Club","Catégories",""]):"")+(L.length?L.slice(0,TLIM).map(([t,i])=>`<button class="trow" data-t="${i}">${av(t)}<div style="min-width:0"><div class="nm">${FAV.has(t[2])?"★ ":""}${esc(t[0])} ${esc(t[1])} ${gradeTag(ratingOf(t))}</div><div class="sub">${esc(t[6])}</div><div class="cats">${t[3]?`<span class="tag n">${CATL[t[3]]}</span>`:""}${t[4]?`<span class="tag">↑ ${CATL[t[4]]}</span>`:""}<span class="tag">${t[5]} participation${t[5]>1?"s":""}</span></div></div>${ICON.chev}</button>`).join("")+(L.length>TLIM?`<button class="btn" id="t-more" type="button" style="width:100%;margin:6px 0 12px">Afficher la suite · ${L.length-TLIM} restants</button>`:""):`<div class="empty">Aucun tireur.</div>`);
 }
 let BACK=null,HX="";
 let PWIDE=null;
@@ -2153,6 +2154,8 @@ function ratingAll(){
   RAT={M:all,R};return R;
 }
 const ratingOf=t=>{try{return ratingAll()[nkey(t[0],t[1])]||null}catch(e){return null}};
+const ratingK=k=>{try{return ratingAll()[k]||null}catch(e){return null}};
+const ratingLic=l=>{try{const i=LICI.get(l);return i===undefined?null:ratingOf(D.tir[i])}catch(e){return null}};
 const gradeTag=r=>r?`<span class="gr gr-${r.g.replace("+","p")}" title="Rating indicatif ${r.g} (position ${r.sc}/100${r.prov?", peu de matchs":""})">${r.g}${r.prov?"?":""}</span>`:"";
 function sCmp(me,all,k){
   const m=sMet[k],v=m.f(me);if(v===null)return null;
@@ -2320,10 +2323,10 @@ function renderFfeList(cur){
   const rows=q?cur.rows.filter(r=>(r[1]+" "+r[2]+" "+r[3]).toLowerCase().includes(q)):cur.rows;
   $("#k-count").textContent=rows.length+" tireur"+(rows.length>1?"s":"")+(q?" trouvé"+(rows.length>1?"s":""):" classé"+(rows.length>1?"s":""));
   const head=`<div class="ffeh"><span class="fb"><i></i>FFE officiel</span><h2>${esc(cur.n)}</h2><div class="fs">${esc(cur.niv)} · ${esc(cur.sx)} ${esc(KL(K.cat))}${cur.maj?" · mis à jour le "+fmtJ(cur.maj):""}</div></div>`;
-  const pc=(r,n)=>{const nm=fNm(r).split(" ");return `<button type="button" class="pp p${n}" data-fr="${esc(r[5])}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(r[5]||r[1])}">${esc((r[2][0]||"")+(r[1][0]||""))}</span><span class="pn">${esc(fNm(r))}</span><span class="pt">${fPts(r[4])} pts</span><span class="pb">${r[0]}</span></button>`};
+  const pc=(r,n)=>{const nm=fNm(r).split(" ");return `<button type="button" class="pp p${n}" data-fr="${esc(r[5])}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(r[5]||r[1])}">${esc((r[2][0]||"")+(r[1][0]||""))}</span><span class="pn">${esc(fNm(r))}</span>${gradeTag(ratingLic(r[5]))}<span class="pt">${fPts(r[4])} pts</span><span class="pb">${r[0]}</span></button>`};
   const top=!q&&rows.length>=3&&rows[0][0]===1?rows.slice(0,3):[];
   const pod=top.length?`<div class="pod ffe"><div class="pc">${pc(top[1],2)}${pc(top[0],1)}${pc(top[2],3)}</div></div>`:"";
-  const body=rows.slice(top.length,300).map(r=>`<button class="trow" data-fr="${esc(r[5])}"><span class="krank ffe ${r[0]<=3?"top":""}">${r[0]}</span><div style="min-width:0"><div class="nm">${esc(fNm(r))}</div><div class="sub">${esc(r[3])}</div></div><div class="kpts">${fPts(r[4])}<small>pts</small></div></button>`).join("");
+  const body=rows.slice(top.length,300).map(r=>`<button class="trow" data-fr="${esc(r[5])}"><span class="krank ffe ${r[0]<=3?"top":""}">${r[0]}</span><div style="min-width:0"><div class="nm">${esc(fNm(r))} ${gradeTag(ratingLic(r[5]))}</div><div class="sub">${esc(r[3])}</div></div><div class="kpts">${fPts(r[4])}<small>pts</small></div></button>`).join("");
   $("#k-list").innerHTML=head+pod+(body?TH(["#","Tireur","Club","Points",""]):"")+body+(rows.length>300?`<div class="mini">300 premiers affichés sur ${rows.length}. Utilise la recherche pour trouver un tireur.</div>`:"")+`<div class="ffefoot">Classement officiel publié par la FFE (ffescrime.fr), mis à jour chaque semaine. Distinct de l’indicateur Sabre Radar, calculé à partir des résultats Greg.</div>`;
 }
 document.addEventListener("input",ev=>{if(ev.target.id==="k-q")renderFfeList()});
@@ -2405,11 +2408,11 @@ function renderKlass(){
   $("#k-intro").textContent="Saison "+seasonLbl(SEASON)+" · "+(RES?Object.keys(RES).length+" épreuves avec résultats":"chargement…");
   $("#k-count").textContent=L.length?L.length+" tireur"+(L.length>1?"s":"")+" classé"+(L.length>1?"s":""):"";
   const POD=L.length>=3?L.slice(0,3):[];
-  const pcell=(x,n)=>{const nm=x.name.split(" ");return `<button type="button" class="pp p${n}" data-kt="${esc(x.k)}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(x.k)}">${esc((nm[0][0]||"")+((nm[1]||"")[0]||""))}</span><span class="pn">${esc(x.name)}</span><span class="pt">${Math.round(x.tot)} pts</span><span class="pb">${x.rk}</span></button>`};
+  const pcell=(x,n)=>{const nm=x.name.split(" ");return `<button type="button" class="pp p${n}" data-kt="${esc(x.k)}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(x.k)}">${esc((nm[0][0]||"")+((nm[1]||"")[0]||""))}</span><span class="pn">${esc(x.name)}</span>${gradeTag(ratingK(x.k))}<span class="pt">${Math.round(x.tot)} pts</span><span class="pb">${x.rk}</span></button>`};
   const podHTML=POD.length?`<div class="pod"><div class="pc">${pcell(POD[1],2)}${pcell(POD[0],1)}${pcell(POD[2],3)}</div></div>`:"";
   $("#k-list").innerHTML=podHTML+(L.length?TH(["#","Tireur","Club · résultats","Points",""]):"")+(L.length?L.slice(POD.length,150).map((x,i)=>{
     const nm=x.name.split(" ");const ini=(nm[0][0]||"")+((nm[1]||"")[0]||"");
-    return `<button class="trow" data-kt="${esc(x.k)}"><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)}</div><div class="sub">${esc(x.club||"")} · ${x.L.length} résultat${x.L.length>1?"s":""}</div></div><div class="kpts">${Math.round(x.tot)}<small>pts</small></div></button>`}).join(""):`<div class="empty">Aucun résultat pour ${esc(K.sx)} ${esc(KL(K.cat))} cette saison.</div>`);
+    return `<button class="trow" data-kt="${esc(x.k)}"><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)} ${gradeTag(ratingK(x.k))}</div><div class="sub">${esc(x.club||"")} · ${x.L.length} résultat${x.L.length>1?"s":""}</div></div><div class="kpts">${Math.round(x.tot)}<small>pts</small></div></button>`}).join(""):`<div class="empty">Aucun résultat pour ${esc(K.sx)} ${esc(KL(K.cat))} cette saison.</div>`);
 }
 function kDetail(k){
   const x=klassList().find(y=>y.k===k);if(!x)return;
