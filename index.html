@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794897777";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794899339";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -591,7 +591,7 @@ body.scr .screen>.lt .stamp{display:none}
   </div>
   <div class="count" id="k-count"></div>
   <div class="list" id="k-list"></div>
-  <div class="mini" id="k-note" style="margin-top:14px">Indicateur de niveau calculé à partir des résultats Greg, pas le classement officiel FFE. Points : 100 − 10 × ⌈log₂(place)⌉, × coefficient d’épreuve × coefficient de surclassement. À partir de M15 : 5 meilleurs résultats, 3 maximum par source (international, national, régional). M9 à M13 : tous les résultats comptent.</div>
+  <div class="mini" id="k-note" style="margin-top:14px">Indicateur de niveau calculé à partir des résultats Greg, pas le classement officiel FFE. À partir de M15 : points = 100 − 10 × ⌈log₂(place)⌉, × coefficient d’épreuve × coefficient de surclassement ; 5 meilleurs résultats, 3 maximum par source (international, national, régional). M9, M11 et M13 : classement propre à Sabre Radar (il n’existe pas de classement français officiel). Catégorie stricte, sans surclassés ; points = 100 × (1 − log₂(place) ÷ log₂(effectif)), × facteur d’effectif (1 à partir de 16 tireurs, plancher 0,25), × niveau de l’épreuve (national 1,5, interrégional 1,25, régional 1, départemental 0,6) ; 5 meilleurs résultats ; équipes exclues.</div>
 </section>
 
 <section id="v-h" class="screen" hidden>
@@ -2289,7 +2289,7 @@ function renderChanges(){
 }
 
 /* ===== Classements ===== */
-const COEFD={int:1.7,cdf:1.5,nat:1,gr:0.5,rg:0.26,dp:0.1,sur:0.1};
+const COEFD={int:1.7,cdf:1.5,nat:1,gr:0.5,rg:0.26,dp:0.1,sur:0.1,jnat:1.5,jgr:1.25,jrg:1,jdp:0.6,jbest:5,jfull:16,jmin:0.25};
 let COEF={...COEFD};try{Object.assign(COEF,JSON.parse(localStorage.getItem("ffe-coef")||"{}"))}catch(e){}
 const saveCoef=()=>{try{localStorage.setItem("ffe-coef",JSON.stringify(COEF))}catch(e){}};
 const K={sx:"Hommes",cat:"M15"};try{Object.assign(K,JSON.parse(localStorage.getItem("ffe-k")||"{}"))}catch(e){}
@@ -2336,6 +2336,7 @@ function renderFfeList(cur){
   $("#k-list").innerHTML=head+pod+(body?TH(["#","Tireur","Club","Points",""]):"")+body+(rows.length>300?`<div class="mini">300 premiers affichés sur ${rows.length}. Utilise la recherche pour trouver un tireur.</div>`:"")+`<div class="ffefoot">Classement officiel publié par la FFE (ffescrime.fr), mis à jour chaque semaine. Distinct de l’indicateur Sabre Radar, calculé à partir des résultats Greg.</div>`;
 }
 document.addEventListener("input",ev=>{if(ev.target.id==="k-q")renderFfeList()});
+const JEU=["M9","M11","M13"];
 const KCATS=["M9","M11","M13","M15","M17","M20","SENIOR","V1","V2","V3","V4"];
 const KL=c=>/^V\d/.test(c)?"Vét. "+c[1]:c==="SENIOR"?"Senior":c;
 const KRK={M9:1,M11:2,M13:3,M15:4,M17:5,M20:6,SENIOR:7};
@@ -2366,12 +2367,23 @@ function klassData(){
       const R=resOf(c,e);if(!R||EQ(e)||!(c.f<TODAY||R.done))return;
       const cats=e.c.split(", ").map(x=>KRK[x]).filter(Boolean);const minr=cats.length?Math.min(...cats):0;
       const single=e.c.split(", ").length===1?pcat(e.c):"";
+      const ecats=e.c.split(", ").map(x=>pcat(x)||x);
       R.res.forEach((r,ri)=>{
         if(!r.final||!r.final.length)return;
+        const jg={};r.final.forEach(f=>{const p=r.players[f.id];if(!p)return;const pc=pcat(p[3])||single;if(JEU.includes(pc)&&ecats.includes(pc))(jg[pc]=jg[pc]||[]).push(f.pl)});
         r.final.forEach(f=>{
           const p=r.players[f.id];if(!p)return;if(r.src==="fie"&&p[2]!=="FRA")return;
           const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+f.id;if(seen.has(sk))return;seen.add(sk)
           let pc=pcat(p[3])||single;if(!pc||!KCATS.includes(pc))return;
+          if(JEU.includes(pc)){
+            /* M9-M13 : catégorie stricte (pas de surclassés), place recalculée dans la catégorie, points logarithmiques × effectif × niveau */
+            if(!ecats.includes(pc))return;const G=jg[pc]||[],N=G.length;if(N<2)return;
+            const rk=1+G.filter(x=>x<f.pl).length,fe=Math.max(COEF.jmin,Math.min(1,N/COEF.jfull));
+            const nmj=((c.n||"")+" "+(c.nn||"")).toUpperCase();
+            const jc=c.ty==="national"||c.ty==="international"||/CHAMPIONNATS?\s+(DE\s+)?FRANCE|CHALLENGE\s+DE\s+FRANCE/.test(nmj)?[COEF.jnat,"National / Challenge de France"]:c.ty==="grande régional"?[COEF.jgr,"Interrégional / grande régionale"]:c.ty==="départemental"?[COEF.jdp,"Départemental"]:[COEF.jrg,"Régional"];
+            const base=Math.round(100*(1-Math.log2(rk)/Math.log2(N))*fe*10)/10;
+            const o=(((B[e.s+"|"+pc]=B[e.s+"|"+pc]||{})[nkey(p[0],p[1])])=B[e.s+"|"+pc][nkey(p[0],p[1])]||{name:p[0]+" "+p[1],club:p[2],res:[]});
+            o.club=p[2]||o.club;o.res.push({c,e,ri,pl:rk,n:N,base,coef:jc[0],gap:0,lv:{src:"reg",coef:jc[0],lab:jc[1]+" · effectif ×"+(Math.round(fe*100)/100)},pts:base*jc[0]});return}
           const gap=minr&&KRK[pc]?Math.max(0,minr-KRK[pc]):0;
           const coef=lv.coef*(1+COEF.sur*gap),base=ptsOf(f.pl);
           const key=e.s+"|"+pc,nk=nkey(p[0],p[1]);
@@ -2384,9 +2396,9 @@ function klassData(){
   });
   return B;
 }
-function kScore(res,cat){const all=["M9","M11","M13"].includes(cat);
+function kScore(res,cat){const all=JEU.includes(cat);
   const L=res.slice().sort((a,b)=>b.pts-a.pts);const cnt={int:0,nat:0,reg:0};let tot=0,n=0;
-  L.forEach(x=>{x.on=false;if(all||(n<5&&cnt[x.lv.src]<3)){x.on=true;cnt[x.lv.src]++;n++;tot+=x.pts}});
+  L.forEach(x=>{x.on=false;if(all?n<COEF.jbest:(n<5&&cnt[x.lv.src]<3)){x.on=true;cnt[x.lv.src]++;n++;tot+=x.pts}});
   return {L,tot};
 }
 let KB=null;
@@ -2423,11 +2435,11 @@ function renderKlass(){
 function kDetail(k){
   const x=klassList().find(y=>y.k===k);if(!x)return;
   sheet(`${esc(x.name)}<div class="sub">${esc(x.club||"")} · ${esc(K.sx)} ${esc(KL(K.cat))} · ${Math.round(x.tot)} pts (rang ${x.rk})</div>`,
-    `<div class="mini" style="margin:0 0 8px">${["M9","M11","M13"].includes(K.cat)?"Tous les résultats comptent pour cette catégorie.":"Résultats comptés en premier (5 max, 3 par source), les autres grisés."}</div><div class="list">`+
+    `<div class="mini" style="margin:0 0 8px">${JEU.includes(K.cat)?"Les "+COEF.jbest+" meilleurs résultats comptent (catégorie stricte, place calculée parmi les tireurs de la catégorie).":"Résultats comptés en premier (5 max, 3 par source), les autres grisés."}</div><div class="list">`+
     x.L.map(r=>`<div class="kr ${r.on?"":"off"}"><div><b>${esc(fd(r.c.d))}</b> · ${esc(r.c.v)}<br><small>${esc(r.c.n)} · ${esc(epLabel(r.e))}</small><br><b>Classement final : ${r.pl}${r.pl===1?"er":"ᵉ"} sur ${r.n}</b><br><small>${r.base} pts × ${(Math.round(r.coef*100)/100)} (${esc(r.lv.lab)}${r.gap?", surclassé +"+r.gap:""})</small><br><button class="rs" style="margin-top:8px" data-res="${r.c.id}:${r.c.eps.indexOf(r.e)}:final:${r.ri}">${ICON.trophy}Résultats</button></div><div class="p">${(Math.round(r.pts*10)/10)}${r.on?"":"<br><small>non compté</small>"}</div></div>`).join("")+`</div>`);
 }
 function kSettings(){
-  const F=[["int","International"],["cdf","Championnat de France"],["nat","National"],["gr","Grande régionale"],["rg","Régional"],["dp","Départemental"],["sur","Surclassement (par catégorie d’écart)"]];
+  const F=[["int","International"],["cdf","Championnat de France"],["nat","National"],["gr","Grande régionale"],["rg","Régional"],["dp","Départemental"],["sur","Surclassement (par catégorie d’écart)"],["jnat","M9-M13 · National / Challenge de France"],["jgr","M9-M13 · Interrégional / grande régionale"],["jrg","M9-M13 · Régional"],["jdp","M9-M13 · Départemental"],["jbest","M9-M13 · meilleurs résultats retenus"],["jfull","M9-M13 · effectif pour le facteur plein"],["jmin","M9-M13 · facteur d’effectif minimal"]];
   sheet("Coefficients",`<div class="mini" style="margin:0 0 8px">Officiel FFE : international 1,7 · championnat de France 1,5 · national 1 · régional 0,26. Les autres valeurs et le surclassement sont des estimations réglables. Formations et stages ne comptent pas. Horizon 2036 : 0,5 / 1 / 1,5 / 2 selon le tour.</div>`+
     F.map(([k,l])=>`<label class="cf"><span>${l}</span><input type="number" inputmode="decimal" step="0.05" min="0" value="${COEF[k]}" data-coef="${k}"></label>`).join("")+
     `<div class="btns"><button class="btn" data-f="kreset">Valeurs par défaut</button><button class="btn primary" data-close="1">OK</button></div>`);
