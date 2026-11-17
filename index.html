@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794908512";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794909808";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1755,7 +1755,19 @@ function resOf(c,e){return RES&&RES[EK(c,e)]||null}
 const RS={};
 function rview(R){const a=[];if(R.poules&&R.poules.length)a.push(["poules","Poules"]);if(R.classement_poules&&R.classement_poules.length)a.push(["apres","Après poules"]);if(R.tableau&&R.tableau.some(t=>t.matches.some(m=>m.a&&m.a.name)))a.push(["tableau","Tableau"]);if(R.final&&R.final.length)a.push(["final","Classement final"]);return a}
 let ARCH=null,HIST=[];
+function finPoules(){
+  if(!RES)return;
+  for(const k in RES)(RES[k].res||[]).forEach(r=>{
+    if(r.final&&r.final.length)return;
+    if((r.tableau||[]).some(t=>(t.matches||[]).length))return;
+    const cp=(r.classement_poules||[]).filter(c=>(c.rows||[]).length);if(!cp.length)return;
+    const last=cp.reduce((a,b)=>(b.tour||0)>=(a.tour||0)?b:a),pl=r.players||{};
+    const f=last.rows.filter(x=>pl[x.id]&&typeof x.pl==="number").map(x=>({pl:x.pl,id:x.id})).sort((a,b)=>a.pl-b.pl);
+    if(f.length){r.final=f;r.fin_src="poules"}
+  });
+}
 function mergeArc(){
+  finPoules();
   if(!ARCH||!RES)return;
   const have=new Set(D.comps.map(c=>c.k)),by={};
   for(const key in ARCH){const a=ARCH[key];if(have.has(a.c.k))continue;
@@ -1794,7 +1806,7 @@ function vfinal(R){
   const q=(RS.q||"").toLowerCase();
   const cnt={};R.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);
   const rows=R.final.filter(r=>!q||(pname(R,r.id)+" "+pclub(R,r.id)).toLowerCase().includes(q)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${esc(pname(R,r.id))}</b> ${rStat(R,r.id)}<small>${esc(pclub(R,r.id))}</small></div></div>`).join("");
-  return `<input class="rsearch" id="rsq" type="search" placeholder="Chercher un tireur ou un club" value="${esc(RS.q||"")}"><div class="mini">${R.final.length} classés</div><div style="display:flex;flex-direction:column;gap:4px" id="rfin">${rows||'<div class="empty">Aucun résultat.</div>'}</div>`;
+  return `<input class="rsearch" id="rsq" type="search" placeholder="Chercher un tireur ou un club" value="${esc(RS.q||"")}"><div class="mini">${R.final.length} classés${R.fin_src==="poules"?" · classement après le dernier tour de poules (pas de tableau)":""}</div><div style="display:flex;flex-direction:column;gap:4px" id="rfin">${rows||'<div class="empty">Aucun résultat.</div>'}</div>`;
 }
 const RND=["Finale","Demi-finales","Quarts de finale","Tableau de 16","Tableau de 32","Tableau de 64","Tableau de 128","Tableau de 256"];
 function tnodes(tr){
