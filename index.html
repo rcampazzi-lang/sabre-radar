@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794916551";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794917085";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2399,16 +2399,27 @@ const fCat=(x,c)=>x.cat===c||x.cat.split(" / ").includes(c);
 const fShort=n=>n.replace(/^Classement\s+(R[ée]gional|National|International)?\s*(Individuel(le)?\s*-?\s*)?/i,"").trim()||n;
 const fPts=v=>Number.isInteger(v)?v.toLocaleString("fr-FR"):v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fNm=r=>r[2]+" "+r[1];
+/* grande région d'un classement régional FFE : région majoritaire de ses tireurs (annuaire) ; "" pour national / international */
+function listGR(x){
+  if(x._g!==undefined)return x._g;
+  let g="";
+  if(x.niv==="Régional"){const c={};x.rows.forEach(r=>{const i=tirI(r);if(i===undefined)return;const k=grOf(D.tir[i]);c[k]=(c[k]||0)+1});
+    const e=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];if(e&&e[1]>=Math.max(1,x.rows.length*.4))g=e[0]}
+  x._g=g;return g;
+}
 function ffeCur(){
   const A=FFK?FFK.lists:[];
   const cats=KCATS.filter(c=>A.some(x=>x.sx===K.sx&&fCat(x,c)));
   if(cats.length&&!cats.includes(K.cat))K.cat=cats.includes("M15")?"M15":cats[0];
-  const pool=A.filter(x=>x.sx===K.sx&&fCat(x,K.cat)).sort((a,b)=>(FLV[a.niv]??9)-(FLV[b.niv]??9)||a.n.localeCompare(b.n));
+  const poolAll=A.filter(x=>x.sx===K.sx&&fCat(x,K.cat)).sort((a,b)=>(FLV[a.niv]??9)-(FLV[b.niv]??9)||a.n.localeCompare(b.n));
+  const grs=[...new Set(poolAll.map(listGR).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
+  const pool=K.gr?poolAll.filter(x=>x.niv!=="Régional"||listGR(x)===K.gr):poolAll;
   const lvs=[...new Set(pool.map(x=>x.niv))];
   const lv=lvs.includes(K.lv)?K.lv:lvs[0];
   const ls=pool.filter(x=>x.niv===lv);
-  const cur=ls.find(x=>x.id===K.cl)||ls[0]||null;
-  return {cats,lvs,lv,ls,cur};
+  let cur=ls.find(x=>x.id===K.cl)||null,need=false;
+  if(!cur){if(lv==="Régional"&&ls.length>1&&!K.gr)need=true;else cur=ls[0]||null}
+  return {cats,lvs,lv,ls,cur,need,grs};
 }
 function renderFfeK(){
   $("#k-note").hidden=true;
@@ -2436,11 +2447,13 @@ function ffeDetail(lid,fi){
      `<div class="empty">Détail par compétition non disponible pour ce classement.</div>`));
 }
 function renderFfeList(cur){
-  if(!cur)cur=ffeCur().cur;
+  const E=ffeCur();if(!cur)cur=E.cur;
   const q=S.tq.trim().toLowerCase();
-  if(!cur){$("#t-count").textContent="";$("#t-list").innerHTML=`<div class="empty">${FFK?"Pas de classement FFE pour "+esc(K.sx)+" "+esc(KL(K.cat))+".":"Chargement des classements FFE…"}</div>`;return}
-  const flt=!!q||tvAny();
-  const rows=flt?cur.rows.filter(r=>(!q||(r[1]+" "+r[2]+" "+r[3]).toLowerCase().includes(q))&&tvPass(tirI(r),r[3])):cur.rows;
+  if(!cur){$("#t-count").textContent="";
+    if(FFK&&E.need)$("#t-list").innerHTML=`<div class="empty">Pas de classement national pour ${esc(K.sx)} ${esc(KL(K.cat))}.<br>Sélectionne une grande région pour afficher son classement régional.</div><div class="wrapchips" style="justify-content:center;margin-top:10px">${E.grs.map(g=>chip(g,K.gr===g,`data-f="tvg" data-v="${esc(g)}"`).replace('class="chip"','class="chip wr"')).join("")}</div>`;
+    else $("#t-list").innerHTML=`<div class="empty">${FFK?"Pas de classement FFE pour "+esc(K.sx)+" "+esc(KL(K.cat))+(K.gr?" en "+esc(K.gr):"")+".":"Chargement des classements FFE…"}</div>`;return}
+  const flt=!!q||!!(K.rg||K.club);
+  const rows=flt?cur.rows.filter(r=>(!q||(r[1]+" "+r[2]+" "+r[3]).toLowerCase().includes(q))&&tvPass(tirI(r),r[3],true)):cur.rows;
   $("#t-count").textContent=rows.length+" tireur"+(rows.length>1?"s":"")+(flt?" trouvé"+(rows.length>1?"s":""):" classé"+(rows.length>1?"s":""));
   const head=`<div class="ffeh"><span class="fb"><i></i>FFE officiel</span><h2>${esc(cur.n)}</h2><div class="fs">${esc(cur.niv)} · ${esc(cur.sx)} ${esc(KL(K.cat))}${cur.maj?" · mis à jour le "+fmtJ(cur.maj):""}</div></div>`;
   const pc=(r,n)=>{const nm=fNm(r).split(" ");return `<button type="button" class="pp p${n}" data-fr="${esc(r[5])}" data-fl="${cur.id}" data-fi="${cur.rows.indexOf(r)}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(r[5]||r[1])}">${esc((r[2][0]||"")+(r[1][0]||""))}</span><span class="pn">${esc(fNm(r))}</span>${gradeTag(ratingRow(r))}${stRow(r)}<span class="pt">${fPts(r[4])} pts</span><span class="pb">${r[0]}</span></button>`};
@@ -2536,10 +2549,10 @@ const clubOf=t=>{const s=t[6]||"",i=s.indexOf(" / ");return i<0?s.replace(/^\/\s
 const grOf=t=>LIG2GR[ligOf(t)]||"Autre";
 const tirIdx=k=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));return TIRK.get(k)};
 const tvAny=()=>!!(K.gr||K.rg||K.club);
-function tvPass(i,clubName){
+function tvPass(i,clubName,skipGr){
   if(!tvAny())return true;
   const t=i!==undefined&&i!==null?D.tir[i]:null;
-  if(K.gr||K.rg){if(!t)return false;if(K.rg&&ligOf(t)!==K.rg)return false;if(K.gr&&grOf(t)!==K.gr)return false}
+  if((K.gr&&!skipGr)||K.rg){if(!t)return false;if(K.rg&&ligOf(t)!==K.rg)return false;if(K.gr&&!skipGr&&grOf(t)!==K.gr)return false}
   if(K.club){const cn=t?clubOf(t):(clubName||"");if(cn.toUpperCase()!==K.club.toUpperCase())return false}
   return true;
 }
@@ -2632,7 +2645,7 @@ function tvClick(b){
     if(v==="q"){S.tq="";$("#tq").value=""}else if(v.startsWith("tc:"))S.tcats.delete(v.slice(3));else if(v==="surcl")S.surcl=false;
     else if(v==="gr")K.gr="";else if(v==="rg")K.rg="";else if(v==="club")K.club="";else if(v==="hp")K.hp=false;
     save();saveK();renderTV();sh();return true}
-  if(f==="tvg"){K.gr=K.gr===v?"":v;if(K.rg&&K.gr&&(LIG2GR[K.rg]||"Autre")!==K.gr)K.rg="";K.club=""}
+  if(f==="tvg"){K.cl="";K.gr=K.gr===v?"":v;if(K.rg&&K.gr&&(LIG2GR[K.rg]||"Autre")!==K.gr)K.rg="";K.club=""}
   else if(f==="tvr"){K.rg=K.rg===v?"":v;K.club=""}
   else if(f==="tvc"){K.club=K.club===v?"":v}
   else if(f==="tvhp")K.hp=!K.hp;
