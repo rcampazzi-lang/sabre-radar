@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794947243";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794947342";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -27,7 +27,7 @@
   --t-int:#c3b0f6; --t-int-bg:#2a2150; --t-nat:#9fc0f6; --t-nat-bg:#162b4f; --t-rg:#a2d98a; --t-rg-bg:#1b3414; --t-dp:#93a6a2; --t-dp-bg:#1e2e2c;
   --av-bg:24%; --av-fg:82%; --sh:none; --bar:rgba(10,17,16,.82); color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}@media (pointer:coarse){input,select,textarea{font-size:16px!important}}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(92px + env(safe-area-inset-bottom,0px))}
 body.lock{overflow:hidden}
@@ -401,9 +401,6 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 :root[data-theme="dark"]{--c-gr:#4A1E30;--t-gr:#F4A9C6;--t-gr-bg:#4A1E30}
 #a-seg{overflow-x:auto;scrollbar-width:none}#a-seg::-webkit-scrollbar{display:none}#a-seg button{font-size:12px;padding:9px 8px;white-space:nowrap;flex:1 0 auto}/* bandeau de titre fixe */
 .screen>.lt{position:sticky;top:env(safe-area-inset-top,0px);z-index:21;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px)}
-body.scr .screen>.lt{padding-top:8px;padding-bottom:8px;align-items:center}
-body.scr .screen>.lt h1{font-size:24px}
-body.scr .screen>.lt .stamp{display:none}
 .screen>.bar{top:calc(env(safe-area-inset-top,0px) + var(--lth,0px))}
 .btn svg.rt,.hero svg.rt{width:19px;height:19px;fill:currentColor;stroke:none;flex:none}
 .hero .hb{margin-top:14px;display:flex;gap:8px}
@@ -2950,7 +2947,7 @@ document.addEventListener("change",ev=>{const k=ev.target.dataset&&ev.target.dat
   const lt=()=>[...document.querySelectorAll(".screen>.lt")].find(l=>l.offsetParent);
   let on=false;
   const tick=()=>{const y=window.scrollY;const want=on?y>20:y>60;if(want===on)return;const l=lt(),b=l?l.offsetHeight:0;on=want;document.body.classList.toggle("scr",on);const a=l?l.offsetHeight:0;setLth();if(a!==b)window.scrollBy(0,a-b)};
-  window.addEventListener("scroll",tick,{passive:true});
+  
   window.addEventListener("resize",setLth);
   if(window.ResizeObserver){const ro=new ResizeObserver(setLth);document.querySelectorAll(".screen>.lt").forEach(l=>ro.observe(l))}
   window.addEventListener("load",setLth);setLth();
