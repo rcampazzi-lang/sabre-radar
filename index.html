@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794896827";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794897436";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1074,7 +1074,7 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
 function renderTir(){
   const L=tirQ();const _s=JSON.stringify([S.tq,[...S.tcats],S.fav,S.surcl,S.sort]);if(_s!==TSIG){TSIG=_s;TLIM=100}
   $("#t-count").textContent=L.length+" tireur"+(L.length>1?"s":"");
-  $("#t-list").innerHTML=(L.length?TH(["","Tireur","Club","Catégories",""]):"")+(L.length?L.slice(0,TLIM).map(([t,i])=>`<button class="trow" data-t="${i}">${av(t)}<div style="min-width:0"><div class="nm">${FAV.has(t[2])?"★ ":""}${esc(t[0])} ${esc(t[1])} ${gradeTag(ratingOf(t))}</div><div class="sub">${esc(t[6])}</div><div class="cats">${t[3]?`<span class="tag n">${CATL[t[3]]}</span>`:""}${t[4]?`<span class="tag">↑ ${CATL[t[4]]}</span>`:""}<span class="tag">${t[5]} participation${t[5]>1?"s":""}</span></div></div>${ICON.chev}</button>`).join("")+(L.length>TLIM?`<button class="btn" id="t-more" type="button" style="width:100%;margin:6px 0 12px">Afficher la suite · ${L.length-TLIM} restants</button>`:""):`<div class="empty">Aucun tireur.</div>`);
+  $("#t-list").innerHTML=(L.length?TH(["","Tireur","Club","Catégories",""]):"")+(L.length?L.slice(0,TLIM).map(([t,i])=>`<button class="trow" data-t="${i}">${av(t)}<div style="min-width:0"><div class="nm">${FAV.has(t[2])?"★ ":""}${esc(t[0])} ${esc(t[1])} ${gradeTag(ratingOf(t))}</div><div class="sub">${esc(t[6])}</div><div class="cats">${t[3]?`<span class="tag n">${CATL[t[3]]}</span>`:""}${t[4]?`<span class="tag">↑ ${CATL[t[4]]}</span>`:""}<span class="tag">${t[5]} participation${t[5]>1?"s":""}</span><span class="tag n" data-ts="${i}" role="button">Voir stats</span></div></div>${ICON.chev}</button>`).join("")+(L.length>TLIM?`<button class="btn" id="t-more" type="button" style="width:100%;margin:6px 0 12px">Afficher la suite · ${L.length-TLIM} restants</button>`:""):`<div class="empty">Aucun tireur.</div>`);
 }
 let BACK=null,HX="";
 let PWIDE=null;
@@ -1097,7 +1097,7 @@ function engages(ci,ei){
   const evo=hn&&hn.length>1?`<div class="mini">Évolution des inscrits : ${hn.map(([d,n])=>fd(d).replace(/^\S+ /,"")+" : "+n).join(" · ")}</div>`:"";
   const vn=!all&&c.eps[ei].vn?`<div class="mini">Par catégorie : ${Object.entries(c.eps[ei].vn).map(([k,n])=>k+" : "+n).join(" · ")}</div>`:"";
   const chips=withN.length>1?`<div class="chips">${chip("Tous",all,`data-eng="${ci}:all"`)}${withN.map(([e,i])=>chip(epLabel(e)+" · "+e.n,!all&&i===Number(ei),`data-eng="${ci}:${i}"`)).join("")}</div>`:"";
-  const body=chips+evo+vn+(rows.length?`<div class="mini">${rows.length} tireur${rows.length>1?"s":""}</div>`+rows.map(t=>t.eg?`<div class="li"><div>${esc(t[0])} ${esc(t[1])}<br><small>${esc(t[6])}</small></div></div>`:`<div class="li"><div><button data-t="${D.tir.indexOf(t)}">${esc(t[0])} ${esc(t[1])}</button> ${gradeTag(ratingOf(t))}<br><small>${esc(t[6])}${ratingOf(t)?` · <button class="lnk2" data-ts="${D.tir.indexOf(t)}">voir ses stats</button>`:""}</small></div><span class="tag">${t[3]?CATL[t[3]]:"–"}${t[4]?" ↑ "+CATL[t[4]]:""}</span></div>`).join("")+(all||!resOf(c,c.eps[ei])?"":`<button class="btn primary" style="margin-top:6px" data-res="${ci}:${ei}::0">Résultats</button>`)+(all||!c.eps[ei].u?"":`<a class="btn" style="margin-top:6px;text-align:center" href="${esc(c.eps[ei].u)}" target="_blank" rel="noopener">Page FFE des engagés</a>`):`<div class="empty">Aucun engagé pour l'instant.</div>`);
+  const body=chips+evo+vn+(rows.length?`<div class="mini">${rows.length} tireur${rows.length>1?"s":""}</div>`+rows.map(t=>t.eg?`<div class="li"><div>${esc(t[0])} ${esc(t[1])}<br><small>${esc(t[6])}</small></div></div>`:`<div class="li"><div><button data-t="${D.tir.indexOf(t)}">${esc(t[0])} ${esc(t[1])}</button> ${gradeTag(ratingOf(t))}<br><small>${esc(t[6])} · <button class="lnk2" data-ts="${D.tir.indexOf(t)}">voir ses stats</button></small></div><span class="tag">${t[3]?CATL[t[3]]:"–"}${t[4]?" ↑ "+CATL[t[4]]:""}</span></div>`).join("")+(all||!resOf(c,c.eps[ei])?"":`<button class="btn primary" style="margin-top:6px" data-res="${ci}:${ei}::0">Résultats</button>`)+(all||!c.eps[ei].u?"":`<a class="btn" style="margin-top:6px;text-align:center" href="${esc(c.eps[ei].u)}" target="_blank" rel="noopener">Page FFE des engagés</a>`):`<div class="empty">Aucun engagé pour l'instant.</div>`);
   const keep=$("#sheet").querySelector(".inner");const st=keep?keep.scrollTop:0;
   sheet(`${esc(c.v)} · ${esc(title)}<div class="sub" style="font-weight:400">${esc(fd(c.d))} · ${esc(c.n)}</div>`,body);
 }
@@ -1761,6 +1761,8 @@ let RES=null;
 function resOf(c,e){return RES&&RES[EK(c,e)]||null}
 const RS={};
 function rview(R){const a=[];if(R.poules&&R.poules.length)a.push(["poules","Poules"]);if(R.classement_poules&&R.classement_poules.length)a.push(["apres","Après poules"]);if(R.tableau&&R.tableau.some(t=>t.matches.some(m=>m.a&&m.a.name)))a.push(["tableau","Tableau"]);if(R.final&&R.final.length)a.push(["final","Classement final"]);return a}
+let TIRK=null;
+function rStat(R,id){const p=R.players[id];if(!p)return"";if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));const i=TIRK.get(nkey(p[0],p[1]));if(i===undefined)return"";const g=gradeTag(ratingOf(D.tir[i]));return `${g} <span class="tag n" data-ts="${i}" role="button" style="cursor:pointer">Voir stats</span>`}
 function pname(R,id,short){const p=R.players[id];if(!p)return "#"+id;return short?`${p[0]} ${p[1]}`:`${p[0]} ${p[1]}`}
 function pclub(R,id){const p=R.players[id];return p?p[2]:""}
 function fv(v){return (Math.round(v*100)/100).toFixed(2)}
@@ -1785,7 +1787,7 @@ function vapres(R){
 function vfinal(R){
   const q=(RS.q||"").toLowerCase();
   const cnt={};R.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);
-  const rows=R.final.filter(r=>!q||(pname(R,r.id)+" "+pclub(R,r.id)).toLowerCase().includes(q)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${esc(pname(R,r.id))}</b><small>${esc(pclub(R,r.id))}</small></div></div>`).join("");
+  const rows=R.final.filter(r=>!q||(pname(R,r.id)+" "+pclub(R,r.id)).toLowerCase().includes(q)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${esc(pname(R,r.id))}</b> ${rStat(R,r.id)}<small>${esc(pclub(R,r.id))}</small></div></div>`).join("");
   return `<input class="rsearch" id="rsq" type="search" placeholder="Chercher un tireur ou un club" value="${esc(RS.q||"")}"><div class="mini">${R.final.length} classés</div><div style="display:flex;flex-direction:column;gap:4px" id="rfin">${rows||'<div class="empty">Aucun résultat.</div>'}</div>`;
 }
 const RND=["Finale","Demi-finales","Quarts de finale","Tableau de 16","Tableau de 32","Tableau de 64","Tableau de 128","Tableau de 256"];
@@ -1871,7 +1873,7 @@ function results(ci,ei,view,gi){
     tabs+gs+body+(R.url?`<a class="btn" style="margin-top:8px;text-align:center" href="${esc(R.url)}" target="_blank" rel="noopener">Page Greg de l'épreuve</a>`:""));
   if(PWIDE!==false)$("#sheet").dataset.wide="1";
   const ni=$("#sheet").querySelector(".inner");if(ni&&keep)ni.scrollTop=st;
-  const q=$("#rsq");if(q)q.addEventListener("input",ev=>{RS.q=ev.target.value;const f=$("#rfin");if(f){const R2=R;const qq=RS.q.toLowerCase();const cnt={};R2.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);f.innerHTML=R2.final.filter(r=>!qq||(pname(R2,r.id)+" "+pclub(R2,r.id)).toLowerCase().includes(qq)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${esc(pname(R2,r.id))}</b><small>${esc(pclub(R2,r.id))}</small></div></div>`).join("")}});
+  const q=$("#rsq");if(q)q.addEventListener("input",ev=>{RS.q=ev.target.value;const f=$("#rfin");if(f){const R2=R;const qq=RS.q.toLowerCase();const cnt={};R2.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);f.innerHTML=R2.final.filter(r=>!qq||(pname(R2,r.id)+" "+pclub(R2,r.id)).toLowerCase().includes(qq)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${esc(pname(R2,r.id))}</b> ${rStat(R2,r.id)}<small>${esc(pclub(R2,r.id))}</small></div></div>`).join("")}});
 }
 
 let TYO={};try{TYO=JSON.parse(localStorage.getItem("ffe-tyo")||"{}")}catch(e){}
@@ -2136,7 +2138,7 @@ const RW={pp:.35,sh:.25,pw:.2,tw:.2};let RAT=null;
 function gradeOf(p){return p>=90?"A+":p>=78?"A":p>=64?"B+":p>=48?"B":p>=30?"C+":"C"}
 function ratingAll(){
   const all=statsAll();if(RAT&&RAT.M===all)return RAT.R;
-  const L=Object.values(all).filter(o=>o.ne>0&&(o.pm+o.tw+o.tl)>=5).map(o=>({o,m:sMain(o),v:Object.fromEntries(Object.keys(RW).map(k=>[k,sMet[k].f(o)]))}));
+  const L=Object.values(all).filter(o=>o.ne>0&&((o.pm+o.tw+o.tl)>=5||o.pls.length>=2)).map(o=>({o,m:sMain(o),v:Object.fromEntries(Object.keys(RW).map(k=>[k,sMet[k].f(o)]))}));
   const grp={};L.forEach(x=>{[x.m.sx+"|"+x.m.cat,x.m.sx].forEach(g=>(grp[g]=grp[g]||[]).push(x))});
   const R={},S=new Map();
   const cohort=x=>(grp[x.m.sx+"|"+x.m.cat]||[]).length>=8?grp[x.m.sx+"|"+x.m.cat]:grp[x.m.sx];
@@ -2145,10 +2147,10 @@ function ratingAll(){
     let s=0,w=0;
     for(const k in RW){const v=x.v[k];if(v===null)continue;const P=G.map(y=>y.v[k]).filter(z=>z!==null);if(P.length<5)continue;
       const pc=(P.filter(z=>z<v).length+P.filter(z=>z===v).length/2)/P.length*100;s+=pc*RW[k];w+=RW[k]}
-    if(w<.4)return;
-    const mt=x.o.pm+x.o.tw+x.o.tl;S.set(x,50+(s/w-50)*mt/(mt+8))/* tassé vers 50 quand il y a peu de matchs */});
+    if(w<.3)return;
+    const mt=x.o.pm+x.o.tw+x.o.tl+4*x.o.pls.length;S.set(x,50+(s/w-50)*mt/(mt+8))/* tassé vers 50 quand il y a peu de matchs */});
   L.forEach(x=>{
-    if(!S.has(x))return;const G=cohort(x).filter(y=>S.has(y)),sc=S.get(x),mt=x.o.pm+x.o.tw+x.o.tl;
+    if(!S.has(x))return;const G=cohort(x).filter(y=>S.has(y)),sc=S.get(x),mt=x.o.pm+x.o.tw+x.o.tl+4*x.o.pls.length;
     const pc=(G.filter(y=>S.get(y)<sc).length+G.filter(y=>S.get(y)===sc).length/2)/G.length*100;
     R[x.o.nk]={sc:Math.round(pc),g:gradeOf(pc),n:G.length,prov:mt<12}});
   RAT={M:all,R};return R;
@@ -2192,7 +2194,7 @@ function statsHTML(t,idx){
   const lv=Object.entries(me.lv).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<span class="tag n">${esc(k)} · ${v.n} (meilleure ${rkLbl(v.best)})</span>`).join("");
   const opp=Object.values(me.opp).filter(o=>o.w+o.l>=2).sort((a,b)=>b.w+b.l-a.w-a.l).slice(0,5).map(o=>`<div class="li"><div>${esc(o.nm)}</div><b>${o.w} V – ${o.l} D</b></div>`).join("");
   const rt=ratingAll()[nk];
-  const rtc=rt?`<div class="sr"><div class="sr-h"><span>Rating indicatif</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.sc)}%"></i></div><div class="sr-n">Position ${rt.sc}/100 parmi les ${rt.n} tireurs de même sexe${rt.n>=8?" et catégorie":""} · mélange (tassé vers la moyenne quand il y a peu de matchs) du classement final (35 %), de la part des touches (25 %), des victoires en poule (20 %) et en tableau (20 %)${rt.prov?" · peu de matchs : à prendre avec prudence (?)":""}</div></div>`:`<div class="sr"><div class="sr-h"><span>Rating indicatif</span><b>–</b></div><div class="sr-n">Pas assez de matchs cette saison pour établir un rating.</div></div>`;
+  const rtc=rt?`<div class="sr"><div class="sr-h"><span>Rating indicatif</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.sc)}%"></i></div><div class="sr-n">Position ${rt.sc}/100 parmi les ${rt.n} tireurs de même sexe${rt.n>=8?" et catégorie":""} · mélange (tassé vers la moyenne quand il y a peu de matchs) du classement final (35 %), de la part des touches (25 %), des victoires en poule (20 %) et en tableau (20 %)${rt.prov?" · peu de matchs : à prendre avec prudence (?)":""}</div></div>`:`<div class="sr"><div class="sr-h"><span>Rating indicatif</span><b>–</b></div><div class="sr-n">Pas assez de données cette saison pour établir un rating : il faut au moins 5 matchs enregistrés, ou 2 classements finaux.</div></div>`;
   return `<div class="stats">${rtc}${rk?`<div class="rkcs">${rk}</div>`:""}${tiles}
   <div class="sec">Poules</div>${pm?`<div class="mini" style="margin:0 0 6px">${me.pw} victoire${me.pw>1?"s":""} sur ${pm} match${pm>1?"s":""}</div>`:""}${rows("pw")}${rows("pi")}
   <div class="sec">Tableaux</div>${tm?`<div class="mini" style="margin:0 0 6px">${me.tw} victoire${me.tw>1?"s":""}, ${me.tl} défaite${me.tl>1?"s":""} en tableau</div>`:`<div class="mini">Pas de match de tableau joué cette saison.</div>`}${rows("tw")}
@@ -2455,6 +2457,7 @@ function setTab(t){
   document.body.classList.remove("scr");if(window.setLth)setLth();
 }
 document.addEventListener("click",ev=>{
+  const sb=ev.target.closest("[data-ts]");if(sb&&sb.tagName!=="BUTTON"){ev.stopPropagation();TFT="s";tireur(Number(sb.dataset.ts));return}
   const b=ev.target.closest("button");
   if(!b){const cg=ev.target.closest("[data-grp]");if(cg&&!ev.target.closest("a")){grpSheet(Number(cg.dataset.grp));return}const cd=ev.target.closest("[data-comp]");if(cd&&!ev.target.closest("a"))compSheet(Number(cd.dataset.comp));return}
   if(b.dataset.close){closeSheet();return}
