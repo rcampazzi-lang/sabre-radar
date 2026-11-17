@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Usage: python3 build_site.py PAGE_HTML RESULTATS_JSON CANDIDATS_JSON [FFE_CLASSEMENTS_JSON]
-Met à jour index.html, resultats.json et candidats.json à la racine du dépôt (les icônes et le manifest y sont déjà)."""
+Met à jour index.html, resultats.json, candidats.json et archive.json (archive permanente, fusionnée) à la racine du dépôt (les icônes et le manifest y sont déjà)."""
 import sys,os,shutil
 page,res,cand=sys.argv[1:4]
 here=os.path.dirname(os.path.abspath(__file__))
@@ -22,4 +22,7 @@ vs=os.path.join(os.path.dirname(os.path.abspath(page)),"vendor")
 if os.path.isdir(vs):
     vd=os.path.join(here,"vendor");os.makedirs(vd,exist_ok=True)
     for f in os.listdir(vs):shutil.copy(os.path.join(vs,f),os.path.join(vd,f))
+# archive permanente des résultats (jamais effacée) : archive.json est fusionnée à chaque exécution
+import subprocess
+subprocess.run([sys.executable,os.path.join(here,"archive.py"),os.path.join(here,"archive.json"),page,res],check=True)
 print("ok")

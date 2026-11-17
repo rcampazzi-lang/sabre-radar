@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794899548";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794900684";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -446,6 +446,7 @@ body.scr .screen>.lt .stamp{display:none}
 .eb2{flex:none;width:44px;display:flex;flex-direction:column;align-items:center;gap:3px}
 .eb2 i{width:26px;border-radius:7px 7px 3px 3px;background:var(--accent)}.eb2v{font:700 12px var(--font-body)}.eb2 small{font-size:10.5px;color:var(--muted);white-space:nowrap}
 .rs.st{background:var(--fill);color:var(--ink)}
+.gr.elo{font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .gr{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;padding:0 7px;border-radius:11px;font:700 12px var(--font-body);vertical-align:middle;background:var(--fill);color:var(--ink)}
 .gr-Ap,.gr-A{background:var(--good-soft);color:var(--good)}.gr-Bp,.gr-B{background:var(--accent-soft);color:var(--accent)}.gr-Cp,.gr-C{background:var(--warn-soft);color:var(--warn)}
 .sr-h .gr{height:28px;min-width:40px;font-size:16px;border-radius:14px}
@@ -1761,6 +1762,16 @@ let RES=null;
 function resOf(c,e){return RES&&RES[EK(c,e)]||null}
 const RS={};
 function rview(R){const a=[];if(R.poules&&R.poules.length)a.push(["poules","Poules"]);if(R.classement_poules&&R.classement_poules.length)a.push(["apres","Après poules"]);if(R.tableau&&R.tableau.some(t=>t.matches.some(m=>m.a&&m.a.name)))a.push(["tableau","Tableau"]);if(R.final&&R.final.length)a.push(["final","Classement final"]);return a}
+let ARCH=null,HIST=[];
+function mergeArc(){
+  if(!ARCH||!RES)return;
+  const have=new Set(D.comps.map(c=>c.k)),by={};
+  for(const key in ARCH){const a=ARCH[key];if(have.has(a.c.k))continue;
+    if(!RES[key])RES[key]=a.e;
+    const c=by[a.c.k]||(by[a.c.k]={...a.c,id:-1-Object.keys(by).length,eps:[],hist:1});
+    c.eps.push({c:a.cat,s:a.s,n:0,u:a.eq?"equipe":"",a:"",sc:"",b:"",t:"",o:0,l:[]})}
+  HIST=Object.values(by);
+}
 let TIRK=null;
 const stBtn=i=>i===undefined||i===null?"":`<span class="tag n" data-ts="${i}" role="button" style="cursor:pointer">Voir stats</span>`;
 const stK=k=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));return stBtn(TIRK.get(k))};
@@ -2136,33 +2147,67 @@ const sMet={
   nm:{l:"Marge normalisée par match de tableau",f:o=>o.nmN>=3?o.nmS/o.nmN:null,t:v=>(v>0?"+":"")+Math.round(v*100)+" %",hi:1},
   pp:{l:"Tireurs battus au classement final",f:o=>o.pls.length?o.pls.reduce((s,x)=>s+(x.n>1?(x.n-x.pl)/(x.n-1):1),0)/o.pls.length:null,t:v=>Math.round(v*100)+" %",hi:1}
 };
-/* Rating indicatif A+ à C : percentile composite, comparé aux tireurs de même sexe et même catégorie (échelle indépendante du format des matchs) */
-const RW={pp:.35,sh:.25,pw:.2,tw:.2};let RAT=null;
-function gradeOf(p){return p>=90?"A+":p>=78?"A":p>=64?"B+":p>=48?"B":p>=30?"C+":"C"}
-function ratingAll(){
-  const all=statsAll();if(RAT&&RAT.M===all)return RAT.R;
-  const L=Object.values(all).filter(o=>o.ne>0&&((o.pm+o.tw+o.tl)>=5||o.pls.length>=2)).map(o=>({o,m:sMain(o),v:Object.fromEntries(Object.keys(RW).map(k=>[k,sMet[k].f(o)]))}));
-  const grp={};L.forEach(x=>{[x.m.sx+"|"+x.m.cat,x.m.sx].forEach(g=>(grp[g]=grp[g]||[]).push(x))});
-  const R={},S=new Map();
-  const cohort=x=>(grp[x.m.sx+"|"+x.m.cat]||[]).length>=8?grp[x.m.sx+"|"+x.m.cat]:grp[x.m.sx];
-  L.forEach(x=>{
-    const G=cohort(x);if(!G||G.length<5)return;
-    let s=0,w=0;
-    for(const k in RW){const v=x.v[k];if(v===null)continue;const P=G.map(y=>y.v[k]).filter(z=>z!==null);if(P.length<5)continue;
-      const pc=(P.filter(z=>z<v).length+P.filter(z=>z===v).length/2)/P.length*100;s+=pc*RW[k];w+=RW[k]}
-    if(w<.3)return;
-    const mt=x.o.pm+x.o.tw+x.o.tl+4*x.o.pls.length;S.set(x,50+(s/w-50)*mt/(mt+8))/* tassé vers 50 quand il y a peu de matchs */});
-  L.forEach(x=>{
-    if(!S.has(x))return;const G=cohort(x).filter(y=>S.has(y)),sc=S.get(x),mt=x.o.pm+x.o.tw+x.o.tl+4*x.o.pls.length;
-    const pc=(G.filter(y=>S.get(y)<sc).length+G.filter(y=>S.get(y)===sc).length/2)/G.length*100;
-    R[x.o.nk]={sc:Math.round(pc),g:gradeOf(pc),n:G.length,prov:mt<12}});
-  RAT={M:all,R};return R;
+/* Force (type Elo) : ajustement global sur tous les matchs des 12 derniers mois (poules et tableaux, saison en cours + archive).
+   Résultat d'un match = 0,75 + 0,25 × marge normalisée pour le gagnant ((touches gagnant − perdant) ÷ plus gros score), le complément pour le perdant.
+   Un pool par sexe et catégorie ; prior centré sur 1500 ; la fiabilité (± et « ? ») dépend du nombre de matchs. */
+const FS=400/Math.LN10;let FRC=null;
+function forceMatches(){
+  const W=kWin(),G={},done=new Set();
+  D.comps.concat(HIST).forEach(c=>{
+    if(IGN[c.k]||c.d<=W.from||c.d>W.ref)return;
+    c.eps.forEach(e=>{
+      const X=resOf(c,e);if(!X||!X.res||EQ(e))return;
+      const ek=EK(c,e);if(done.has(ek))return;done.add(ek);
+      const ecats=e.c.split(", ").map(x=>pcat(x)||x),single=ecats.length===1?ecats[0]:"";
+      let tm=0;const pv={};
+      X.res.forEach(r=>{(r.tableau||[]).forEach(t=>(t.matches||[]).forEach(m=>[m.a,m.b].forEach(s=>{if(s&&/^V/.test(String(s.sc||""))){const d=String(s.sc).match(/\d+/);if(d)tm=Math.max(tm,+d[0])}})));
+        (r.poules||[]).forEach(po=>(po.rows||[]).forEach(x=>(x.m||[]).forEach(cl=>{if(/^V\d+$/.test(cl)){const v=+cl.slice(1);pv[v]=(pv[v]||0)+1}})))});
+      const pm=Object.keys(pv).sort((a,b)=>pv[b]-pv[a])[0];
+      const TP=pm?+pm:tm===8?4:(tm===10||tm===15)?5:(ecats[0]==="M9"||ecats[0]==="M11")?4:5;
+      X.res.forEach(r=>{
+        if(r.src==="fie")return;/* résultats internationaux FIE : non pris en compte pour l'instant */
+        const pl=r.players||{},by={};for(const id in pl){by[nkey(pl[id][0],pl[id][1])]=id;by[nkey(pl[id][1],pl[id][0])]=id}
+        const info=id=>{const p=pl[id];return p?[nkey(p[0],p[1]),pcat(p[3])||single]:null};
+        const add=(a,b,sa,sb)=>{const A=info(a),B=info(b);if(!A||!B||A[0]===B[0]||!A[1]||A[1]!==B[1]||!KCATS.includes(A[1]))return;if(sa===null||sb===null||sa===sb)return;
+          const [x,y,sw,sl]=sa>sb?[A,B,sa,sb]:[B,A,sb,sa];const g=e.s+"|"+x[1];(G[g]=G[g]||[]).push([x[0],y[0],(sw-sl)/Math.max(sw,sl)])};
+        (r.poules||[]).forEach(po=>{const rows=po.rows||[],n=rows.length;if(!rows.every(x=>(x.m||[]).length===n))return;
+          for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const ci=rows[i].m[j],cj=rows[j].m[i];if(!ci||!cj||ci[0]===cj[0]||!/^[VD]/.test(ci)||!/^[VD]/.test(cj))continue;
+            const iw=ci[0]==="V",cw=iw?ci:cj,cl=iw?cj:ci;let sw=sNum(cw.slice(1)),sl=sNum(cl.slice(1));
+            if(sl===null)continue;if(sw===null)sw=TP;if(sw<=sl)sw=Math.max(TP,sl+1);
+            add(rows[iw?i:j].id,rows[iw?j:i].id,sw,sl)}});
+        (r.tableau||[]).forEach(t=>(t.matches||[]).forEach(m=>{if(!m.a||!m.b)return;
+          const ia=m.a.id||by[nkey(m.a.name,"")],ib=m.b.id||by[nkey(m.b.name,"")];if(!ia||!ib)return;
+          const tn=s=>{const q=String(s||"").match(/(\d+)/);return q?+q[1]:null};add(ia,ib,tn(m.a.sc),tn(m.b.sc))}));
+      })})});
+  return G;
 }
+function forceAll(){
+  const sig=(RES?Object.keys(RES).length:0)+"|"+HIST.length+"|"+SEASON+"|"+TODAY+"|"+Object.keys(IGN).length;
+  if(FRC&&FRC.sig===sig)return FRC.R;
+  const G=forceMatches(),R={};
+  for(const g in G){
+    const ms=G[g],ids=[...new Set(ms.flatMap(m=>[m[0],m[1]]))],ix=new Map(ids.map((k,i)=>[k,i])),n=ids.length;
+    const w=ms.map(m=>ix.get(m[0])),l=ms.map(m=>ix.get(m[1])),y=ms.map(m=>.75+.25*m[2]);
+    const th=new Float64Array(n),nm=new Int32Array(n),nw=new Int32Array(n),lam=.5;let h=new Float64Array(n);
+    ms.forEach((m,k)=>{nm[w[k]]++;nm[l[k]]++;nw[w[k]]++});
+    for(let it=0;it<80;it++){
+      const gr=new Float64Array(n);h=new Float64Array(n).fill(lam);
+      for(let k=0;k<ms.length;k++){const d=th[w[k]]-th[l[k]],p=1/(1+Math.exp(-d)),c=p-y[k],v=p*(1-p);gr[w[k]]+=c;gr[l[k]]-=c;h[w[k]]+=v;h[l[k]]+=v}
+      let mx=0;for(let i=0;i<n;i++){gr[i]+=lam*th[i];const st=.8*gr[i]/h[i];th[i]-=st;mx=Math.max(mx,Math.abs(st))}
+      if(mx<1e-4)break}
+    const E=Array.from(th,x=>FS*x),S=E.slice().sort((a,b)=>a-b);
+    ids.forEach((k,i)=>{
+      const lo=S.filter(x=>x<E[i]).length,eq=S.filter(x=>x===E[i]).length;
+      const o={e:Math.round(1500+E[i]),se:Math.round(FS/Math.sqrt(h[i])),nm:nm[i],nw:nw[i],pc:Math.round((lo+eq/2)/n*100),rk:1+n-lo-eq,n,g,prov:nm[i]<5};
+      if(!R[k]||R[k].nm<o.nm)R[k]=o})}
+  FRC={sig,R};return R;
+}
+function ratingAll(){return forceAll()}
 const ratingOf=t=>{try{return ratingAll()[nkey(t[0],t[1])]||null}catch(e){return null}};
 const ratingK=k=>{try{return ratingAll()[k]||null}catch(e){return null}};
 const tirI=r=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));let i=TIRK.get(nkey(r[1],r[2]));if(i===undefined)i=TIRK.get(nkey(r[2],r[1]));if(i===undefined)i=LICI.get(r[5]);return i};
 const ratingRow=r=>{try{const i=tirI(r);return i===undefined?null:ratingOf(D.tir[i])}catch(e){return null}};
-const gradeTag=r=>r?`<span class="gr gr-${r.g.replace("+","p")}" title="Rating indicatif ${r.g} (position ${r.sc}/100${r.prov?", peu de matchs":""})">${r.g}${r.prov?"?":""}</span>`:"";
+const gradeTag=r=>r?`<span class="gr elo ${r.pc>=80?"gr-A":r.pc<=30?"gr-C":"gr-B"}" title="Force estimée ${r.e} ± ${r.se} · ${r.nm} match${r.nm>1?"s":""}${r.prov?" (peu de matchs)":""} · ${r.rk}ᵉ sur ${r.n}">${r.e}${r.prov?"?":""}</span>`:"";
 function sCmp(me,all,k){
   const m=sMet[k],v=m.f(me);if(v===null)return null;
   const {sx,cat}=sMain(me);
@@ -2198,7 +2243,7 @@ function statsHTML(t,idx){
   const lv=Object.entries(me.lv).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<span class="tag n">${esc(k)} · ${v.n} (meilleure ${rkLbl(v.best)})</span>`).join("");
   const opp=Object.values(me.opp).filter(o=>o.w+o.l>=2).sort((a,b)=>b.w+b.l-a.w-a.l).slice(0,5).map(o=>`<div class="li"><div>${esc(o.nm)}</div><b>${o.w} V – ${o.l} D</b></div>`).join("");
   const rt=ratingAll()[nk];
-  const rtc=rt?`<div class="sr"><div class="sr-h"><span>Rating indicatif</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.sc)}%"></i></div><div class="sr-n">Position ${rt.sc}/100 parmi les ${rt.n} tireurs de même sexe${rt.n>=8?" et catégorie":""} · mélange (tassé vers la moyenne quand il y a peu de matchs) du classement final (35 %), de la part des touches (25 %), des victoires en poule (20 %) et en tableau (20 %)${rt.prov?" · peu de matchs : à prendre avec prudence (?)":""}</div></div>`:`<div class="sr"><div class="sr-h"><span>Rating indicatif</span><b>–</b></div><div class="sr-n">Pas assez de données cette saison pour établir un rating : il faut au moins 5 matchs enregistrés, ou 2 classements finaux.</div></div>`;
+  const rtc=rt?`<div class="sr"><div class="sr-h"><span>Force estimée (type Elo)</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.pc)}%"></i></div><div class="sr-n">${rt.e} ± ${rt.se} · ${rt.rk}${rt.rk===1?"er":"ᵉ"} sur ${rt.n} tireurs ${esc(rt.g.split("|")[0]==="Dames"?"dames":rt.g.split("|")[0]==="Hommes"?"hommes":"")} ${esc(KL(rt.g.split("|")[1]))} · ${rt.nm} matchs (${rt.nw} victoire${rt.nw>1?"s":""}) sur les 12 derniers mois, poules et tableaux${rt.prov?" · peu de matchs : à prendre avec prudence (?)":""}</div><div class="sr-n" style="margin-top:6px">Centrée sur 1500 dans chaque catégorie. Calculée à partir des victoires et défaites et de l'écart de touches, rapporté au format du match. Elle se compare entre tireurs qui se sont rencontrés ou qui ont des adversaires en commun ; elle s'affine à chaque nouvelle compétition.</div></div>`:`<div class="sr"><div class="sr-h"><span>Force estimée (type Elo)</span><b>–</b></div><div class="sr-n">Pas encore de match enregistré sur les 12 derniers mois.</div></div>`;
   return `<div class="stats">${rtc}${rk?`<div class="rkcs">${rk}</div>`:""}${tiles}
   <div class="sec">Poules</div>${pm?`<div class="mini" style="margin:0 0 6px">${me.pw} victoire${me.pw>1?"s":""} sur ${pm} match${pm>1?"s":""}</div>`:""}${rows("pw")}${rows("pi")}
   <div class="sec">Tableaux</div>${tm?`<div class="mini" style="margin:0 0 6px">${me.tw} victoire${me.tw>1?"s":""}, ${me.tl} défaite${me.tl>1?"s":""} en tableau</div>`:`<div class="mini">Pas de match de tableau joué cette saison.</div>`}${rows("tw")}
@@ -2364,7 +2409,7 @@ function klassData(){
   const B={},seen=new Set();
   if(!RES)return B;
   const W=kWin();
-  D.comps.forEach(c=>{
+  D.comps.concat(HIST).forEach(c=>{
     if(IGN[c.k]||c.d<=W.from||c.d>W.ref)return;const lv=levelOf(c);if(!lv)return;
     c.eps.forEach(e=>{
       const R=resOf(c,e);if(!R||EQ(e)||!(c.f<TODAY||R.done))return;
@@ -2440,7 +2485,7 @@ function kDetail(k){
   const x=klassList().find(y=>y.k===k);if(!x)return;
   sheet(`${esc(x.name)}<div class="sub">${esc(x.club||"")} · ${esc(K.sx)} ${esc(KL(K.cat))} · ${Math.round(x.tot)} pts (rang ${x.rk})</div>`,
     `<div class="mini" style="margin:0 0 8px">Les ${COEF.jbest} meilleurs résultats des 12 derniers mois comptent (catégorie stricte, place calculée parmi les tireurs de la catégorie), les autres sont grisés.</div><div class="list">`+
-    x.L.map(r=>`<div class="kr ${r.on?"":"off"}"><div><b>${esc(fd(r.c.d))}</b> · ${esc(r.c.v)}<br><small>${esc(r.c.n)} · ${esc(epLabel(r.e))}</small><br><b>Classement final : ${r.pl}${r.pl===1?"er":"ᵉ"} sur ${r.n}</b><br><small>${r.base} pts × ${(Math.round(r.coef*100)/100)} (${esc(r.lv.lab)}${r.gap?", surclassé +"+r.gap:""})</small><br><button class="rs" style="margin-top:8px" data-res="${r.c.id}:${r.c.eps.indexOf(r.e)}:final:${r.ri}">${ICON.trophy}Résultats</button></div><div class="p">${(Math.round(r.pts*10)/10)}${r.on?"":"<br><small>non compté</small>"}</div></div>`).join("")+`</div>`);
+    x.L.map(r=>`<div class="kr ${r.on?"":"off"}"><div><b>${esc(fd(r.c.d))}</b> · ${esc(r.c.v)}<br><small>${esc(r.c.n)} · ${esc(epLabel(r.e))}</small><br><b>Classement final : ${r.pl}${r.pl===1?"er":"ᵉ"} sur ${r.n}</b><br><small>${r.base} pts × ${(Math.round(r.coef*100)/100)} (${esc(r.lv.lab)}${r.gap?", surclassé +"+r.gap:""})</small>${r.c.hist?"":`<br><button class="rs" style="margin-top:8px" data-res="${r.c.id}:${r.c.eps.indexOf(r.e)}:final:${r.ri}">${ICON.trophy}Résultats</button>`}</div><div class="p">${(Math.round(r.pts*10)/10)}${r.on?"":"<br><small>non compté</small>"}</div></div>`).join("")+`</div>`);
 }
 function kSettings(){
   const F=[["jint","International"],["jnat","National / Championnat ou Challenge de France"],["jgr","Interrégional / grande régionale"],["jrg","Régional"],["jdp","Départemental"],["jbest","Meilleurs résultats retenus"],["jfull","Effectif pour le facteur plein"],["jmin","Facteur d’effectif minimal"]];
@@ -2743,7 +2788,8 @@ document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend"
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".sclr");if(!b)return;e.stopPropagation();const i=b.parentElement.querySelector("input");i.value="";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()},true);
 applyTypes();applySeason();
 applyEG();renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
-fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
+fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;mergeArc();applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="k")renderKlass()}}).catch(()=>{});
+fetch("archive.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){ARCH=j.eps;mergeArc();renderTir();if(S.tab==="k")renderKlass()}}).catch(()=>{});
 fieGhLoad();
 fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();admBadge();if(S.tab==="m")renderAdmin()}}).catch(()=>{});
 setInterval(()=>{
@@ -2751,7 +2797,7 @@ setInterval(()=>{
   const c=D.comps[RS.ci],e=c&&c.eps[RS.ei],X=e&&resOf(c,e);if(!X||X.done)return;
   fetch("resultats.json?"+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(!j||!j.eps)return;
     const N=j.eps[EK(c,e)];if(!N||N.t===X.t)return;
-    RES=j.eps;applyDec();if(!$("#sheet").hidden&&!document.activeElement.matches?.("input"))results(RS.ci,RS.ei,RS.view,RS.gi);renderComps()}).catch(()=>{});
+    RES=j.eps;mergeArc();applyDec();if(!$("#sheet").hidden&&!document.activeElement.matches?.("input"))results(RS.ci,RS.ei,RS.view,RS.gi);renderComps()}).catch(()=>{});
 },60000);
 
 (function(){const b=document.getElementById("rfb");if(!b)return;b.addEventListener("click",async()=>{b.classList.add("spin");try{if(window.caches){const k=await caches.keys();await Promise.all(k.map(x=>caches.delete(x)))}}catch(e){}
