@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794947852";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794948413";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -27,7 +27,7 @@
   --t-int:#c3b0f6; --t-int-bg:#2a2150; --t-nat:#9fc0f6; --t-nat-bg:#162b4f; --t-rg:#a2d98a; --t-rg-bg:#1b3414; --t-dp:#93a6a2; --t-dp-bg:#1e2e2c;
   --av-bg:24%; --av-fg:82%; --sh:none; --bar:rgba(10,17,16,.82); color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
-html{-webkit-text-size-adjust:100%;touch-action:manipulation}@media (pointer:coarse){input,select,textarea{font-size:16px!important}}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}@media (max-width:430px){.screen>.lt h1{font-size:27px}.screen>.lt{gap:8px}.screen>.lt>div:first-child{min-width:0}.screen>.lt .seas select{padding:0 26px 0 12px}.screen>.lt>div:last-child{margin-left:auto}}@media (pointer:coarse){input,select,textarea{font-size:16px!important}}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(92px + env(safe-area-inset-bottom,0px))}
 body.lock{overflow:hidden}
@@ -567,7 +567,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 </style>
 <div id="app">
 <section id="v-c" class="screen">
-  <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><div style="display:flex;gap:8px;align-items:center;flex:none"><button class="rfb" id="ub" type="button" hidden aria-label="Mettre à jour les données"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></button><button class="rfb" id="rfb" type="button" aria-label="Actualiser l'appli"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><label class="seas"><select id="season" aria-label="Saison"></select></label></div></div>
+  <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><div style="display:flex;gap:8px;align-items:center;flex:none"><button class="rfb" id="ub" type="button" hidden aria-label="Mettre à jour les données"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></button><button class="rfb rfr" id="rfb" type="button" aria-label="Actualiser l'appli"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><label class="seas"><select id="season" class="sels" aria-label="Saison"></select></label></div></div>
   <div id="hero"></div><div id="live"></div>
   <button class="nban" id="nban" data-f="news" hidden><b id="nban-n"></b><span id="nban-t"></span><i class="chv"></i></button>
   <div class="bar">
@@ -3110,9 +3110,10 @@ $("#q").addEventListener("input",e=>{S.q=e.target.value;renderComps()});
 $("#tq").addEventListener("input",e=>{S.tq=e.target.value;renderTV()});
 for(const k of["c","p","t","a"])$("#tab-"+k).addEventListener("click",()=>setTab(k));
 $("#stamp").textContent="Données du "+fdy(D.built);
-$("#season").innerHTML=SEAS.map(y=>`<option value="${y}" ${y===SEASON?"selected":""}>${y}/${String(y+1).slice(2)}</option>`).join("");
-$("#season").addEventListener("change",ev=>{SEASON=Number(ev.target.value);try{localStorage.setItem("ffe-season",String(SEASON))}catch(e){}
-  S.gr="";S.rg="";S.dt="";applySeason();renderFilters();renderComps();renderTir();renderParcours()});
+(function(){const src=$("#season").closest(".lt").lastElementChild;document.querySelectorAll(".screen>.lt").forEach(l=>{if(l===src.parentElement||l.querySelector('[data-f="admback"]'))return;const c=src.cloneNode(true);c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"));const u=c.querySelector(".rfb[hidden]");if(u)u.remove();l.appendChild(c)})})();
+document.querySelectorAll(".sels").forEach(e=>{e.innerHTML=SEAS.map(y=>`<option value="${y}" ${y===SEASON?"selected":""}>${y}/${String(y+1).slice(2)}</option>`).join("")});
+document.querySelectorAll(".sels").forEach(e=>e.addEventListener("change",ev=>{document.querySelectorAll(".sels").forEach(x=>{x.value=ev.target.value});SEASON=Number(ev.target.value);try{localStorage.setItem("ffe-season",String(SEASON))}catch(e){}
+  S.gr="";S.rg="";S.dt="";applySeason();renderFilters();renderComps();renderTir();renderParcours()}));
 
 /* ===== Favoris : compétitions suivies, nouveaux inscrits, synchro ===== */
 const LICI=new Map(D.tir.map((t,i)=>[t[2],i]));
@@ -3252,8 +3253,8 @@ setInterval(()=>{
     RES=j.eps;mergeArc();applyDec();if(!$("#sheet").hidden&&!document.activeElement.matches?.("input"))results(RS.ci,RS.ei,RS.view,RS.gi);renderComps()}).catch(()=>{});
 },60000);
 
-(function(){const b=document.getElementById("rfb");if(!b)return;b.addEventListener("click",async()=>{b.classList.add("spin");try{if(window.caches){const k=await caches.keys();await Promise.all(k.map(x=>caches.delete(x)))}}catch(e){}
-if(/github\.io$/.test(location.hostname)||location.protocol==="http:"||location.protocol==="https:"&&location.pathname.indexOf("sabre-radar")>-1){location.replace(location.pathname+"?r="+Date.now())}else{location.reload()}})})();
+(function(){document.querySelectorAll(".rfr").forEach(b=>b.addEventListener("click",async()=>{b.classList.add("spin");try{if(window.caches){const k=await caches.keys();await Promise.all(k.map(x=>caches.delete(x)))}}catch(e){}
+if(/github\.io$/.test(location.hostname)||location.protocol==="http:"||location.protocol==="https:"&&location.pathname.indexOf("sabre-radar")>-1){location.replace(location.pathname+"?r="+Date.now())}else{location.reload()}}))})();
 
 (function(){
 const SRV="Claude Code Remote",TR={live:"trig_01Km9uY5PiYrib4wJemqiSdP",full:"trig_01WQYpc4Kgop5UGha5VGjWzE"},LK="ffe-upd-job",DK="ffe-upd-done",MAX=50*60000;
