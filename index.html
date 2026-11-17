@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794923438";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794923625";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -71,7 +71,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.c
 .chip{flex:none;height:34px;padding:0 14px;border-radius:999px;border:0;background:var(--fill);color:var(--ink);font-size:13.5px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
 .chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
 .chip.act{background:var(--accent-soft);color:var(--accent);font-weight:600;height:30px;padding:0 10px 0 12px;display:inline-flex;align-items:center;gap:6px}
-.chip.act::after{content:"×";font-size:16px;line-height:1;opacity:.8}
+.chip.act::after{content:"";display:inline-block;width:9px;height:9px;margin-left:6px;vertical-align:middle;position:relative;top:-1px;background:currentColor;opacity:.8;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.4' stroke-linecap='round'%3E%3Cpath d='M5 5l14 14M19 5 5 19'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.4' stroke-linecap='round'%3E%3Cpath d='M5 5l14 14M19 5 5 19'/%3E%3C/svg%3E") center/contain no-repeat}
 .vsep{flex:none;width:1px;background:var(--line);margin:4px 2px}
 .count{font-size:13px;color:var(--muted);padding:12px 2px 8px;font-weight:500}
 .list{display:flex;flex-direction:column;gap:10px}
@@ -452,6 +452,9 @@ body.scr .screen>.lt .stamp{display:none}
 .sr-h .gr{height:28px;min-width:40px;font-size:16px;border-radius:14px}
 .sthead{position:sticky;top:-4px;z-index:5;background:var(--bg);padding:6px 0 8px;margin:0 0 6px;border-bottom:1px solid var(--line)}.schips{display:flex;gap:6px;overflow-x:auto;margin-bottom:8px;padding-bottom:2px}.schips button{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;height:30px;padding:0 12px;font:600 13px var(--font-body);cursor:pointer}.schips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}.sth-r{display:flex;align-items:center;gap:10px;margin-bottom:8px}.sth-e{display:flex;flex-direction:column;align-items:center;gap:2px}.sth-e .gr{height:30px;min-width:54px;font-size:17px;border-radius:15px}.sth-e small{font-size:10px;color:var(--muted);font-weight:600}.sth-k{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.sth-k>div{background:var(--surface);border-radius:14px;padding:7px 2px;text-align:center;box-shadow:var(--sh)}.sth-k b{display:block;font:700 16px/1.1 var(--font-head)}.sth-k small{display:block;margin-top:2px;font-size:9.5px;font-weight:600;color:var(--muted)}.sth-k .hi{background:var(--accent-soft)}.sth-k .hi b,.sth-k .hi small{color:var(--accent)}.stats [hidden]{display:none!important}.stats>div:not(.sthead):not([hidden]){display:flex;flex-direction:column;gap:8px}.stats summary{cursor:pointer;color:var(--accent);font-weight:600}.pod .gr{margin-top:4px}.tvv{overflow-x:auto;scrollbar-width:none}.tvv::-webkit-scrollbar{display:none}.tvv button{flex:none;padding:9px 14px;white-space:nowrap}.li.off{opacity:.62}.li .nr{font-weight:600;color:var(--muted)}.chip.clr{background:var(--ink);color:var(--bg);font-weight:600;height:30px;padding:0 12px;display:inline-flex;align-items:center}.gr.prov{background:transparent;border:1px dashed currentColor}.gr .hg{margin-left:4px;flex:none}.wrapchips .chip.wr{white-space:normal;height:auto;padding:8px 12px;text-align:left}.vs{display:inline-flex;align-items:center;height:22px;padding:0 8px;margin-left:4px;border-radius:11px;font:600 11px var(--font-body);background:transparent;color:var(--accent);border:1px solid var(--accent);cursor:pointer;vertical-align:middle;white-space:nowrap}.eg{white-space:nowrap}.pod .vs{margin:6px 0 0;height:22px;background:#fff;color:var(--accent);border-color:#fff}.pod .pp{flex-direction:column}
 .lnk2{all:unset;cursor:pointer;color:var(--accent);font-weight:600}
+.xi,.chv{display:inline-block;flex:none;background:currentColor}.xi{width:11px;height:11px;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.4' stroke-linecap='round'%3E%3Cpath d='M5 5l14 14M19 5 5 19'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.4' stroke-linecap='round'%3E%3Cpath d='M5 5l14 14M19 5 5 19'/%3E%3C/svg%3E") center/contain no-repeat}.chv{width:8px;height:13px;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 16' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 2l6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 16' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 2l6 6-6 6'/%3E%3C/svg%3E") center/contain no-repeat}
+.bn button{display:grid;place-items:center}.pk span{display:inline-flex;align-items:center}
+
 .gr.elo.gr-A{background:var(--good-soft);color:var(--good)}.gr.elo.gr-B{background:var(--warn-soft);color:var(--warn)}.gr.elo.gr-C{background:var(--bad-soft);color:var(--bad)}
 .rgrid td.nm small .gr{display:inline-flex;margin-top:3px}.rgrid td.nm small .gr.elo{display:flex;width:max-content}
 
@@ -569,7 +572,7 @@ body.scr .screen>.lt .stamp{display:none}
 <section id="v-c" class="screen">
   <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><div style="display:flex;gap:8px;align-items:center;flex:none"><button class="rfb" id="ub" type="button" hidden aria-label="Mettre à jour les données"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></button><button class="rfb" id="rfb" type="button" aria-label="Actualiser l'appli"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><label class="seas"><select id="season" aria-label="Saison"></select></label></div></div>
   <div id="hero"></div><div id="live"></div>
-  <button class="nban" id="nban" data-f="news" hidden><b id="nban-n"></b><span id="nban-t"></span>›</button>
+  <button class="nban" id="nban" data-f="news" hidden><b id="nban-n"></b><span id="nban-t"></span><i class="chv"></i></button>
   <div class="bar">
     <div class="srow">
       <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg><input type="search" id="q" placeholder="Ville ou compétition" autocomplete="off" enterkeyhint="search"></label>
@@ -659,7 +662,7 @@ body.scr .screen>.lt .stamp{display:none}
   <div class="fs-foot"><button class="btn" data-f="reset">Réinitialiser</button><button class="btn primary" data-close="1" id="fs-show">Voir les compétitions</button></div>
 </div></div>
 <div id="sheet" class="sheet" hidden></div>
-<div id="bn" class="bn" role="status" hidden><span id="bn-t"></span><button id="bn-x" type="button" aria-label="Fermer">×</button></div>
+<div id="bn" class="bn" role="status" hidden><span id="bn-t"></span><button id="bn-x" type="button" aria-label="Fermer"><i class="xi"></i></button></div>
 <div id="cfm" class="cfm" hidden><div role="dialog" aria-modal="true" aria-labelledby="cfm-h"><h3 id="cfm-h"></h3><p id="cfm-p"></p><div class="row" id="cfm-b"></div></div></div></div>
 <script id="sync">
 (function(){
@@ -934,7 +937,7 @@ function actHTML(cs,gi){
 function pickSheet(kind,cs){
   const T={eng:"Quels inscrits ?",ffe:"Quelle page FFE ?",note:"Quelle note d'organisation ?"}[kind];
   const lab=x=>`<b>${esc(fd(x.d))}${x.f!==x.d?" → "+esc(fd(x.f)):""}</b><div class="sub">${esc(x.n)}${kind==="eng"?" · "+x.eps.reduce((n,e)=>n+(e.n||0),0)+" inscrits":""}</div>`;
-  const row=x=>kind==="eng"?`<button class="pk" data-eng="${x.id}:all">${lab(x)}<span>›</span></button>`:`<a class="pk" href="${kind==="ffe"?"https://www.ffescrime.fr/competition/"+esc(x.k):esc(x.nt)}" target="_blank" rel="noopener">${lab(x)}<span>›</span></a>`;
+  const row=x=>kind==="eng"?`<button class="pk" data-eng="${x.id}:all">${lab(x)}<span><i class="chv"></i></span></button>`:`<a class="pk" href="${kind==="ffe"?"https://www.ffescrime.fr/competition/"+esc(x.k):esc(x.nt)}" target="_blank" rel="noopener">${lab(x)}<span>›</span></a>`;
   const back=CUR.ci;
   sheet(`${T}<div class="sub">${esc(cs[0].v)}</div>`,`<div class="pks">${cs.map(row).join("")}</div>`);
   BACK=()=>reopen(back)}
@@ -1065,7 +1068,7 @@ function renderLive(){
   const G=liveGroups();
   if(!G.length||S.q.trim()){h.innerHTML="";return}
   const n=G.reduce((a,g)=>a+g.cs.reduce((m,c)=>m+c.eps.length,0),0);
-  h.innerHTML=`<button class="lvban" type="button" data-f="live"><i class="ldot"></i><span><b>En direct</b> · ${esc(G.map(g=>g.cs[0].v).join(", "))}<small>${n} épreuve${n>1?"s":""} aujourd’hui · Elo et niveau des poules</small></span>›</button>`;
+  h.innerHTML=`<button class="lvban" type="button" data-f="live"><i class="ldot"></i><span><b>En direct</b> · ${esc(G.map(g=>g.cs[0].v).join(", "))}<small>${n} épreuve${n>1?"s":""} aujourd’hui · Elo et niveau des poules</small></span><i class="chv"></i></button>`;
 }
 function epState(X){
   if(!X||!X.res||!X.res.length)return ["Inscriptions","w"];
