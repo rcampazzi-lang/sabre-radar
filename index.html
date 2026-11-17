@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794897436";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794897777";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1762,6 +1762,9 @@ function resOf(c,e){return RES&&RES[EK(c,e)]||null}
 const RS={};
 function rview(R){const a=[];if(R.poules&&R.poules.length)a.push(["poules","Poules"]);if(R.classement_poules&&R.classement_poules.length)a.push(["apres","Après poules"]);if(R.tableau&&R.tableau.some(t=>t.matches.some(m=>m.a&&m.a.name)))a.push(["tableau","Tableau"]);if(R.final&&R.final.length)a.push(["final","Classement final"]);return a}
 let TIRK=null;
+const stBtn=i=>i===undefined||i===null?"":`<span class="tag n" data-ts="${i}" role="button" style="cursor:pointer">Voir stats</span>`;
+const stK=k=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));return stBtn(TIRK.get(k))};
+const stRow=r=>stBtn(tirI(r));
 function rStat(R,id){const p=R.players[id];if(!p)return"";if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));const i=TIRK.get(nkey(p[0],p[1]));if(i===undefined)return"";const g=gradeTag(ratingOf(D.tir[i]));return `${g} <span class="tag n" data-ts="${i}" role="button" style="cursor:pointer">Voir stats</span>`}
 function pname(R,id,short){const p=R.players[id];if(!p)return "#"+id;return short?`${p[0]} ${p[1]}`:`${p[0]} ${p[1]}`}
 function pclub(R,id){const p=R.players[id];return p?p[2]:""}
@@ -2157,7 +2160,8 @@ function ratingAll(){
 }
 const ratingOf=t=>{try{return ratingAll()[nkey(t[0],t[1])]||null}catch(e){return null}};
 const ratingK=k=>{try{return ratingAll()[k]||null}catch(e){return null}};
-const ratingLic=l=>{try{const i=LICI.get(l);return i===undefined?null:ratingOf(D.tir[i])}catch(e){return null}};
+const tirI=r=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));let i=TIRK.get(nkey(r[1],r[2]));if(i===undefined)i=TIRK.get(nkey(r[2],r[1]));if(i===undefined)i=LICI.get(r[5]);return i};
+const ratingRow=r=>{try{const i=tirI(r);return i===undefined?null:ratingOf(D.tir[i])}catch(e){return null}};
 const gradeTag=r=>r?`<span class="gr gr-${r.g.replace("+","p")}" title="Rating indicatif ${r.g} (position ${r.sc}/100${r.prov?", peu de matchs":""})">${r.g}${r.prov?"?":""}</span>`:"";
 function sCmp(me,all,k){
   const m=sMet[k],v=m.f(me);if(v===null)return null;
@@ -2325,10 +2329,10 @@ function renderFfeList(cur){
   const rows=q?cur.rows.filter(r=>(r[1]+" "+r[2]+" "+r[3]).toLowerCase().includes(q)):cur.rows;
   $("#k-count").textContent=rows.length+" tireur"+(rows.length>1?"s":"")+(q?" trouvé"+(rows.length>1?"s":""):" classé"+(rows.length>1?"s":""));
   const head=`<div class="ffeh"><span class="fb"><i></i>FFE officiel</span><h2>${esc(cur.n)}</h2><div class="fs">${esc(cur.niv)} · ${esc(cur.sx)} ${esc(KL(K.cat))}${cur.maj?" · mis à jour le "+fmtJ(cur.maj):""}</div></div>`;
-  const pc=(r,n)=>{const nm=fNm(r).split(" ");return `<button type="button" class="pp p${n}" data-fr="${esc(r[5])}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(r[5]||r[1])}">${esc((r[2][0]||"")+(r[1][0]||""))}</span><span class="pn">${esc(fNm(r))}</span>${gradeTag(ratingLic(r[5]))}<span class="pt">${fPts(r[4])} pts</span><span class="pb">${r[0]}</span></button>`};
+  const pc=(r,n)=>{const nm=fNm(r).split(" ");return `<button type="button" class="pp p${n}" data-fr="${esc(r[5])}">${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(r[5]||r[1])}">${esc((r[2][0]||"")+(r[1][0]||""))}</span><span class="pn">${esc(fNm(r))}</span>${gradeTag(ratingRow(r))}<span class="pt">${fPts(r[4])} pts</span><span class="pb">${r[0]}</span></button>`};
   const top=!q&&rows.length>=3&&rows[0][0]===1?rows.slice(0,3):[];
   const pod=top.length?`<div class="pod ffe"><div class="pc">${pc(top[1],2)}${pc(top[0],1)}${pc(top[2],3)}</div></div>`:"";
-  const body=rows.slice(top.length,300).map(r=>`<button class="trow" data-fr="${esc(r[5])}"><span class="krank ffe ${r[0]<=3?"top":""}">${r[0]}</span><div style="min-width:0"><div class="nm">${esc(fNm(r))} ${gradeTag(ratingLic(r[5]))}</div><div class="sub">${esc(r[3])}</div></div><div class="kpts">${fPts(r[4])}<small>pts</small></div></button>`).join("");
+  const body=rows.slice(top.length,300).map(r=>`<button class="trow" data-fr="${esc(r[5])}"><span class="krank ffe ${r[0]<=3?"top":""}">${r[0]}</span><div style="min-width:0"><div class="nm">${esc(fNm(r))} ${gradeTag(ratingRow(r))}</div><div class="sub">${esc(r[3])} ${stRow(r)}</div></div><div class="kpts">${fPts(r[4])}<small>pts</small></div></button>`).join("");
   $("#k-list").innerHTML=head+pod+(body?TH(["#","Tireur","Club","Points",""]):"")+body+(rows.length>300?`<div class="mini">300 premiers affichés sur ${rows.length}. Utilise la recherche pour trouver un tireur.</div>`:"")+`<div class="ffefoot">Classement officiel publié par la FFE (ffescrime.fr), mis à jour chaque semaine. Distinct de l’indicateur Sabre Radar, calculé à partir des résultats Greg.</div>`;
 }
 document.addEventListener("input",ev=>{if(ev.target.id==="k-q")renderFfeList()});
@@ -2414,7 +2418,7 @@ function renderKlass(){
   const podHTML=POD.length?`<div class="pod"><div class="pc">${pcell(POD[1],2)}${pcell(POD[0],1)}${pcell(POD[2],3)}</div></div>`:"";
   $("#k-list").innerHTML=podHTML+(L.length?TH(["#","Tireur","Club · résultats","Points",""]):"")+(L.length?L.slice(POD.length,150).map((x,i)=>{
     const nm=x.name.split(" ");const ini=(nm[0][0]||"")+((nm[1]||"")[0]||"");
-    return `<button class="trow" data-kt="${esc(x.k)}"><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)} ${gradeTag(ratingK(x.k))}</div><div class="sub">${esc(x.club||"")} · ${x.L.length} résultat${x.L.length>1?"s":""}</div></div><div class="kpts">${Math.round(x.tot)}<small>pts</small></div></button>`}).join(""):`<div class="empty">Aucun résultat pour ${esc(K.sx)} ${esc(KL(K.cat))} cette saison.</div>`);
+    return `<button class="trow" data-kt="${esc(x.k)}"><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)} ${gradeTag(ratingK(x.k))}</div><div class="sub">${esc(x.club||"")} · ${x.L.length} résultat${x.L.length>1?"s":""} ${stK(x.k)}</div></div><div class="kpts">${Math.round(x.tot)}<small>pts</small></div></button>`}).join(""):`<div class="empty">Aucun résultat pour ${esc(K.sx)} ${esc(KL(K.cat))} cette saison.</div>`);
 }
 function kDetail(k){
   const x=klassList().find(y=>y.k===k);if(!x)return;
