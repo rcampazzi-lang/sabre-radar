@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794909808";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794910112";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1761,9 +1761,15 @@ function finPoules(){
     if(r.final&&r.final.length)return;
     if((r.tableau||[]).some(t=>(t.matches||[]).length))return;
     const cp=(r.classement_poules||[]).filter(c=>(c.rows||[]).length);if(!cp.length)return;
-    const last=cp.reduce((a,b)=>(b.tour||0)>=(a.tour||0)?b:a),pl=r.players||{};
-    const f=last.rows.filter(x=>pl[x.id]&&typeof x.pl==="number").map(x=>({pl:x.pl,id:x.id})).sort((a,b)=>a.pl-b.pl);
-    if(f.length){r.final=f;r.fin_src="poules"}
+    const last=cp.reduce((a,b)=>(b.tour||0)>=(a.tour||0)?b:a),pl=r.players||{};let f=null;
+    if(last.rows.every(x=>Number.isInteger(x.pl)))f=last.rows.filter(x=>pl[x.id]).map(x=>({pl:x.pl,id:x.id})).sort((a,b)=>a.pl-b.pl);
+    else{/* dernier tour en poules de niveau : n° de poule, puis place dans la poule */
+      const ps=(r.poules||[]).filter(po=>po.tour===last.tour).sort((a,b)=>(+a.poule||0)-(+b.poule||0));let ok=ps.length>0;const order=[];
+      ps.forEach(po=>{const rows=po.rows||[];if(!rows.length||!rows.every(x=>Number.isInteger(x.pl))){ok=false;return}rows.slice().sort((a,b)=>a.pl-b.pl).forEach(x=>order.push(x.id))});
+      const ids=new Set(last.rows.map(x=>x.id));
+      if(ok&&order.length===ids.size&&order.every(i=>ids.has(i)&&pl[i]))f=order.map((id,i)=>({pl:i+1,id}));
+    }
+    if(f&&f.length){r.final=f;r.fin_src="poules"}
   });
 }
 function mergeArc(){
