@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794947615";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794947852";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2255,7 +2255,7 @@ function statsAll(CF){CF=CF||"";
 const sMain=o=>{const t=(m)=>Object.entries(m).sort((a,b)=>b[1]-a[1])[0];const a=t(o.sx),b=t(o.cat);return {sx:a?a[0]:"",cat:b?b[0]:""}};
 const sMet={
   pw:{l:"Victoires en poule",f:o=>o.pm>=5?o.pw/o.pm:null,t:v=>Math.round(v*100)+" %",hi:1},
-  pi:{l:"Indice moyen par match",f:o=>o.pm>=5?(o.ptd-o.ptr)/o.pm:null,t:v=>(v>0?"+":"")+v.toFixed(1).replace(".",","),hi:1},
+  pi:{l:"Part de touches marquées en poule",d:"Sur 100 touches jouées en poule (celles qu’il met + celles qu’il reçoit), combien il en met. Indépendant du format des poules.",f:o=>o.ptd+o.ptr>=30?o.ptd/(o.ptd+o.ptr):null,t:v=>String(Math.round(v*100)),hi:1},
   td:{l:"Touches données par match",f:o=>o.pm+o.tw+o.tl>=5?(o.ptd+o.ttd)/(o.pm+o.tw+o.tl):null,t:v=>v.toFixed(1).replace(".",","),hi:1},
   tr:{l:"Touches reçues par match",f:o=>o.pm+o.tw+o.tl>=5?(o.ptr+o.ttr)/(o.pm+o.tw+o.tl):null,t:v=>v.toFixed(1).replace(".",","),hi:0},
   tw:{l:"Victoires en tableau",f:o=>o.tw+o.tl>=3?o.tw/(o.tw+o.tl):null,t:v=>Math.round(v*100)+" %",hi:1},
@@ -2483,8 +2483,8 @@ function statsHTML(t,idx){
   const expl=nE>=5?(()=>{const up=upW+upL,dn=dnW+dnL,verdict=exw-ex>=1.5?"Il fait mieux que prévu.":ex-exw>=1.5?"Il fait moins bien que prévu.":"C’est conforme à son niveau.";
     const tl=(w,l,t)=>`<div><b>${w} sur ${w+l}</b><small>${t}</small></div>`;
     return `<div class="card2"><h4>Victoires selon le niveau des adversaires</h4><div class="tiles">${tl(upW,upL,"victoires contre plus fort que lui")}${tl(dnW,dnL,"victoires contre plus faible que lui")}</div><div class="h">Vu le niveau de ses adversaires, on attendait environ ${Math.round(ex)} victoires sur ${nE} matchs. Il en a ${exw}. ${verdict}</div>${exploit||acc?`<div class="h">${exploit?`${exploit} victoire${exploit>1?"s":""} surprise${exploit>1?"s":""} contre un adversaire bien plus fort`:""}${exploit&&acc?" · ":""}${acc?`${acc} défaite${acc>1?"s":""} surprise${acc>1?"s":""} contre un adversaire bien plus faible`:""}.</div>`:""}</div>`})():"";
-  const dif=me.ptd+me.ttd-me.ptr-me.ttr;
-  const pR=`<div id="sm-r" ${STM==="r"?"":"hidden"}><div class="tiles">${kp(all2,"matchs")}${kp(all2>=3?pct(wins/all2):"–","victoires","hi")}${kp(all2?sg(dif):"–","touches (diff.)")}</div>${rtc}${ins}${rk?`<div class="sec">Classements</div><div class="rkcs">${rk}</div>`:""}${top3?`<div class="sec">Meilleurs résultats</div><div class="list">${top3}</div>`:""}${bestW?`<div class="sec">Plus belle victoire</div><div class="list">${mLine(bestW.m)}</div>${note(`Adversaire battu : force ${bestW.q.e}${bestW.q.e>bestW.a.e?`, soit ${bestW.q.e-bestW.a.e} de plus que lui`:""}.`)}`:""}${expl}</div>`;
+  const tdT=me.ptd+me.ttd,trT=me.ptr+me.ttr,shT=tdT+trT>0?Math.round(tdT/(tdT+trT)*100)+" %":"–";
+  const pR=`<div id="sm-r" ${STM==="r"?"":"hidden"}><div class="tiles">${kp(all2,"matchs")}${kp(all2>=3?pct(wins/all2):"–","victoires","hi")}${kp(shT,"touches marquées")}</div>${rtc}${ins}${rk?`<div class="sec">Classements</div><div class="rkcs">${rk}</div>`:""}${top3?`<div class="sec">Meilleurs résultats</div><div class="list">${top3}</div>`:""}${bestW?`<div class="sec">Plus belle victoire</div><div class="list">${mLine(bestW.m)}</div>${note(`Adversaire battu : force ${bestW.q.e}${bestW.q.e>bestW.a.e?`, soit ${bestW.q.e-bestW.a.e} de plus que lui`:""}.`)}`:""}${expl}</div>`;
   /* Parcours */
   const evoRows=CS.map(x=>{const f=fld(x);return `<div class="li"><div><b>${esc(x.c.v)}</b> · ${esc(fd(x.c.d))}<br><small>${esc(x.c.n)}${f?` · peloton Elo ${f} en moyenne`:""}</small></div><span class="rk" style="background:var(--accent-soft);color:var(--accent)">${rkLbl(x.pl)} / ${x.n}</span></div>`}).join("");
   const lv=Object.entries(me.lv).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<span class="tag n">${esc(k)} · ${v.n} (meilleure ${rkLbl(v.best)})</span>`).join("");
@@ -2494,12 +2494,12 @@ function statsHTML(t,idx){
     <div class="sec">Compétition par compétition</div><div class="list">${evoRows||`<div class="empty">Pas encore de classement final.</div>`}</div>
     ${lv?`<div class="sec">Par niveau</div><div class="row">${lv}</div>`:""}</div>`;
   /* Poules */
-  const pP=`<div id="sm-p" ${STM==="p"?"":"hidden"}>${pm?`<div class="tiles">${kp(me.pw+" / "+pm,"victoires")}${kp(pct(me.pw/pm),"taux de victoire","hi")}${kp(sg((me.ptd-me.ptr)/pm),"indice moyen")}</div>
+  const pP=`<div id="sm-p" ${STM==="p"?"":"hidden"}>${pm?`<div class="tiles">${kp(me.pw+" / "+pm,"victoires")}${kp(pct(me.pw/pm),"taux de victoire","hi")}${kp(me.ptd+me.ptr>0?Math.round(me.ptd/(me.ptd+me.ptr)*100)+" %":"–","touches marquées")}</div>
     ${me.pms.length?`<div class="sec">Nature des matchs</div>${distHTML(me.pms)}`:""}
     ${pdAvg!==null?`<div class="sec">Difficulté des poules</div><div class="card2"><div class="tiles">${kp(Math.round(pdAvg),"force moyenne des adversaires")}${kp(Math.round(gm),"moyenne de la catégorie")}</div><div class="h">Ses ${PD.length} poule${PD.length>1?"s":""} : ${pdl}.${hard?` La plus forte : ${esc(hard.p.c.v)}, ${esc(fd(hard.p.c.d))} (${Math.round(hard.avg)}).`:""}</div></div>`:""}
     <div class="tiles">${kp(me.ptd,"touches données")}${kp(me.ptr,"touches reçues")}${kp(me.pn?me.pf:"–","poule"+(me.pf>1?"s":"")+" parfaite"+(me.pf>1?"s":""))}</div>
-    ${cmpRows(["pw","pi","pq","pt","pr","ps"])}
-    ${note("Indice = touches données − reçues, par match. Poule parfaite : toutes les victoires.")}`:`<div class="empty">Pas de poule enregistrée cette saison.</div>`}</div>`;
+    ${cmpRows(["pw","pi","pq","pt","pr"])}
+    ${note("Touches marquées = part des touches jouées qu’il met, ce qui permet de comparer des formats de poules différents. Poule parfaite : toutes les victoires.")}`:`<div class="empty">Pas de poule enregistrée cette saison.</div>`}</div>`;
   /* Tableaux */
   const lastM=me.ms.slice().sort((a,b)=>chron(b,a)).slice(0,6);
   const pB=`<div id="sm-b" ${STM==="b"?"":"hidden"}>${tm?`<div class="tiles">${kp(me.tw+" – "+me.tl,"victoires – défaites")}${kp(pct(me.tw/tm),"taux de victoire","hi")}${kp(me.nmN?(me.nmS/me.nmN>0?"+":"")+Math.round(me.nmS/me.nmN*100)+" %":"–","marge moyenne")}</div>
@@ -2556,13 +2556,12 @@ function epStats(ci,ei,ti){
   const rate=(w,m,min)=>m>=min?w/m:null;
   const pct=v=>Math.round(v*100)+" %",d1=v=>v.toFixed(1).replace(".",","),sg=v=>(v>0?"+":"")+d1(v);
   const tm=a.tw+a.tl,all=a.pm+tm;
-  const tiles=`<div class="tiles"><div class="hi"><b>${fp?rkLbl(fp):"–"}</b><small>${fp?"sur "+G.n:"place finale"}</small></div><div><b>${a.pm?a.pw+"/"+a.pm:"–"}</b><small>victoires en poule</small></div><div><b>${all?(a.ptd+a.ttd-a.ptr-a.ttr>0?"+":"")+(a.ptd+a.ttd-a.ptr-a.ttr):"–"}</b><small>touches (diff.)</small></div></div>`;
+  const tiles=`<div class="tiles"><div class="hi"><b>${fp?rkLbl(fp):"–"}</b><small>${fp?"sur "+G.n:"place finale"}</small></div><div><b>${a.pm?a.pw+"/"+a.pm:"–"}</b><small>victoires en poule</small></div><div><b>${a.ptd+a.ttd+a.ptr+a.ttr>0?Math.round((a.ptd+a.ttd)/(a.ptd+a.ttd+a.ptr+a.ttr)*100)+" %":"–"}</b><small>touches marquées</small></div></div>`;
   const line=[a.pp?`Poule ${a.pp.no} : ${a.pp.pl}${a.pp.pl===1?"er":"e"} sur ${a.pp.sz}`:"",cr?`Après les poules : ${cr.pl}${cr.pl===1?"er":"e"} sur ${G.cp.length}`:"",fp&&cr?`Place gagnée ou perdue : ${cr.pl-fp>0?"+":""}${cr.pl-fp}`:""].filter(Boolean).join(" · ");
   const ms=a.ms.slice().sort((x,y)=>y.r-x.r).map(m=>`<div class="li"><div><b>${esc(RLAB[m.r]||"Tour "+m.r)}</b>${m.tp&&+m.tp>1?` <small>· tableau des places ${esc(m.tp)} et suivantes</small>`:""}<br><small>contre ${esc(m.on)}</small></div><span class="rk ${m.s1>m.s2?"g3":""}" style="${m.s1>m.s2?"background:var(--good-soft);color:var(--good)":"background:var(--bad-soft);color:var(--bad)"}">${m.s1>m.s2?"V":"D"} ${m.s1}-${m.s2}</span></div>`).join("");
   sheet(head,`<div class="stats">${tiles}${line?`<div class="mini" style="margin:0 0 8px">${esc(line)}</div>`:""}
   ${a.pm?`<div class="sec">Poules (comparé aux autres tireurs de l'épreuve)</div>`:""}
   ${cRow("Victoires en poule",rate(a.pw,a.pm,3),F(x=>rate(x.pw,x.pm,3)),1,pct)}
-  ${cRow("Indice moyen par match",a.pm>=3?(a.ptd-a.ptr)/a.pm:null,F(x=>x.pm>=3?(x.ptd-x.ptr)/x.pm:null),1,sg)}
   ${cRow("Touches marquées sur 100 touches jouées (poules)",a.ptd+a.ptr>=10?a.ptd/(a.ptd+a.ptr):null,F(x=>x.ptd+x.ptr>=10?x.ptd/(x.ptd+x.ptr):null),1,v=>String(Math.round(v*100)),"Sur 100 touches jouées au total (celles qu’il met + celles qu’il reçoit), combien il en met. Au-dessus de 50, il marque plus de touches qu’il n’en reçoit.")}
   ${cRow("Touches données par match",a.pm>=3?a.ptd/a.pm:null,F(x=>x.pm>=3?x.ptd/x.pm:null),1,d1)}
   ${cRow("Touches reçues par match",a.pm>=3?a.ptr/a.pm:null,F(x=>x.pm>=3?x.ptr/x.pm:null),0,d1)}
@@ -2817,22 +2816,22 @@ function renderRec(){
     AM.forEach(m=>{const c=mCls(m);if(c==="vn")vn++;if(c==="vs")vs++;if(c==="ds")ds++;
       if(m.s1>m.s2){run++;st=Math.max(st,run)}else run=0;
       const g1=epG(m.e)||K.sx+"|"+K.cat,rt=ratingIn(o.nk,g1),qq=ratingIn(m.on,g1);if(rt&&qq&&m.s1>m.s2){if(winP(rt.e,qq.e)<.35)ex++;if(!bw||qq.e>bw.e)bw={e:qq.e,nm:m.nm}}});
-    RW.push({o,i,club,n,vn,vs,ds,ex,st,bw,pi:o.pm>=10?(o.ptd-o.ptr)/o.pm:null,pf:o.pf,rem:o.dl.length?Math.max(...o.dl):null});
+    RW.push({o,i,club,n,vn,vs,ds,ex,st,bw,pi:o.ptd+o.ptr>=40?o.ptd/(o.ptd+o.ptr):null,pf:o.pf,pn:o.pn,rem:o.dl.length?Math.max(...o.dl):null});
   });
   const CARDS0=[
     ["Plus belle victoire","Le meilleur adversaire battu, selon la force Elo.",r=>r.bw?r.bw.e:null,v=>String(v),"Elo",r=>"contre "+r.bw.nm],
-    ["Meilleur indice en poule","Touches données moins touches reçues, par match (au moins 10 matchs de poule).",r=>r.pi,v=>(v>0?"+":"")+v.toFixed(1).replace(".",","),"par match",r=>r.club],
-    ["Poules parfaites","Poules gagnées sans aucune défaite.",r=>r.pf>0?r.pf:null,v=>String(v),"poules",r=>r.club],
+    ["Meilleure part de touches en poule","Part des touches jouées en poule qu’il marque (au moins 40 touches). Comparable quel que soit le format des poules.",r=>r.pi,v=>Math.round(v*100)+" %","des touches",r=>r.club],
+    ["Poules parfaites","Part des poules gagnées sans aucune défaite (au moins 3 poules et 1 poule parfaite).",r=>r.pn>=3&&r.pf>0?r.pf/r.pn:null,v=>Math.round(v*100)+" %","des poules",r=>r.pf+" sur "+r.pn+" poules"],
     ["Plus longue série de victoires","Victoires d’affilée, poules et tableaux.",r=>r.st>=4?r.st:null,v=>String(v),"victoires",r=>r.club],
     ["Victoires nettes","Victoires avec un écart d’au moins 60 % du score du vainqueur (au moins 8 matchs).",r=>r.n>=8&&r.vn>0?r.vn:null,v=>String(v),"nettes",r=>r.club],
     ["Matchs serrés gagnés","Part des matchs serrés (25 % d’écart ou moins) gagnés, au moins 4 matchs serrés.",r=>r.vs+r.ds>=4?r.vs/(r.vs+r.ds):null,v=>Math.round(v*100)+" %","des serrés",r=>r.vs+" sur "+(r.vs+r.ds)],
     ["Exploits","Victoires contre un adversaire nettement plus fort que lui.",r=>r.ex>0?r.ex:null,v=>String(v),"exploits",r=>r.club],
     ["Plus forte remontée","Places gagnées entre la fin des poules et le classement final, sur une épreuve.",r=>r.rem>0?r.rem:null,v=>"+"+v,"places",r=>r.club]
   ];
-  const PB=["M9","M11"].includes(K.cat),HID=c=>PB&&(c[0]==="Meilleur indice en poule"||c[0]==="Poules parfaites");
+  const PB=["M9","M11"].includes(K.cat),HID=c=>PB&&(c[0]==="zz");
   let ri=Math.min(Math.max(+S.rec||0,0),CARDS0.length-1);if(HID(CARDS0[ri]))ri=0;const [t,d,f,fm,u,sub]=CARDS0[ri];
   const L=RW.map(r=>({r,v:f(r)})).filter(x=>x.v!==null).sort((a,b)=>b.v-a.v||a.r.o.name.localeCompare(b.r.o.name)).slice(0,20);
-  let h=`<div class="wrapchips" style="margin-bottom:10px">${CARDS0.map((c,n)=>HID(c)?"":`<button class="chip wr" aria-pressed="${n===ri}" data-f="tvrec" data-v="${n}">${c[0]}</button>`).join("")}</div><div class="mini" style="margin:0 2px 8px">${d}</div>${PB?`<div class="mini" style="margin:0 2px 8px">En M9 et M11, les records de poules (indice, poules parfaites) sont masqués : le format des poules varie trop d’une épreuve à l’autre (poules de 4, de 5, second tour à 8).</div>`:""}`;
+  let h=`<div class="wrapchips" style="margin-bottom:10px">${CARDS0.map((c,n)=>HID(c)?"":`<button class="chip wr" aria-pressed="${n===ri}" data-f="tvrec" data-v="${n}">${c[0]}</button>`).join("")}</div><div class="mini" style="margin:0 2px 8px">${d}</div>`;
   h+=L.length?L.map((x,n)=>`<button class="trow" ${x.r.i!==undefined?`data-t="${x.r.i}"`:""}><span class="krank ${n<3?"top":""}">${n+1}</span><div style="min-width:0"><div class="nm">${esc(x.r.o.name)} <span class="eg">${stBtn(x.r.i)}</span></div><div class="sub">${esc(sub(x.r)||"")}</div></div><div class="kpts">${fm(x.v)}<small>${u}</small></div></button>`).join(""):`<div class="empty">Aucun résultat pour ce record dans cette catégorie.</div>`;
   $("#t-count").textContent=RW.length?RW.length+" tireur"+(RW.length>1?"s":"")+" avec des résultats":"";
   $("#t-list").innerHTML=RW.length?h:`<div class="empty">Pas encore de résultats pour ${esc(K.sx)} ${esc(KL(K.cat))}${tvAny()||q?" avec ces filtres":""}.</div>`;
