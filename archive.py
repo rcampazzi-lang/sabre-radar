@@ -4,6 +4,7 @@ Archive permanente des résultats d'épreuves (jamais effacée) : sert au classe
 - reprend l'archive existante (si elle existe) ;
 - ajoute / remplace, pour chaque épreuve de RESULTATS.json qui a des résultats, l'entrée complète (joueurs, poules, tableaux, classement final)
   avec les informations de la compétition (date, lieu, nom, type) prises dans la page FFE_HTML ;
+- ne remplace jamais une entrée par une version moins complète (poules, matchs de tableau, classement final) ;
 - ne supprime jamais rien : une compétition qui disparaît du calendrier FFE reste dans l'archive.
 Écrit OUT.json (par défaut ARCHIVE.json)."""
 import sys, os, re, json, time
@@ -17,7 +18,10 @@ except Exception: A = {}
 eps = A.get("eps", {})
 OLD = json.loads(json.dumps(eps))
 R = json.load(open(res_p, encoding="utf-8")).get("eps", {})
-new = upd = skip = 0
+def score(e):
+    rs = e.get("res", [])
+    return (sum(len(r.get("poules", [])) for r in rs), sum(len(m.get("matches", [])) for r in rs for m in r.get("tableau", [])), sum(len(r.get("final", [])) for r in rs))
+new = upd = skip = keep = 0
 for key, e in R.items():
     if not e or not e.get("res"): skip += 1; continue
     parts = key.split("|")
@@ -26,6 +30,8 @@ for key, e in R.items():
     old = eps.get(key)
     meta = ({k: c.get(k, "") for k in ("k", "d", "f", "v", "n", "nn", "ty")} if c else (old or {}).get("c"))
     if not meta: skip += 1; continue
+    if old and score(old["e"]) > score(e):   # on ne remplace jamais par un résultat moins complet
+        keep += 1; continue
     if old: upd += 1
     else: new += 1
     eps[key] = {"c": meta, "cat": cat, "s": sex, "eq": 1 if eq else 0, "e": e}
@@ -33,4 +39,4 @@ if OLD == eps and os.path.exists(out_p) and out_p == arch_p:
     print("archive : inchangée (%d épreuves)" % len(eps)); sys.exit(0)
 A = {"built": time.strftime("%Y-%m-%dT%H:%M"), "eps": eps}
 json.dump(A, open(out_p, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-print("archive : %d épreuves (+%d nouvelles, %d mises à jour, %d ignorées) -> %s, %.1f Mo" % (len(eps), new, upd, skip, out_p, os.path.getsize(out_p) / 1e6))
+print("archive : %d épreuves (+%d nouvelles, %d mises à jour, %d conservées car plus complètes, %d ignorées) -> %s, %.1f Mo" % (len(eps), new, upd, keep, skip, out_p, os.path.getsize(out_p) / 1e6))
