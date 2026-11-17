@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794903135";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794903950";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -450,7 +450,7 @@ body.scr .screen>.lt .stamp{display:none}
 .gr{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;padding:0 7px;border-radius:11px;font:700 12px var(--font-body);vertical-align:middle;background:var(--fill);color:var(--ink)}
 .gr-Ap,.gr-A{background:var(--good-soft);color:var(--good)}.gr-Bp,.gr-B{background:var(--accent-soft);color:var(--accent)}.gr-Cp,.gr-C{background:var(--warn-soft);color:var(--warn)}
 .sr-h .gr{height:28px;min-width:40px;font-size:16px;border-radius:14px}
-.pod .gr{margin-top:4px}.vs{display:inline-flex;align-items:center;height:22px;padding:0 8px;margin-left:4px;border-radius:11px;font:600 11px var(--font-body);background:transparent;color:var(--accent);border:1px solid var(--accent);cursor:pointer;vertical-align:middle;white-space:nowrap}.eg{white-space:nowrap}.pod .vs{margin:6px 0 0;height:22px;background:#fff;color:var(--accent);border-color:#fff}.pod .pp{flex-direction:column}
+.sthead{position:sticky;top:-4px;z-index:5;background:var(--bg);padding:6px 0 8px;margin:0 0 6px;border-bottom:1px solid var(--line)}.sth-r{display:flex;align-items:center;gap:10px;margin-bottom:8px}.sth-e{display:flex;flex-direction:column;align-items:center;gap:2px}.sth-e .gr{height:30px;min-width:54px;font-size:17px;border-radius:15px}.sth-e small{font-size:10px;color:var(--muted);font-weight:600}.sth-k{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.sth-k>div{background:var(--surface);border-radius:14px;padding:7px 2px;text-align:center;box-shadow:var(--sh)}.sth-k b{display:block;font:700 16px/1.1 var(--font-head)}.sth-k small{display:block;margin-top:2px;font-size:9.5px;font-weight:600;color:var(--muted)}.sth-k .hi{background:var(--accent-soft)}.sth-k .hi b,.sth-k .hi small{color:var(--accent)}.stats [hidden]{display:none!important}.stats>div:not(.sthead):not([hidden]){display:flex;flex-direction:column;gap:8px}.stats summary{cursor:pointer;color:var(--accent);font-weight:600}.pod .gr{margin-top:4px}.vs{display:inline-flex;align-items:center;height:22px;padding:0 8px;margin-left:4px;border-radius:11px;font:600 11px var(--font-body);background:transparent;color:var(--accent);border:1px solid var(--accent);cursor:pointer;vertical-align:middle;white-space:nowrap}.eg{white-space:nowrap}.pod .vs{margin:6px 0 0;height:22px;background:#fff;color:var(--accent);border-color:#fff}.pod .pp{flex-direction:column}
 .lnk2{all:unset;cursor:pointer;color:var(--accent);font-weight:600}
 .xw{display:none;margin-right:8px}.xw svg{width:16px;height:16px}
 .tbh{display:none}
@@ -2092,13 +2092,13 @@ function tireur(i){
     ps.map(([c,e])=>`<div class="li"><div><b>${esc(fd(c.d))}</b> · ${esc(c.v)}<br><small>${esc(c.n)} · ${esc(epLabel(e))}</small></div>${resOf(c,e)?`<span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end">${placeOf(c,e,t)}<button class="rs st" data-eps="${c.id}:${c.eps.indexOf(e)}:${i}" aria-label="Statistiques de l'épreuve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Stats</button><button class="rs" data-res="${c.id}:${c.eps.indexOf(e)}::0" aria-label="Résultats">${ICON.trophy}Résultats</button></span>`:""}</div>`).join("")+`</div><div id="ft-s" ${TFT==="s"?"":"hidden"}>${statsHTML(t,i)}</div>`);
 }
 /* ===== Statistiques tireur (saison en cours, résultats Greg) ===== */
-let TFT="c",STC=null;
+let TFT="c",STC=null,STM="t";
 const sNum=x=>typeof x==="number"&&isFinite(x)?x:(typeof x==="string"&&/^-?\d+$/.test(x.trim())?parseInt(x,10):null);
 function statsAll(){
   let sig=0;if(RES)for(const k in RES){sig++;for(const r of (RES[k].res||[]))sig+=(r.final||[]).length*3+(r.poules||[]).length*5+(r.tableau||[]).length*7+Object.keys(r.players||{}).length}
   if(STC&&STC.res===RES&&STC.s===SEASON&&STC.sig===sig)return STC.M;
   const M={},seen=new Set();
-  const get=(nk,name,club)=>M[nk]||(M[nk]={nk,name,club,ne:0,sx:{},cat:{},pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,pls:[],dl:[],cs:[],opp:{},lv:{},nmS:0,nmN:0});
+  const get=(nk,name,club)=>M[nk]||(M[nk]={nk,name,club,ne:0,sx:{},cat:{},pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,pls:[],dl:[],cs:[],opp:{},lv:{},nmS:0,nmN:0,pn:0,pq:0,pf:0,ms:[]});
   const nn=s=>nkey(s,"");
   if(RES)D.comps.forEach(c=>{
     if(!inSeason(c))return;
@@ -2108,10 +2108,10 @@ function statsAll(){
       R.res.forEach(r=>{
         const pl=r.players||{};const byName={};
         for(const id in pl){const p=pl[id];byName[nkey(p[0],p[1])]=id;byName[nkey(p[1],p[0])]=id}
-        const A={};const ga=id=>A[id]||(A[id]={pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,nmS:0,nmN:0,opp:{}});
+        const A={};const ga=id=>A[id]||(A[id]={pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,nmS:0,nmN:0,opp:{},pn:0,pq:0,pf:0,ms:[]});
         (r.poules||[]).forEach(po=>{const sz=(po.rows||[]).length;
           (po.rows||[]).forEach(x=>{const v=sNum(x.v),td=sNum(x.td),tr=sNum(x.tr);if(v===null||td===null||tr===null||sz<2)return;
-            const a=ga(x.id);a.pm+=sz-1;a.pw+=v;a.ptd+=td;a.ptr+=tr})});
+            const a=ga(x.id);a.pm+=sz-1;a.pw+=v;a.ptd+=td;a.ptr+=tr;a.pn++;if(typeof x.pl==="number"&&sz>1)a.pq+=(sz-x.pl)/(sz-1);else a.pq+=v/(sz-1);if(v===sz-1)a.pf++})});
         (r.tableau||[]).forEach(tr=>(tr.matches||[]).forEach(m=>{
           if(!m.a||!m.b)return;
           const ia=m.a.id||byName[nn(m.a.name)],ib=m.b.id||byName[nn(m.b.name)];
@@ -2120,15 +2120,15 @@ function statsAll(){
             if(!me)return;const a=ga(me);if(s1>s2)a.tw++;else a.tl++;a.ttd+=s1;a.ttr+=s2;a.nmS+=(s1-s2)/Math.max(s1,s2);a.nmN++;
             const on=ot&&pl[ot]?nkey(pl[ot][0],pl[ot][1]):nn(ox.name||"");
             const nm=ot&&pl[ot]?pl[ot][1]+" "+pl[ot][0]:(ox.name||"");
-            const o=a.opp[on]||(a.opp[on]={nm,w:0,l:0});if(s1>s2)o.w++;else o.l++})}));
+            const o=a.opp[on]||(a.opp[on]={nm,w:0,l:0});if(s1>s2)o.w++;else o.l++;a.ms.push({c,e,r:m.r,tp:tr.place,on,nm,s1,s2})})}));
         const cp=((r.classement_poules||[]).find(x=>x.tour===1)||(r.classement_poules||[])[0]||{}).rows||[];
         const fin={};(r.final||[]).forEach(f=>{fin[f.id]=f.pl});const n=(r.final||[]).length;
         new Set([...Object.keys(A),...Object.keys(fin)]).forEach(id=>{
           const p=pl[id];if(!p)return;const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+id;if(seen.has(sk))return;seen.add(sk);
           const nk=nkey(p[0],p[1]);const o=get(nk,p[1]+" "+p[0],p[2]);o.club=p[2]||o.club;o.ne++;
           const pc=pcat(p[3])||single;if(pc)o.cat[pc]=(o.cat[pc]||0)+1;if(e.s!=="Mixte")o.sx[e.s]=(o.sx[e.s]||0)+1;
-          const a=A[id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,nmS:0,nmN:0,opp:{}};
-          ["pm","pw","ptd","ptr","tw","tl","ttd","ttr","nmS","nmN"].forEach(k=>o[k]+=a[k]);
+          const a=A[id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,nmS:0,nmN:0,opp:{},pn:0,pq:0,pf:0,ms:[]};
+          ["pm","pw","ptd","ptr","tw","tl","ttd","ttr","nmS","nmN","pn","pq","pf"].forEach(k=>o[k]+=a[k]);a.ms.forEach(m=>o.ms.push(m));
           for(const k in a.opp){const q=o.opp[k]||(o.opp[k]={nm:a.opp[k].nm,w:0,l:0});q.w+=a.opp[k].w;q.l+=a.opp[k].l}
           if(fin[id]!==undefined){const fp=fin[id];o.pls.push({pl:fp,n,c,e});
             const cr=cp.find(x=>String(x.id)===String(id));if(cr&&typeof cr.pl==="number")o.dl.push(cr.pl-fp);
@@ -2145,6 +2145,14 @@ const sMet={
   tw:{l:"Victoires en tableau",f:o=>o.tw+o.tl>=3?o.tw/(o.tw+o.tl):null,t:v=>Math.round(v*100)+" %",hi:1},
   sh:{l:"Part des touches marquées (poules + tableaux)",f:o=>o.ptd+o.ttd+o.ptr+o.ttr>=30?(o.ptd+o.ttd)/(o.ptd+o.ttd+o.ptr+o.ttr):null,t:v=>Math.round(v*100)+" %",hi:1},
   nm:{l:"Marge normalisée par match de tableau",f:o=>o.nmN>=3?o.nmS/o.nmN:null,t:v=>(v>0?"+":"")+Math.round(v*100)+" %",hi:1},
+  pt:{l:"Touches données par match de poule",f:o=>o.pm>=5?o.ptd/o.pm:null,t:v=>v.toFixed(1).replace(".",","),hi:1},
+  pr:{l:"Touches reçues par match de poule",f:o=>o.pm>=5?o.ptr/o.pm:null,t:v=>v.toFixed(1).replace(".",","),hi:0},
+  ps:{l:"Part des touches marquées en poule",f:o=>o.ptd+o.ptr>=30?o.ptd/(o.ptd+o.ptr):null,t:v=>Math.round(v*100)+" %",hi:1},
+  pq:{l:"Rang moyen en poule (100 % = 1er)",f:o=>o.pn>=2?o.pq/o.pn:null,t:v=>Math.round(v*100)+" %",hi:1},
+  ts:{l:"Part des touches marquées en tableau",f:o=>o.ttd+o.ttr>=20?o.ttd/(o.ttd+o.ttr):null,t:v=>Math.round(v*100)+" %",hi:1},
+  tt:{l:"Touches données par match de tableau",f:o=>o.tw+o.tl>=3?o.ttd/(o.tw+o.tl):null,t:v=>v.toFixed(1).replace(".",","),hi:1},
+  tu:{l:"Touches reçues par match de tableau",f:o=>o.tw+o.tl>=3?o.ttr/(o.tw+o.tl):null,t:v=>v.toFixed(1).replace(".",","),hi:0},
+  ov:{l:"Victoires, poules et tableaux",f:o=>o.pm+o.tw+o.tl>=5?(o.pw+o.tw)/(o.pm+o.tw+o.tl):null,t:v=>Math.round(v*100)+" %",hi:1},
   pp:{l:"Tireurs battus au classement final",f:o=>o.pls.length?o.pls.reduce((s,x)=>s+(x.n>1?(x.n-x.pl)/(x.n-1):1),0)/o.pls.length:null,t:v=>Math.round(v*100)+" %",hi:1}
 };
 /* Force (type Elo) : ajustement global sur tous les matchs des 12 derniers mois (poules et tableaux, saison en cours + archive).
@@ -2243,17 +2251,41 @@ function statsHTML(t,idx){
   const lv=Object.entries(me.lv).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<span class="tag n">${esc(k)} · ${v.n} (meilleure ${rkLbl(v.best)})</span>`).join("");
   const opp=Object.values(me.opp).filter(o=>o.w+o.l>=2).sort((a,b)=>b.w+b.l-a.w-a.l).slice(0,5).map(o=>`<div class="li"><div>${esc(o.nm)}</div><b>${o.w} V – ${o.l} D</b></div>`).join("");
   const rt=ratingAll()[nk];
-  const rtc=rt?`<div class="sr"><div class="sr-h"><span>Force estimée (type Elo)</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.pc)}%"></i></div><div class="sr-n">${rt.e} ± ${rt.se} · ${rt.rk}${rt.rk===1?"er":"ᵉ"} sur ${rt.n} tireurs ${esc(rt.g.split("|")[0]==="Dames"?"dames":rt.g.split("|")[0]==="Hommes"?"hommes":"")} ${esc(KL(rt.g.split("|")[1]))} · ${rt.nm} matchs (${rt.nw} victoire${rt.nw>1?"s":""}) sur les 12 derniers mois, poules et tableaux${rt.prov?" · peu de matchs : à prendre avec prudence (?)":""}</div><div class="sr-n" style="margin-top:6px">Centrée sur 1500 dans chaque catégorie. Calculée à partir des victoires et défaites et de l'écart de touches, rapporté au format du match. Elle se compare entre tireurs qui se sont rencontrés ou qui ont des adversaires en commun ; elle s'affine à chaque nouvelle compétition.</div></div>`:`<div class="sr"><div class="sr-h"><span>Force estimée (type Elo)</span><b>–</b></div><div class="sr-n">Pas encore de match enregistré sur les 12 derniers mois.</div></div>`;
-  return `<div class="stats">${rtc}${rk?`<div class="rkcs">${rk}</div>`:""}${tiles}
-  <div class="sec">Poules</div>${pm?`<div class="mini" style="margin:0 0 6px">${me.pw} victoire${me.pw>1?"s":""} sur ${pm} match${pm>1?"s":""}</div>`:""}${rows("pw")}${rows("pi")}
-  <div class="sec">Tableaux</div>${tm?`<div class="mini" style="margin:0 0 6px">${me.tw} victoire${me.tw>1?"s":""}, ${me.tl} défaite${me.tl>1?"s":""} en tableau</div>`:`<div class="mini">Pas de match de tableau joué cette saison.</div>`}${rows("tw")}
-  <div class="sec">Touches données et reçues</div>${touches}${rows("td")}${rows("tr")}
-  <div class="sec">Comparable quel que soit le format (5, 8, 10 ou 15 touches)</div>${rows("sh")}${rows("nm")}<div class="mini" style="margin:0 0 6px">Part des touches = touches données ÷ (données + reçues). Marge normalisée = (touches données − reçues) ÷ le plus gros score du match, moyenne sur les matchs de tableau : 5-4 et 15-12 comptent pareil.</div>
-  <div class="sec">Classement final</div><div class="mini" style="margin:0 0 6px">${avgPl!==null?"Place moyenne : "+avgPl.toFixed(1).replace(".",","):"Pas encore de classement final"}${dl!==null?` · entre la fin des poules et le classement final : ${dl>0?"+":""}${dl.toFixed(1).replace(".",",")} place${Math.abs(dl)>=2?"s":""} en moyenne`:""}</div>${rows("pp")}
-  <div class="sec">Évolution (place finale ; la barre = tireurs battus)</div><div class="evo">${evo}</div>
-  <div class="sec">Par niveau</div><div class="row">${lv}</div>
-  ${opp?`<div class="sec">Adversaires affrontés plusieurs fois</div><div class="list">${opp}</div>`:""}
-  <div class="mini" style="margin-top:12px">Statistiques de la saison ${esc(seasonLbl(SEASON))}, calculées à partir des résultats Greg. La comparaison porte sur les autres tireurs de la même catégorie et du même sexe (ou sur tous les tireurs du même sexe quand ils sont trop peu nombreux).</div></div>`;
+  const rtc=rt?`<div class="sr"><div class="sr-h"><span>Force estimée (type Elo)</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.pc)}%"></i></div><div class="sr-n">${rt.e} ± ${rt.se} · ${rt.rk}${rt.rk===1?"er":"ᵉ"} sur ${rt.n} tireurs ${esc(rt.g.split("|")[0]==="Dames"?"dames":rt.g.split("|")[0]==="Hommes"?"hommes":"")} ${esc(KL(rt.g.split("|")[1]))} · ${rt.nm} matchs (${rt.nw} victoire${rt.nw>1?"s":""}) sur les 12 derniers mois, poules et tableaux${rt.prov?" · peu de matchs : à prendre avec prudence (?)":""}</div><details class="sr-n" style="margin-top:6px"><summary>Comment est calculée la force ?</summary>Centrée sur 1500 dans chaque catégorie. Calculée à partir des victoires et défaites et de l'écart de touches, rapporté au format du match. Elle se compare entre tireurs qui se sont rencontrés ou qui ont des adversaires en commun ; elle s'affine à chaque nouvelle compétition.</details></div>`:`<div class="sr"><div class="sr-h"><span>Force estimée (type Elo)</span><b>–</b></div><div class="sr-n">Pas encore de match enregistré sur les 12 derniers mois.</div></div>`;
+  const all2=pm+tm,pct=v=>Math.round(v*100)+" %",d1=v=>v.toFixed(1).replace(".",","),sg=v=>(v>0?"+":"")+d1(v);
+  const wins=me.pw+me.tw,dif=me.ptd+me.ttd-me.ptr-me.ttr;
+  const kp=(b,l,c)=>`<div class="${c||""}"><b>${b}</b><small>${l}</small></div>`;
+  // adversaires : plus forts / plus faibles (force Elo)
+  let up=[0,0],dn=[0,0],R2={};try{R2=ratingAll()}catch(e){}
+  me.ms.forEach(m=>{const q=R2[m.on];if(!q||!rt)return;const T=q.e>rt.e?up:dn;if(m.s1>m.s2)T[0]++;else T[1]++});
+  const cl=me.ms.filter(m=>Math.abs(m.s1-m.s2)<=2),clw=cl.filter(m=>m.s1>m.s2).length;
+  const bw=me.ms.filter(m=>m.s1>m.s2).sort((a,b)=>(b.s1-b.s2)/b.s1-(a.s1-a.s2)/a.s1)[0];
+  const bl=me.ms.filter(m=>m.s1<m.s2).sort((a,b)=>(b.s2-b.s1)/b.s2-(a.s2-a.s1)/a.s2)[0];
+  const mline=m=>`<div class="li"><div><b>${esc(RLAB[m.r]||"Tour "+m.r)}</b> · ${esc(fd(m.c.d))}<br><small>contre ${esc(m.nm)} · ${esc(m.c.v)}</small></div><span class="rk" style="${m.s1>m.s2?"background:var(--good-soft);color:var(--good)":"background:var(--bad-soft);color:var(--bad)"}">${m.s1>m.s2?"V":"D"} ${m.s1}-${m.s2}</span></div>`;
+  const mlist=me.ms.slice().sort((a,b)=>b.c.d.localeCompare(a.c.d)||a.r-b.r).slice(0,12).map(mline).join("");
+  const top3=me.cs.slice().sort((a,b)=>a.pl-b.pl||b.n-a.n).slice(0,3).map(x=>`<div class="li"><div><b>${esc(x.c.v)}</b> · ${esc(fd(x.c.d))}<br><small>${esc(x.c.n)}</small></div><span class="rk" style="background:var(--accent-soft);color:var(--accent)">${rkLbl(x.pl)} / ${x.n}</span></div>`).join("");
+  const note=t=>`<div class="mini" style="margin:2px 0 8px">${t}</div>`;
+  const head=`<div class="sthead"><div class="sth-r">${rt?`<span class="sth-e">${gradeTag(rt)}<small>Force Elo${rt.prov?" (provisoire)":""}</small></span>`:""}<div class="sth-k">${kp(me.ne,"épreuves")}${kp(all2,"matchs")}${kp(all2>=3?pct(wins/all2):"–","victoires")}${kp(best?rkLbl(best.pl):"–","meilleure place","hi")}</div></div><div class="seg sth-s">${[["t","Toutes"],["p","Poules"],["b","Tableaux"]].map(([k,l])=>`<button aria-pressed="${STM===k}" data-smode="${k}">${l}</button>`).join("")}</div></div>`;
+  const pT=`<div id="sm-t" ${STM==="t"?"":"hidden"}>${rtc}${rk?`<div class="rkcs">${rk}</div>`:""}
+    <div class="sec">Bilan de la saison</div><div class="tiles">${kp(wins+" – "+(all2-wins),"victoires – défaites")}${kp(me.ptd+me.ttd,"touches données")}${kp(me.ptr+me.ttr,"touches reçues")}${kp(all2?sg(dif):"–","différence",dif>=0?"hi":"")}</div>
+    ${rows("ov")}${rows("sh")}${rows("td")}${rows("tr")}
+    ${top3?`<div class="sec">Meilleurs résultats</div><div class="list">${top3}</div>`:""}
+    <div class="sec">Évolution (place finale ; la barre = tireurs battus)</div><div class="evo">${evo}</div>
+    ${rows("pp")}${note(avgPl!==null?"Place moyenne : "+d1(avgPl)+(dl!==null?` · entre la fin des poules et le classement final : ${dl>0?"+":""}${d1(dl)} place${Math.abs(dl)>=2?"s":""} en moyenne`:""):"Pas encore de classement final")}
+    <div class="sec">Par niveau</div><div class="row">${lv}</div>
+    ${(up[0]+up[1]+dn[0]+dn[1])?`<div class="sec">Face aux adversaires (tableaux, selon la force Elo)</div><div class="tiles">${kp(up[0]+" – "+up[1],"contre plus fort")}${kp(dn[0]+" – "+dn[1],"contre plus faible")}</div>`:""}
+    ${opp?`<div class="sec">Adversaires affrontés plusieurs fois</div><div class="list">${opp}</div>`:""}</div>`;
+  const pP=`<div id="sm-p" ${STM==="p"?"":"hidden"}>${pm?`<div class="tiles">${kp(me.pw+" / "+pm,"victoires")}${kp(pct(me.pw/pm),"taux de victoire","hi")}${kp(sg((me.ptd-me.ptr)/pm),"indice moyen")}</div>
+    <div class="tiles">${kp(me.ptd,"touches données")}${kp(me.ptr,"touches reçues")}${kp(me.pn?me.pf:"–","poule"+(me.pf>1?"s":"")+" parfaite"+(me.pf>1?"s":""))}</div>
+    ${rows("pw")}${rows("pi")}${rows("pq")}${rows("pt")}${rows("pr")}${rows("ps")}
+    ${note("Indice = touches données − reçues, par match. Rang en poule : 100 % = premier de sa poule, 0 % = dernier. Poule parfaite : toutes les victoires.")}`:`<div class="empty">Pas de poule enregistrée cette saison.</div>`}</div>`;
+  const pB=`<div id="sm-b" ${STM==="b"?"":"hidden"}>${tm?`<div class="tiles">${kp(me.tw+" – "+me.tl,"victoires – défaites")}${kp(pct(me.tw/tm),"taux de victoire","hi")}${kp(me.nmN?(me.nmS/me.nmN>0?"+":"")+Math.round(me.nmS/me.nmN*100)+" %":"–","marge normalisée")}</div>
+    <div class="tiles">${kp(me.ttd,"touches données")}${kp(me.ttr,"touches reçues")}${kp(clw+" – "+(cl.length-clw),"matchs serrés (≤ 2 touches)")}</div>
+    ${rows("tw")}${rows("nm")}${rows("ts")}${rows("tt")}${rows("tu")}
+    ${bw?`<div class="sec">Plus belle victoire et plus lourde défaite</div><div class="list">${mline(bw)}${bl?mline(bl):""}</div>`:""}
+    <div class="sec">Derniers matchs de tableau</div><div class="list">${mlist}</div>
+    ${note("Marge normalisée = (touches données − reçues) ÷ plus gros score du match : 5-4 et 15-12 comptent pareil. Matchs serrés : écart de 2 touches ou moins.")}`:`<div class="empty">Pas de match de tableau enregistré cette saison.</div>`}</div>`;
+  return `<div class="stats">${head}${pT}${pP}${pB}<div class="mini" style="margin-top:12px">Statistiques de la saison ${esc(seasonLbl(SEASON))}, calculées à partir des résultats Greg. La comparaison porte sur les autres tireurs de la même catégorie et du même sexe (ou sur tous les tireurs du même sexe quand ils sont trop peu nombreux).</div></div>`;
 }
 
 /* ===== Statistiques d'un tireur sur une épreuve ===== */
@@ -2552,6 +2584,7 @@ document.addEventListener("click",ev=>{
   if(b.dataset.f==="kcl"){K.cl=b.dataset.v;saveK();renderKlass();return}
   if(b.dataset.eps){const [a,bb,cc]=b.dataset.eps.split(":");epStats(+a,+bb,+cc);return}
   if(b.dataset.pw){const s=$("#sheet");const w=!s.dataset.wide;PWIDE=w;if(w)s.dataset.wide="1";else delete s.dataset.wide;return}
+  if(b.dataset.smode){STM=b.dataset.smode;document.querySelectorAll("[data-smode]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.smode===STM));["t","p","b"].forEach(k=>{const e=$("#sm-"+k);if(e)e.hidden=STM!==k});return}
   if(b.dataset.ftab){TFT=b.dataset.ftab;document.querySelectorAll("[data-ftab]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.ftab===TFT));$("#ft-c").hidden=TFT!=="c";$("#ft-s").hidden=TFT!=="s";return}
   if(b.dataset.fr!==undefined){const i=LICI.get(b.dataset.fr);if(i!==undefined)tireur(i);return}
   if(b.dataset.f==="ksx"){K.sx=b.dataset.v;saveK();renderKlass();return}
