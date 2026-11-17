@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794948413";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794949301";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -27,7 +27,7 @@
   --t-int:#c3b0f6; --t-int-bg:#2a2150; --t-nat:#9fc0f6; --t-nat-bg:#162b4f; --t-rg:#a2d98a; --t-rg-bg:#1b3414; --t-dp:#93a6a2; --t-dp-bg:#1e2e2c;
   --av-bg:24%; --av-fg:82%; --sh:none; --bar:rgba(10,17,16,.82); color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
-html{-webkit-text-size-adjust:100%;touch-action:manipulation}@media (max-width:430px){.screen>.lt h1{font-size:27px}.screen>.lt{gap:8px}.screen>.lt>div:first-child{min-width:0}.screen>.lt .seas select{padding:0 26px 0 12px}.screen>.lt>div:last-child{margin-left:auto}}@media (pointer:coarse){input,select,textarea{font-size:16px!important}}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}#tv-views{overflow:visible}#tv-views button{flex:1 1 auto;min-width:0;padding-left:6px;padding-right:6px;white-space:nowrap;font-size:13.5px}@media (max-width:430px){.screen>.lt h1{font-size:27px}.screen>.lt{gap:8px}.screen>.lt>div:first-child{min-width:0}.screen>.lt .seas select{padding:0 26px 0 12px}.screen>.lt>div:last-child{margin-left:auto}}@media (pointer:coarse){input,select,textarea{font-size:16px!important}}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(92px + env(safe-area-inset-bottom,0px))}
 body.lock{overflow:hidden}
@@ -607,6 +607,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
   <div class="lt"><div><h1>Tireurs</h1><span class="stamp" id="t-intro"></span></div></div>
   <div class="bar">
     <div class="seg ksrc tvv" id="tv-views"></div>
+    <div class="seg" id="tv-sub" hidden></div>
     <div class="srow"><label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg><input type="search" id="tq" placeholder="Nom, prénom ou club" autocomplete="off"></label><button class="fbtn" data-f="tvf" aria-label="Filtres"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>Filtres<span class="n" id="tv-n"></span></button></div>
     <div class="seg" id="k-sx"></div>
     <div class="rowscroll" id="k-cat"></div>
@@ -2778,8 +2779,9 @@ function tvActs(){
 function tvClear(){S.tq="";const q=$("#tq");if(q)q.value="";S.tcats.clear();S.surcl=false;K.gr="";K.rg="";K.club="";K.hp=false;save();saveK()}
 function renderTV(){
   if(!TVIEWS.some(x=>x[0]===K.v))K.v="sr";
-  $("#tv-views").innerHTML=TVIEWS.map(([k,l])=>seg(l,K.v===k,`data-f="tvv" data-v="${k}"`)).join("");
-  {const on=$("#tv-views [aria-pressed=true]");if(on&&on.scrollIntoView)on.scrollIntoView({inline:"center",block:"nearest"})}
+  const CLS=["sr","ffe","elo"],isC=CLS.includes(K.v);if(isC)K.lc=K.v;
+  $("#tv-views").innerHTML=[["c","Classements",CLS.includes(K.lc)?K.lc:"sr",isC],["rec","Records","rec",K.v==="rec"],["dir","Annuaire","dir",K.v==="dir"],["fav","★ Favoris","fav",K.v==="fav"]].map(([k,l,v,on])=>seg(l,on,`data-f="tvv" data-v="${v}"`)).join("");
+  {const sb=$("#tv-sub");sb.hidden=!isC;sb.innerHTML=isC?TVIEWS.slice(0,3).map(([k,l])=>seg(l,K.v===k,`data-f="tvv" data-v="${k}"`)).join(""):""}
   const q=$("#tq");if(q&&q.value!==S.tq)q.value=S.tq;
   const rk=K.v==="sr"||K.v==="ffe"||K.v==="elo"||K.v==="rec";
   $("#k-sx").hidden=!rk;$("#t-list").dataset.v=K.v;
