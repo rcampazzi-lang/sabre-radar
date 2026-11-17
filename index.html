@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794923625";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794928816";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1088,14 +1088,14 @@ function liveSheet(){
       const ci=D.comps.indexOf(c);
       const eps=c.eps.map((e,ei)=>({e,ei,X:resOf(c,e)})).sort((a,b)=>KCATS.indexOf(pcat(a.e.c.split(", ")[0])||a.e.c)-KCATS.indexOf(pcat(b.e.c.split(", ")[0])||b.e.c)||a.e.s.localeCompare(b.e.s));
       return `<div class="lvc-h"><b>${esc(c.v)}</b><small>${esc(c.n)}</small></div>`+eps.map(({e,ei,X})=>{
-        const [st,cl]=epState(X);let info="";
+        CURG=epG(e);const [st,cl]=epState(X);let info="";
         const R=X&&X.res&&X.res[0];
         if(R&&R.poules&&R.poules.length){
           const tour=Math.max(...R.poules.map(p=>p.tour)),{lv,mean}=poolLv(R,tour),K2=lv.filter(x=>x.avg!==null);
           const np=Object.keys(R.players||{}).length;
           info=`${np} tireurs`+(mean?` · Elo moyen ${Math.round(mean)}`:"")+(K2.length>=2?` · poules de ${Math.round(Math.min(...K2.map(x=>x.avg)))} à ${Math.round(Math.max(...K2.map(x=>x.avg)))}`:"");
         }else{
-          const v=(e.l||[]).map(i=>D.tir[i]).filter(Boolean).map(t=>R2[nkey(t[0],t[1])]).filter(Boolean).map(x=>x.e);
+          const v=(e.l||[]).map(i=>D.tir[i]).filter(Boolean).map(t=>{const k=nkey(t[0],t[1]);return CURG?ratingIn(k,CURG):R2[k]}).filter(Boolean).map(x=>x.e);
           info=`${e.n||0} inscrit${(e.n||0)>1?"s":""}`+(v.length>=4?` · Elo moyen ${Math.round(v.reduce((a,b)=>a+b,0)/v.length)} · meilleur ${Math.max(...v)}`:"");
         }
         return `<button class="lvc" type="button" data-lres="${ci}:${ei}"><div class="lvh"><b>${esc(epLabel(e))}</b><span class="lvs ${cl}">${st}</span></div><div class="lvn">${esc(info)}</div></button>`}).join("");
@@ -1867,11 +1867,11 @@ let TIRK=null;
 const stBtn=i=>i===undefined||i===null?"":`<span class="vs" data-ts="${i}" role="button">Voir stats</span>`;
 const stK=k=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));return stBtn(TIRK.get(k))};
 const stRow=r=>stBtn(tirI(r));
-function rStat(R,id){const p=R.players[id];if(!p)return"";if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));const i=TIRK.get(nkey(p[0],p[1]));if(i===undefined)return"";const g=gradeTag(ratingOf(D.tir[i]));return `${g}${stBtn(i)}`}
+function rStat(R,id){const p=R.players[id];if(!p)return"";if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));const i=TIRK.get(nkey(p[0],p[1]));if(i===undefined)return"";const g=gradeTag(eloP(R,id));return `${g}${stBtn(i)}`}
 function pname(R,id,short){const p=R.players[id];if(!p)return "#"+id;return short?`${p[0]} ${p[1]}`:`${p[0]} ${p[1]}`}
 function pclub(R,id){const p=R.players[id];return p?p[2]:""}
 function fv(v){return (Math.round(v*100)/100).toFixed(2)}
-const eloP=(R,id)=>{const q=R.players&&R.players[id];if(!q)return null;try{return ratingAll()[nkey(q[0],q[1])]||null}catch(e){return null}};
+const eloP=(R,id)=>{const q=R.players&&R.players[id];if(!q)return null;try{const k=nkey(q[0],q[1]);return CURG?ratingIn(k,CURG):(ratingAll()[k]||null)}catch(e){return null}};
 function poolLv(R,tour){
   const ps=R.poules.filter(p=>p.tour===tour),all=[];
   const lv=ps.map(p=>{const v=p.rows.map(r=>eloP(R,r.id)).filter(Boolean).map(x=>x.e);v.forEach(x=>all.push(x));
@@ -1978,7 +1978,7 @@ function vtableau(R){
   return chips+`<div class="mini">Le petit chiffre est le classement après les poules.</div><div class="tbl"><div class="cv" style="width:${W}px;height:${H}px">${heads}<svg width="${W}" height="${H}">${paths}</svg>${boxes}</div></div>`;
 }
 function results(ci,ei,view,gi){
-  const c=D.comps[ci],e=c.eps[ei];const X=(PREV&&PREV.ci===ci&&PREV.ei===ei&&PREV)||resOf(c,e);if(!X)return;
+  const c=D.comps[ci],e=c.eps[ei];CURG=epG(e);const X=(PREV&&PREV.ci===ci&&PREV.ei===ei&&PREV)||resOf(c,e);if(!X)return;
   gi=gi||0;const R=X.res[gi]||X.res[0];
   const V=rview(R);
   if(!V.length){sheet(esc(epLabel(e)),'<div class="empty">Pas encore de résultats.</div>');return}
@@ -2276,7 +2276,9 @@ const sMet={
 /* Force (type Elo) : ajustement global sur tous les matchs des 12 derniers mois (poules et tableaux, saison en cours + archive).
    Résultat d'un match = 0,75 + 0,25 × marge normalisée pour le gagnant ((touches gagnant − perdant) ÷ plus gros score), le complément pour le perdant.
    Un pool par sexe et catégorie ; prior centré sur 1500 ; la fiabilité (± et « ? ») dépend du nombre de matchs. */
-const FS=400/Math.LN10;let FRC=null;const FNAME={};
+const FS=400/Math.LN10;let FRC=null;const FNAME={},FCATN={},FCATD={};
+const epG=e=>{const cs=e.c.split(", ").map(x=>pcat(x)||x);return cs.length===1&&KCATS.includes(cs[0])?e.s+"|"+cs[0]:""};
+let CURG="";
 function forceMatches(){
   const W=kWin(),G={},done=new Set();
   D.comps.concat(HIST).forEach(c=>{
@@ -2293,9 +2295,9 @@ function forceMatches(){
       X.res.forEach(r=>{
         if(r.src==="fie")return;/* résultats internationaux FIE : non pris en compte pour l'instant */
         const pl=r.players||{},by={};for(const id in pl){by[nkey(pl[id][0],pl[id][1])]=id;by[nkey(pl[id][1],pl[id][0])]=id}
-        const info=id=>{const p=pl[id];if(!p)return null;const nk0=nkey(p[0],p[1]);if(!FNAME[nk0])FNAME[nk0]=[p[0]+" "+p[1],p[2]||""];return [nk0,pcat(p[3])||single]};
-        const add=(a,b,sa,sb)=>{const A=info(a),B=info(b);if(!A||!B||A[0]===B[0]||!A[1]||A[1]!==B[1]||!KCATS.includes(A[1]))return;if(sa===null||sb===null||sa===sb)return;
-          const [x,y,sw,sl]=sa>sb?[A,B,sa,sb]:[B,A,sb,sa];const g=e.s+"|"+x[1];(G[g]=G[g]||[]).push([x[0],y[0],(sw-sl)/Math.max(sw,sl),c.d])};
+        const info=id=>{const p=pl[id];if(!p)return null;const nk0=nkey(p[0],p[1]);if(!FNAME[nk0])FNAME[nk0]=[p[0]+" "+p[1],p[2]||""];const pc0=pcat(p[3]);if(pc0&&(!FCATD[nk0]||c.d>=FCATD[nk0])){FCATN[nk0]=pc0;FCATD[nk0]=c.d}return [nk0,pc0||single]};
+        const add=(a,b,sa,sb)=>{const A=info(a),B=info(b);if(!A||!B||A[0]===B[0])return;const gc=single?single:(A[1]&&A[1]===B[1]?A[1]:"");if(!gc||!KCATS.includes(gc))return;if(sa===null||sb===null||sa===sb)return;
+          const [x,y,sw,sl]=sa>sb?[A,B,sa,sb]:[B,A,sb,sa];const g=e.s+"|"+gc;(G[g]=G[g]||[]).push([x[0],y[0],(sw-sl)/Math.max(sw,sl),c.d])};
         (r.poules||[]).forEach(po=>{const rows=po.rows||[],n=rows.length;if(!rows.every(x=>(x.m||[]).length===n))return;
           for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const ci=rows[i].m[j],cj=rows[j].m[i];if(!ci||!cj||ci[0]===cj[0]||!/^[VD]/.test(ci)||!/^[VD]/.test(cj))continue;
             const iw=ci[0]==="V",cw=iw?ci:cj,cl=iw?cj:ci;let sw=sNum(cw.slice(1)),sl=sNum(cl.slice(1));
@@ -2322,15 +2324,17 @@ function fitG(ms){
 function forceAll(){
   const sig=(RES?Object.keys(RES).length:0)+"|"+HIST.length+"|"+SEASON+"|"+TODAY+"|"+Object.keys(IGN).length;
   if(FRC&&FRC.sig===sig)return FRC.R;
-  const G=forceMatches(),R={};
+  const G=forceMatches(),R={},RG={};
   for(const g in G){
     const {ids,th,h,nm,nw,n}=fitG(G[g]);
     const E=Array.from(th,x=>FS*x),S=E.slice().sort((a,b)=>a-b);
     ids.forEach((k,i)=>{
       const lo=S.filter(x=>x<E[i]).length,eq=S.filter(x=>x===E[i]).length;
       const o={e:Math.round(1500+E[i]),se:Math.round(FS/Math.sqrt(h[i])),nm:nm[i],nw:nw[i],pc:Math.round((lo+eq/2)/n*100),rk:1+n-lo-eq,n,g,prov:nm[i]<5};
-      if(!R[k]||R[k].nm<o.nm)R[k]=o})}
-  FRC={sig,R,G};return R;
+      (RG[g]=RG[g]||{})[k]=o})}
+  const per={};for(const g in RG)for(const k in RG[g])(per[k]=per[k]||[]).push(RG[g][k]);
+  for(const k in per){const arr=per[k],own=FCATN[k]?arr.find(o=>o.g.split("|")[1]===FCATN[k]):null;R[k]=own||arr.slice().sort((a,b)=>b.nm-a.nm)[0]}
+  FRC={sig,R,G,RG};return R;
 }
 const EH={};
 function eloHist(k){
@@ -2342,12 +2346,14 @@ function eloHist(k){
   return EH.m[k]=out;
 }
 function ratingAll(){return forceAll()}
+const ratingG=()=>{ratingAll();return FRC.RG};
+const ratingIn=(k,g)=>{if(!g)return null;const G=ratingG()[g];return G?G[k]||null:null};
 const ratingOf=t=>{try{return ratingAll()[nkey(t[0],t[1])]||null}catch(e){return null}};
 const ratingK=k=>{try{return ratingAll()[k]||null}catch(e){return null}};
 const tirI=r=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));let i=TIRK.get(nkey(r[1],r[2]));if(i===undefined)i=TIRK.get(nkey(r[2],r[1]));if(i===undefined)i=LICI.get(r[5]);return i};
 const ratingRow=r=>{try{const i=tirI(r);return i===undefined?null:ratingOf(D.tir[i])}catch(e){return null}};
 const HGI='<svg class="hg" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/></svg>';
-const gradeTag=r=>r?`<span class="gr elo ${r.prov?"prov ":""}${r.pc>=67?"gr-A":r.pc<=33?"gr-C":"gr-B"}" title="Force estimée ${r.e} ± ${r.se} · ${r.nm} match${r.nm>1?"s":""}${r.prov?" (estimation provisoire, peu de matchs)":""} · ${r.rk}ᵉ sur ${r.n}">${r.e}${r.prov?HGI:""}</span>`:"";
+const gradeTag=r=>r?`<span class="gr elo ${r.prov?"prov ":""}${r.pc>=67?"gr-A":r.pc<=33?"gr-C":"gr-B"}" title="Force estimée ${r.e} ± ${r.se} · ${r.nm} match${r.nm>1?"s":""}${r.prov?" (estimation provisoire, peu de matchs)":""} · ${r.rk}ᵉ sur ${r.n} (${KL(r.g.split("|")[1])})">${r.e}${r.prov?HGI:""}</span>`:"";
 function sCmp(me,all,k){
   const m=sMet[k],v=m.f(me);if(v===null)return null;
   const {sx,cat}=sMain(me);
@@ -2369,9 +2375,9 @@ const winP=(a,b)=>1/(1+Math.pow(10,(b-a)/400));
 const chron=(a,b)=>a.c.d.localeCompare(b.c.d)||(a.st===b.st?(a.st==="t"?b.r-a.r:0):(a.st==="p"?-1:1));
 const mCls=m=>{const mx=Math.max(m.s1,m.s2),q=Math.abs(m.s1-m.s2)/mx,w=m.s1>m.s2;return w?(q>=.6?"vn":q<=.25?"vs":"vo"):(q>=.6?"dl":q<=.25?"ds":"do")};
 const GM={};
-function gMean(g){const R=ratingAll();if(GM.s!==FRC.sig){GM.s=FRC.sig;GM.m={}}
-  if(GM.m[g]===undefined){let s=0,n=0;for(const k in R)if(R[k].g===g){s+=R[k].e;n++}GM.m[g]=n?s/n:1500}return GM.m[g]}
-const avgE=(ks,R)=>{const v=ks.map(k=>R[k]).filter(Boolean).map(q=>q.e);return v.length>=3?v.reduce((a,b)=>a+b,0)/v.length:null};
+function gMean(g){const R=ratingG()[g]||{};if(GM.s!==FRC.sig){GM.s=FRC.sig;GM.m={}}
+  if(GM.m[g]===undefined){let s=0,n=0;for(const k in R){s+=R[k].e;n++}GM.m[g]=n?s/n:1500}return GM.m[g]}
+const avgE=(ks,g)=>{const v=ks.map(k=>ratingIn(k,g)).filter(Boolean).map(q=>q.e);return v.length>=3?v.reduce((a,b)=>a+b,0)/v.length:null};
 const mLab=m=>m.st==="p"?"Poule":(RLAB[m.r]||"Tour "+m.r);
 const mLine=m=>`<div class="li"><div><b>${esc(mLab(m))}</b> · ${esc(fd(m.c.d))}<br><small>contre ${esc(m.nm)} · ${esc(m.c.v)}</small></div><span class="rk" style="${m.s1>m.s2?"background:var(--good-soft);color:var(--good)":"background:var(--bad-soft);color:var(--bad)"}">${m.s1>m.s2?"V":"D"} ${m.s1}-${m.s2}</span></div>`;
 function distHTML(ms){
@@ -2393,14 +2399,15 @@ function eloChart(H){
   const last=H.length-1;
   return `<svg class="fchart" viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Évolution de la force estimée"><polygon points="${up.concat(dn).join(" ")}" fill="var(--accent)" opacity=".13"/><polyline points="${ln}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${H.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(x.e).toFixed(1)}" r="${i===last?4.5:3}" fill="var(--accent)"/>`).join("")}<text x="${X(0).toFixed(1)}" y="${(Y(H[0].e)-8).toFixed(1)}" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="start">${H[0].e}</text><text x="${X(last).toFixed(1)}" y="${(Y(H[last].e)-8).toFixed(1)}" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="end">${H[last].e}</text><text x="${pl}" y="${Ht-6}" font-size="10" fill="var(--muted)">${d2(H[0].d)}</text><text x="${W-pr}" y="${Ht-6}" font-size="10" fill="var(--muted)" text-anchor="end">${d2(H[last].d)}</text></svg>`;
 }
+function duelGroup(a,b){const G=ratingG();let best=null;for(const g in G){const x=G[g][a],y=G[g][b];if(x&&y){const sc=Math.min(x.nm,y.nm),ci=KCATS.indexOf(g.split("|")[1]);if(!best||sc>best.sc||(sc===best.sc&&ci>best.ci))best={g,x,y,sc,ci}}}return best}
 function duelRes(){
   const t=D.tir[DUELT];if(!t||!DUELK)return"";
-  const nk=nkey(t[0],t[1]),R2=ratingAll(),a=R2[nk],b=R2[DUELK];if(!a||!b)return"";
+  const nk=nkey(t[0],t[1]),DG=duelGroup(nk,DUELK);if(!DG){const i0=tirIdx(DUELK),f0=FNAME[DUELK]||["",""];return `<div class="card2"><h4>Contre ${esc(i0!==undefined?D.tir[i0][0]+" "+D.tir[i0][1]:f0[0])}</h4><div class="h">Ils n’ont pas de catégorie commune où les deux ont des matchs : la comparaison n’aurait pas de sens.</div></div>`}const a=DG.x,b=DG.y;
   const i2=tirIdx(DUELK),f=FNAME[DUELK]||["",""],nm=i2!==undefined?D.tir[i2][0]+" "+D.tir[i2][1]:f[0];
   const pp=Math.round(winP(a.e,b.e)*100);
   const me=(statsAll(STCT)||{})[nk],h=me?[...me.pms,...me.ms].filter(m=>m.on===DUELK).sort(chron):[];
   const hw=h.filter(m=>m.s1>m.s2).length;
-  return `<div class="card2"><h4>Contre ${esc(nm)}</h4><div class="vsb"><div style="flex:${Math.max(pp,8)}" class="vs1">${pp} %</div><div style="flex:${Math.max(100-pp,8)}" class="vs2">${100-pp} %</div></div><div class="vsn"><span>${esc(t[0]+" "+t[1])}<br><small>Elo ${a.e}</small></span><span style="text-align:right">${esc(nm)}<br><small>Elo ${b.e}</small></span></div><div class="h">${h.length?`Face à face cette saison : ${hw} victoire${hw>1?"s":""} – ${h.length-hw} défaite${h.length-hw>1?"s":""} (${h.map(m=>m.s1+"-"+m.s2).join(", ")}).`:"Pas de match entre eux cette saison."}</div><div class="h">Estimation d’après la force de chacun${a.g!==b.g?" ; les catégories sont différentes, donc elle est moins fiable":""}${a.prov||b.prov?" ; l’un des deux a peu de matchs (sablier)":""}. Ce n’est pas une prédiction : un match se joue sur une touche.</div></div>`;
+  return `<div class="card2"><h4>Contre ${esc(nm)}</h4><div class="vsb"><div style="flex:${Math.max(pp,8)}" class="vs1">${pp} %</div><div style="flex:${Math.max(100-pp,8)}" class="vs2">${100-pp} %</div></div><div class="vsn"><span>${esc(t[0]+" "+t[1])}<br><small>Elo ${a.e}</small></span><span style="text-align:right">${esc(nm)}<br><small>Elo ${b.e}</small></span></div><div class="h">${h.length?`Face à face cette saison : ${hw} victoire${hw>1?"s":""} – ${h.length-hw} défaite${h.length-hw>1?"s":""} (${h.map(m=>m.s1+"-"+m.s2).join(", ")}).`:"Pas de match entre eux cette saison."}</div><div class="h">Estimation d’après la force de chacun${" en "+esc(KL(DG.g.split("|")[1]))+", catégorie où ils ont tous les deux des matchs"}${a.prov||b.prov?" ; l’un des deux a peu de matchs (sablier)":""}. Ce n’est pas une prédiction : un match se joue sur une touche.</div></div>`;
 }
 function duelList(q){
   q=(q||"").trim().toLowerCase();if(q.length<2)return"";
@@ -2418,7 +2425,8 @@ function statsHTML(t,idx){
   if(!me||!me.ne)return `<div class="stats">${cchips}<div class="empty">Pas de résultat dans cette catégorie.</div></div>`;
   DUELT=idx;
   const {sx,cat}=sMain(me);
-  const R2=ratingAll(),rt=R2[nk];
+  const R2=ratingAll();let rt=R2[nk];
+  if(STCT){const g0=Object.keys(ratingG()).find(g=>g.endsWith("|"+STCT)&&ratingG()[g][nk]);if(g0)rt=ratingG()[g0][nk]}
   const pm=me.pm,tm=me.tw+me.tl,all2=pm+tm,wins=me.pw+me.tw;
   const best=me.pls.slice().sort((a,b)=>a.pl-b.pl)[0]||null;
   const pct=v=>Math.round(v*100)+" %",d1=v=>v.toFixed(1).replace(".",","),sg=v=>(v>0?"+":"")+d1(v);
@@ -2427,9 +2435,9 @@ function statsHTML(t,idx){
   const AM=[...me.pms,...me.ms].sort(chron);
   /* matchs vs force */
   let ex=0,exw=0,exploit=0,acc=0,nE=0,upW=0,upL=0,dnW=0,dnL=0,bestW=null;
-  if(rt)AM.forEach(m=>{const q=R2[m.on];if(!q)return;const p=winP(rt.e,q.e),w=m.s1>m.s2;nE++;ex+=p;if(w)exw++;if(w&&p<.35)exploit++;if(!w&&p>.65)acc++;
-    if(q.e>rt.e){w?upW++:upL++}else{w?dnW++:dnL++}
-    if(w&&(!bestW||q.e>bestW.q.e))bestW={m,q}});
+  AM.forEach(m=>{const g1=epG(m.e)||(rt&&rt.g)||"",ra=ratingIn(nk,g1),q=ratingIn(m.on,g1);if(!ra||!q)return;const p=winP(ra.e,q.e),w=m.s1>m.s2;nE++;ex+=p;if(w)exw++;if(w&&p<.35)exploit++;if(!w&&p>.65)acc++;
+    if(q.e>ra.e){w?upW++:upL++}else{w?dnW++:dnL++}
+    if(w&&(!bestW||q.e>bestW.q.e))bestW={m,q,a:ra}});
   let run=0,bs=0;AM.forEach(m=>{if(m.s1>m.s2){run++;bs=Math.max(bs,run)}else run=0});
   /* places */
   const CS=me.cs.slice().sort((a,b)=>b.c.d.localeCompare(a.c.d));
@@ -2437,10 +2445,10 @@ function statsHTML(t,idx){
   const med=Q.length?Q[Math.floor(Q.length/2)]:null,mq=Q.length?Q.reduce((a,b)=>a+b,0)/Q.length:0,sd=Q.length>1?Math.sqrt(Q.reduce((s,x)=>s+(x-mq)*(x-mq),0)/Q.length):null;
   const reg=sd===null?"–":sd<.12?"Très régulier":sd<.22?"Assez régulier":"Irrégulier";
   const worst=me.pls.slice().sort((a,b)=>(b.pl/b.n)-(a.pl/a.n))[0];
-  const fld=x=>{const v=x.ks.map(k=>R2[k]).filter(Boolean).map(q=>q.e);return v.length>=5?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null};
+  const fld=x=>{const g0=epG(x.e)||(rt&&rt.g)||"";const v=x.ks.map(k=>ratingIn(k,g0)).filter(Boolean).map(q=>q.e);return v.length>=5?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null};
   /* poules */
-  const PD=me.pools.map(p=>({p,avg:avgE(p.ks,R2)})).filter(x=>x.avg!==null);
-  const gm=rt?gMean(rt.g):1500,pdAvg=PD.length?PD.reduce((s,x)=>s+x.avg,0)/PD.length:null,hard=PD.slice().sort((a,b)=>b.avg-a.avg)[0];
+  const PD=me.pools.map(p=>{const g0=epG(p.e)||(rt&&rt.g)||"";return {p,g:g0,avg:avgE(p.ks,g0)}}).filter(x=>x.avg!==null);
+  const gm=PD.length?PD.reduce((a,x)=>a+gMean(x.g),0)/PD.length:1500,pdAvg=PD.length?PD.reduce((s,x)=>s+x.avg,0)/PD.length:null,hard=PD.slice().sort((a,b)=>b.avg-a.avg)[0];
   const pdl=pdAvg===null?"":pdAvg-gm>=40?"poules plutôt relevées":pdAvg-gm<=-40?"poules plutôt faciles":"poules équilibrées";
   /* tableaux */
   const byR={};me.ms.forEach(m=>{const o=byR[m.r]||(byR[m.r]={w:0,l:0});m.s1>m.s2?o.w++:o.l++});
@@ -2455,7 +2463,8 @@ function statsHTML(t,idx){
   const L=FFK?FFK.lists.filter(x=>x.rows.some(r=>r[5]===t[2])).sort((a,b)=>(FLV[a.niv]??9)-(FLV[b.niv]??9)):[];
   L.slice(0,3).forEach(x=>{const r=x.rows.find(y=>y[5]===t[2]);rk+=`<div class="rkc ffe"><span class="fb"><i></i>FFE officiel</span><b>${r[0]}${r[0]===1?"er":"e"}</b><small>${esc(x.niv)} · ${esc(KL(x.cat.split(" / ")[0]))} · ${fPts(r[4])} pts · ${x.rows.length} classés</small></div>`});
   if(sx&&cat&&RES){try{const B=klassData()[sx+"|"+cat]||{};const E=Object.values(B).map(v=>kScore(v.res,cat).tot);const mine=B[nk]?kScore(B[nk].res,cat).tot:0;if(B[nk]&&mine>0)rk+=`<div class="rkc sr"><span class="fb"><i></i>Sabre Radar</span><b>${1+E.filter(x=>x>mine).length}${E.filter(x=>x>mine).length===0?"er":"e"}</b><small>${esc(KL(cat))} ${sx==="Dames"?"dames":"hommes"} · ${Math.round(mine)} pts · ${E.length} classés</small></div>`}catch(e){}}
-  const rtc=rt?`<div class="card2"><div class="sr-h"><span>Force estimée (type Elo)</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.pc)}%"></i></div><div class="h">${rt.e} ± ${rt.se} · ${rt.rk}${rt.rk===1?"er":"ᵉ"} sur ${rt.n} tireurs ${esc(rt.g.split("|")[0]==="Dames"?"dames":"hommes")} ${esc(KL(rt.g.split("|")[1]))} · ${rt.nm} matchs sur les 12 derniers mois${rt.prov?" · peu de matchs (sablier) : estimation provisoire":""}</div><details class="cmpd"><summary>Comment est calculée la force ?</summary><div class="h">Centrée sur 1500 dans chaque catégorie, à partir des victoires, défaites et écarts de touches de tous les matchs des 12 derniers mois. Elle n’est comparable qu’au sein d’une même catégorie et d’un même sexe.</div></details></div>`:`<div class="card2"><div class="sr-h"><span>Force estimée (type Elo)</span><b>–</b></div><div class="h">Pas encore de match sur les 12 derniers mois.</div></div>`;
+  const OG=rt?Object.keys(ratingG()).filter(g=>g!==rt.g&&ratingG()[g][nk]).map(g=>{const r=ratingG()[g][nk];return KL(g.split("|")[1])+" : "+r.e+(r.prov?" (provisoire)":"")+" · "+r.nm+" matchs"}):[];
+  const rtc=rt?`<div class="card2"><div class="sr-h"><span>Force estimée (type Elo)</span><b>${gradeTag(rt)}</b></div><div class="sr-b g"><i style="width:${Math.max(2,rt.pc)}%"></i></div><div class="h">${rt.e} ± ${rt.se} · ${rt.rk}${rt.rk===1?"er":"ᵉ"} sur ${rt.n} tireurs ${esc(rt.g.split("|")[0]==="Dames"?"dames":"hommes")} ${esc(KL(rt.g.split("|")[1]))} · ${rt.nm} matchs sur les 12 derniers mois${rt.prov?" · peu de matchs (sablier) : estimation provisoire":""}</div>${OG.length?`<div class="h">Dans d’autres catégories où il a tiré : ${esc(OG.join(" · "))}.</div>`:""}<details class="cmpd"><summary>Comment est calculée la force ?</summary><div class="h">Un Elo par catégorie d’épreuve, centré sur 1500. Seuls les matchs joués dans une même épreuve se comparent : un surclassé a donc un Elo dans sa catégorie et un autre dans la catégorie supérieure où il tire. Calculé sur les victoires, défaites et écarts de touches des 12 derniers mois.</div></details></div>`:`<div class="card2"><div class="sr-h"><span>Force estimée (type Elo)</span><b>–</b></div><div class="h">Pas encore de match sur les 12 derniers mois.</div></div>`;
   /* points forts / à travailler */
   const IN=["pw","pi","pq","tw","ts","pp"].map(k=>{const c=sCmp(me,all,k);return c&&c.pct!==undefined?{l:sMet[k].l,c}:null}).filter(Boolean);
   const good=IN.filter(x=>x.c.pct>=65).sort((a,b)=>b.c.pct-a.c.pct).slice(0,2),weak=IN.filter(x=>x.c.pct<=35).sort((a,b)=>a.c.pct-b.c.pct).slice(0,2);
@@ -2463,7 +2472,7 @@ function statsHTML(t,idx){
   const top3=me.cs.slice().sort((a,b)=>a.pl-b.pl||b.n-a.n).slice(0,3).map(x=>`<div class="li"><div><b>${esc(x.c.v)}</b> · ${esc(fd(x.c.d))}<br><small>${esc(x.c.n)}</small></div><span class="rk" style="background:var(--accent-soft);color:var(--accent)">${rkLbl(x.pl)} / ${x.n}</span></div>`).join("");
   const expl=nE>=5?`<div class="card2"><h4>Résultats face aux attentes</h4><div class="tiles">${kp(upW+" – "+upL,"contre plus fort")}${kp(dnW+" – "+dnL,"contre plus faible")}</div><div class="h">D’après la force de ses adversaires, on attendait ${d1(ex)} victoires sur ${nE} matchs ; il en a ${exw}${exw-ex>=1.5?" : il fait mieux que prévu.":ex-exw>=1.5?" : il fait moins bien que prévu.":" : dans la norme."}</div><div class="h">${exploit} exploit${exploit>1?"s":""} (victoire contre un adversaire nettement plus fort) · ${acc} accident${acc>1?"s":""} (défaite contre un adversaire nettement plus faible).</div></div>`:"";
   const dif=me.ptd+me.ttd-me.ptr-me.ttr;
-  const pR=`<div id="sm-r" ${STM==="r"?"":"hidden"}><div class="tiles">${kp(all2,"matchs")}${kp(all2>=3?pct(wins/all2):"–","victoires","hi")}${kp(all2?sg(dif):"–","touches (diff.)")}</div>${rtc}${ins}${rk?`<div class="sec">Classements</div><div class="rkcs">${rk}</div>`:""}${top3?`<div class="sec">Meilleurs résultats</div><div class="list">${top3}</div>`:""}${bestW?`<div class="sec">Plus belle victoire</div><div class="list">${mLine(bestW.m)}</div>${note(`Adversaire battu : force ${bestW.q.e}${bestW.q.e>rt.e?`, soit ${bestW.q.e-rt.e} de plus que lui`:""}.`)}`:""}${expl}</div>`;
+  const pR=`<div id="sm-r" ${STM==="r"?"":"hidden"}><div class="tiles">${kp(all2,"matchs")}${kp(all2>=3?pct(wins/all2):"–","victoires","hi")}${kp(all2?sg(dif):"–","touches (diff.)")}</div>${rtc}${ins}${rk?`<div class="sec">Classements</div><div class="rkcs">${rk}</div>`:""}${top3?`<div class="sec">Meilleurs résultats</div><div class="list">${top3}</div>`:""}${bestW?`<div class="sec">Plus belle victoire</div><div class="list">${mLine(bestW.m)}</div>${note(`Adversaire battu : force ${bestW.q.e}${bestW.q.e>bestW.a.e?`, soit ${bestW.q.e-bestW.a.e} de plus que lui`:""}.`)}`:""}${expl}</div>`;
   /* Parcours */
   const evoRows=CS.map(x=>{const f=fld(x);return `<div class="li"><div><b>${esc(x.c.v)}</b> · ${esc(fd(x.c.d))}<br><small>${esc(x.c.n)}${f?` · peloton Elo ${f} en moyenne`:""}</small></div><span class="rk" style="background:var(--accent-soft);color:var(--accent)">${rkLbl(x.pl)} / ${x.n}</span></div>`}).join("");
   const lv=Object.entries(me.lv).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<span class="tag n">${esc(k)} · ${v.n} (meilleure ${rkLbl(v.best)})</span>`).join("");
@@ -2795,7 +2804,7 @@ function renderRec(){
     const rt=R2[o.nk];
     AM.forEach(m=>{const c=mCls(m);if(c==="vn")vn++;if(c==="vs")vs++;if(c==="ds")ds++;
       if(m.s1>m.s2){run++;st=Math.max(st,run)}else run=0;
-      const qq=R2[m.on];if(rt&&qq&&m.s1>m.s2){if(winP(rt.e,qq.e)<.35)ex++;if(!bw||qq.e>bw.e)bw={e:qq.e,nm:m.nm}}});
+      const g1=epG(m.e)||K.sx+"|"+K.cat,rt=ratingIn(o.nk,g1),qq=ratingIn(m.on,g1);if(rt&&qq&&m.s1>m.s2){if(winP(rt.e,qq.e)<.35)ex++;if(!bw||qq.e>bw.e)bw={e:qq.e,nm:m.nm}}});
     RW.push({o,i,club,n,vn,vs,ds,ex,st,bw,pi:o.pm>=10?(o.ptd-o.ptr)/o.pm:null,pf:o.pf,rem:o.dl.length?Math.max(...o.dl):null});
   });
   const CARDS=[
@@ -2823,8 +2832,8 @@ function renderElo(){
   $("#k-cat").innerHTML=KCATS.map(c=>chip(KL(c),K.cat===c,`data-f="kcat" data-v="${c}"`)).join("");
   $("#t-intro").textContent="Force estimée type Elo · 12 derniers mois, poules et tableaux";
   const R=ratingAll(),g=K.sx+"|"+K.cat,q=S.tq.trim().toLowerCase(),flt=!!q||tvAny()||K.hp;
-  let L=Object.entries(R).filter(([k,v])=>v.g===g).map(([k,v])=>{const i=tirIdx(k),t=i!==undefined?D.tir[i]:null,f=FNAME[k]||["",""];
-    return {k,v,i,name:t?t[0]+" "+t[1]:f[0],club:t?clubOf(t):f[1]}});
+  let L=Object.entries(ratingG()[g]||{}).map(([k,v])=>{const i=tirIdx(k),t=i!==undefined?D.tir[i]:null,f=FNAME[k]||["",""];
+    return {k,v,i,name:t?t[0]+" "+t[1]:f[0],club:t?clubOf(t):f[1],sur:KCATS.indexOf(FCATN[k])>=0&&KCATS.indexOf(FCATN[k])<KCATS.indexOf(K.cat)}});
   L.sort((a,b)=>b.v.e-a.v.e||a.name.localeCompare(b.name));
   let rk=0,last=null;L.forEach((x,n)=>{if(x.v.e!==last){rk=n+1;last=x.v.e}x.rk=rk});
   const tot=L.length;
@@ -2833,7 +2842,7 @@ function renderElo(){
   const POD=!flt&&L.length>=3?L.slice(0,3):[];
   const pcell=(x,n)=>{const nm=x.name.split(" ");return `<button type="button" class="pp p${n}" ${x.i!==undefined?`data-t="${x.i}"`:""}>${n===1?'<svg width="26" height="20" viewBox="0 0 26 20" fill="#F3D77A" aria-hidden="true"><path d="M2 17 0 5l7 5 6-9 6 9 7-5-2 12z"/></svg>':""}<span class="pa" style="--h:${hue(x.k)}">${esc((nm[0][0]||"")+((nm[1]||"")[0]||""))}</span><span class="pn">${esc(x.name)}</span>${gradeTag(x.v)}${stBtn(x.i)}<span class="pt">${x.v.nm} matchs</span><span class="pb">${x.rk}</span></button>`};
   const pod=POD.length?`<div class="pod"><div class="pc">${pcell(POD[1],2)}${pcell(POD[0],1)}${pcell(POD[2],3)}</div></div>`:"";
-  $("#t-list").innerHTML=pod+(L.length?TH(["#","Tireur","Club · matchs","Elo",""]):"")+(L.length?L.slice(POD.length,150).map(x=>`<button class="trow" ${x.i!==undefined?`data-t="${x.i}"`:""}><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)} <span class="eg">${gradeTag(x.v)}${stBtn(x.i)}</span></div><div class="sub">${esc(x.club||"")} · ${x.v.nm} match${x.v.nm>1?"s":""}</div></div><div class="kpts">${x.v.e}<small>Elo</small></div></button>`).join(""):`<div class="empty">Aucune force estimée pour ${esc(K.sx)} ${esc(KL(K.cat))}${flt?" avec ces filtres":""}.</div>`)+(L.length>150?`<div class="mini">150 premiers affichés sur ${L.length}. Utilise la recherche ou les filtres.</div>`:"");
+  $("#t-list").innerHTML=pod+(L.length?TH(["#","Tireur","Club · matchs","Elo",""]):"")+(L.length?L.slice(POD.length,150).map(x=>`<button class="trow" ${x.i!==undefined?`data-t="${x.i}"`:""}><span class="krank ${x.rk<=3?"top":""}">${x.rk}</span><div style="min-width:0"><div class="nm">${esc(x.name)} <span class="eg">${gradeTag(x.v)}${stBtn(x.i)}</span></div><div class="sub">${esc(x.club||"")} · ${x.v.nm} match${x.v.nm>1?"s":""}${x.sur?" · ↑ surclassé":""}</div></div><div class="kpts">${x.v.e}<small>Elo</small></div></button>`).join(""):`<div class="empty">Aucune force estimée pour ${esc(K.sx)} ${esc(KL(K.cat))}${flt?" avec ces filtres":""}.</div>`)+(L.length>150?`<div class="mini">150 premiers affichés sur ${L.length}. Utilise la recherche ou les filtres.</div>`:"");
 }
 function tvClubs(q){
   const m=new Map();
