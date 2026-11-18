@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794998783";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794999113";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2565,13 +2565,26 @@ function epAgg(r){
 }
 
 const RBD=(w,t)=>`<span class="rk" style="${w?"background:var(--good-soft);color:var(--good)":"background:var(--bad-soft);color:var(--bad)"}">${t}</span>`;
+/* limite de touches d'une poule : valeur de V la plus fréquente (V4, V5…), sinon déduite du tableau, sinon de la catégorie */
+function poolLim(R,e){const pv={};let tm=0;
+  (R.poules||[]).forEach(po=>(po.rows||[]).forEach(x=>(x.m||[]).forEach(cl=>{if(/^V\d+$/.test(cl)){const v=+cl.slice(1);pv[v]=(pv[v]||0)+1}})));
+  (R.tableau||[]).forEach(t=>(t.matches||[]).forEach(m=>[m.a,m.b].forEach(s=>{if(s&&/^V/.test(String(s.sc||""))){const d=String(s.sc).match(/\d+/);if(d)tm=Math.max(tm,+d[0])}})));
+  const pm=Object.keys(pv).sort((a,b)=>pv[b]-pv[a])[0];if(pm)return +pm;
+  if(tm===8)return 4;if(tm===10||tm===15)return 5;
+  const c0=pcat((e.c||"").split(", ")[0]);return c0==="M9"||c0==="M11"?4:5}
 function epMatches(ci,ei,gi,R,id){
+  const LIM=poolLim(R,D.comps[ci].eps[ei]);
   const lk=(oid,h)=>R.players[oid]?`<button type="button" class="nl" data-fe="${ci}:${ei}:${gi}:${oid}">${h}</button>`:h;
   const who=oid=>R.players[oid]?pfl(R,oid)+esc(R.players[oid][1]+" "+R.players[oid][0]):"?";
   let ph="",th="";const tn=x=>{const q=String(x||"").match(/(\d+)/);return q?+q[1]:null};
   (R.poules||[]).forEach(po=>{const rows=po.rows||[],ix=rows.findIndex(x=>String(x.id)===String(id));if(ix<0)return;
     const it=(rows[ix].m||[]).map((cell,j)=>{if(j===ix||cell===""||cell==null||!rows[j])return"";const w=/^V/i.test(cell),oid=rows[j].id;
-      return `<div class="li"><div>${lk(oid,who(oid))} ${gradeTag(eloP(R,oid))}</div>${RBD(w,esc(String(cell)))}</div>`}).join("");
+      /* case (moi, adversaire) = V4 ou D2 ; la case miroir (adversaire, moi) donne l'autre score : V4 contre D2 = 4-2 */
+      const mir=(rows[j].m||[])[ix],sn=x=>{const q=String(x||"").match(/^[VD](\d+)$/);return q?+q[1]:null};
+      let mine=sn(cell),opp=sn(mir);
+      if(w){if(mine===null)mine=LIM;if(opp===null&&/^D/i.test(String(mir||"")))opp=null}else{if(opp===null&&/^V/i.test(String(mir||"")))opp=LIM}
+      const txt=mine!==null&&opp!==null?mine+"–"+opp:String(cell);
+      return `<div class="li"><div>${lk(oid,who(oid))} ${gradeTag(eloP(R,oid))}</div>${RBD(w,esc(txt))}</div>`}).join("");
     if(it)ph+=`<div class="sec">Poule ${esc(String(po.poule))}${R.classement_poules&&0?"":""}</div><div class="list">${it}</div>`});
   const T=[];
   (R.tableau||[]).forEach(tr=>(tr.matches||[]).forEach(m=>{if(!m.a||!m.b)return;const ia=String(m.a.id),ib=String(m.b.id),me=ia===String(id)?m.a:ib===String(id)?m.b:null;if(!me)return;
