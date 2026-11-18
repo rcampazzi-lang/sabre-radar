@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794998216";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794998783";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1891,6 +1891,7 @@ const pfl=(R,id)=>{const p=R&&R.players&&R.players[id];const c=ccOf(R,p);return 
 const tiOf=(R,id)=>{const p=R&&R.players&&R.players[id];if(!p)return undefined;if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));return TIRK.get(nkey(p[0],p[1]))};
 const tiK=k=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));return TIRK.get(k)};
 const tlk=(i,h)=>i===undefined?h:`<button type="button" class="nl" data-t="${i}">${h}</button>`;
+const flk=(R,id,h)=>R&&R.players&&R.players[id]&&RS.ci!=null?`<button type="button" class="nl" data-fe="${RS.ci}:${RS.ei}:${RS.gi||0}:${id}">${h}</button>`:h;
 const clk=c=>{const i=D.comps.indexOf(c);return i<0?esc(c.v):`<button type="button" class="nl" data-comp="${i}">${esc(c.v)}</button>`};
 function pname(R,id,short){const p=R.players[id];if(!p)return "#"+id;return short?`${p[0]} ${p[1]}`:`${p[0]} ${p[1]}`}
 function pclub(R,id){const p=R.players[id];return p?p[2]:""}
@@ -1918,7 +1919,7 @@ function vpoules(R){
       const lvp=poolLv(R,t),mine=lvp.lv.find(x=>x.p===p);
       const n=p.rows.length;
       const head=`<tr><th class="nm">Poule ${p.poule}${mine&&mine.avg!==null?`<small style="display:block;font-weight:600">Elo moyen ${Math.round(mine.avg)}</small>`:""}</th>${p.rows.map((_,i)=>`<th>${i+1}</th>`).join("")}<th>V</th><th>V/M</th><th>TD</th><th>TR</th><th>Ind</th><th>Pl</th></tr>`;
-      const rows=p.rows.map((r,i)=>`<tr><td class="nm"><span style="display:inline-block;min-width:20px;font-weight:700;color:var(--accent)">${i+1}</span>${pfl(R,r.id)}${tlk(tiOf(R,r.id),esc(pname(R,r.id)))}<small style="padding-left:20px">${esc(pclub(R,r.id))}</small>${eloP(R,r.id)?`<div style="padding:3px 0 0 20px">${gradeTag(eloP(R,r.id))}</div>`:""}</td>${r.m.map(x=>x===""?'<td class="rx"></td>':`<td class="${x[0]==="V"?"rw":"rd"}">${esc(x)}</td>`).join("")}<td class="b">${r.v}</td><td>${n>1?fv(r.v/(n-1)):""}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.td-r.tr>0?"+":""}${r.td-r.tr}</td><td class="b">${r.pl}</td></tr>`).join("");
+      const rows=p.rows.map((r,i)=>`<tr><td class="nm"><span style="display:inline-block;min-width:20px;font-weight:700;color:var(--accent)">${i+1}</span>${pfl(R,r.id)}${flk(R,r.id,esc(pname(R,r.id)))}<small style="padding-left:20px">${esc(pclub(R,r.id))}</small>${eloP(R,r.id)?`<div style="padding:3px 0 0 20px">${gradeTag(eloP(R,r.id))}</div>`:""}</td>${r.m.map(x=>x===""?'<td class="rx"></td>':`<td class="${x[0]==="V"?"rw":"rd"}">${esc(x)}</td>`).join("")}<td class="b">${r.v}</td><td>${n>1?fv(r.v/(n-1)):""}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.td-r.tr>0?"+":""}${r.td-r.tr}</td><td class="b">${r.pl}</td></tr>`).join("");
       return `<div class="rgrid" style="margin-top:6px"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>${p.arb?`<div class="mini">Arbitre : ${esc(p.arb)}</div>`:""}`;
     }).join("");
   }).join("");
@@ -1926,13 +1927,13 @@ function vpoules(R){
 function vapres(R){
   const cp=R.classement_poules;const t=RS.tour&&cp.find(x=>x.tour===RS.tour)?RS.tour:cp[cp.length-1].tour;
   const chips=cp.length>1?`<div class="chips">${cp.map(x=>chip("Après tour "+x.tour,x.tour===t,`data-rs="tour:${x.tour}"`)).join("")}</div>`:"";
-  const rows=cp.find(x=>x.tour===t).rows.map(r=>`<tr><td class="b">${r.pl}</td><td class="nm">${pfl(R,r.id)}${tlk(tiOf(R,r.id),esc(pname(R,r.id)))}<small>${esc(pclub(R,r.id))}</small></td><td>${fv(r.v)}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.ind>0?"+":""}${r.ind}</td></tr>`).join("");
+  const rows=cp.find(x=>x.tour===t).rows.map(r=>`<tr><td class="b">${r.pl}</td><td class="nm">${pfl(R,r.id)}${flk(R,r.id,esc(pname(R,r.id)))}<small>${esc(pclub(R,r.id))}</small></td><td>${fv(r.v)}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.ind>0?"+":""}${r.ind}</td></tr>`).join("");
   return chips+`<div class="rgrid"><table><thead><tr><th>Pl</th><th class="nm">Tireur</th><th>V/M</th><th>TD</th><th>TR</th><th>Ind</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function vfinal(R){
   const q=(RS.q||"").toLowerCase();
   const cnt={};R.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);
-  const rows=R.final.filter(r=>!q||(pname(R,r.id)+" "+pclub(R,r.id)).toLowerCase().includes(q)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${pfl(R,r.id)}${tlk(tiOf(R,r.id),esc(pname(R,r.id)))}</b> ${rStat(R,r.id)}<small>${esc(pclub(R,r.id))}</small></div></div>`).join("");
+  const rows=R.final.filter(r=>!q||(pname(R,r.id)+" "+pclub(R,r.id)).toLowerCase().includes(q)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${pfl(R,r.id)}${flk(R,r.id,esc(pname(R,r.id)))}</b> ${rStat(R,r.id)}<small>${esc(pclub(R,r.id))}</small></div></div>`).join("");
   return `<input class="rsearch" id="rsq" type="search" placeholder="Chercher un tireur ou un club" value="${esc(RS.q||"")}"><div class="mini">${R.final.length} classés${R.fin_src==="poules"?" · classement après le dernier tour de poules (pas de tableau)":""}</div><div style="display:flex;flex-direction:column;gap:4px" id="rfin">${rows||'<div class="empty">Aucun résultat.</div>'}</div>`;
 }
 const RND=["Finale","Demi-finales","Quarts de finale","Tableau de 16","Tableau de 32","Tableau de 64","Tableau de 128","Tableau de 256"];
@@ -1992,7 +1993,7 @@ function vtableau(R){
       if(!p||!p.name||/^exempt$/i.test(p.name))return `<div class="ex"><span class="sd"></span><span class="pn">Exempt</span></div>`;
       let nm=p.name;let s=seed[p.id];const mm=/^(\d+)\s+(.+)$/.exec(nm);if(mm){nm=mm[2];if(!s)s=+mm[1]}
       const v=other&&other.name&&!/^exempt$/i.test(other.name)?sc(p.sc):null;
-      return `<div class="${win?"w":""}"><span class="sd">${s||""}</span><span class="pn" title="${esc(nm)}">${pfl(R,p.id)}${tlk(tiOf(R,p.id),esc(nm))}</span><span class="sc">${v==null?"":v}</span></div>`;
+      return `<div class="${win?"w":""}"><span class="sd">${s||""}</span><span class="pn" title="${esc(nm)}">${pfl(R,p.id)}${flk(R,p.id,esc(nm))}</span><span class="sc">${v==null?"":v}</span></div>`;
     };
     boxes+=`<div class="mt" style="left:${n.x}px;top:${n.top}px;width:${BW}px;height:${BH}px" ${n.m.piste||n.m.arb?`title="${esc([n.m.piste&&"Piste "+n.m.piste,n.m.arb&&"Arbitre "+n.m.arb].filter(Boolean).join(" · "))}"`:""}>${line(a,wa,b)}${line(b,wb,a)}</div>`;
   });
@@ -2019,7 +2020,7 @@ function results(ci,ei,view,gi){
   if(PWIDE!==false)$("#sheet").dataset.wide="1";
   if(LIVEBK)BACK=liveSheet;
   const ni=$("#sheet").querySelector(".inner");if(ni&&keep)ni.scrollTop=st;
-  const q=$("#rsq");if(q)q.addEventListener("input",ev=>{RS.q=ev.target.value;const f=$("#rfin");if(f){const R2=R;const qq=RS.q.toLowerCase();const cnt={};R2.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);f.innerHTML=R2.final.filter(r=>!qq||(pname(R2,r.id)+" "+pclub(R2,r.id)).toLowerCase().includes(qq)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${pfl(R2,r.id)}${tlk(tiOf(R2,r.id),esc(pname(R2,r.id)))}</b> ${rStat(R2,r.id)}<small>${esc(pclub(R2,r.id))}</small></div></div>`).join("")}});
+  const q=$("#rsq");if(q)q.addEventListener("input",ev=>{RS.q=ev.target.value;const f=$("#rfin");if(f){const R2=R;const qq=RS.q.toLowerCase();const cnt={};R2.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);f.innerHTML=R2.final.filter(r=>!qq||(pname(R2,r.id)+" "+pclub(R2,r.id)).toLowerCase().includes(qq)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${pfl(R2,r.id)}${flk(R2,r.id,esc(pname(R2,r.id)))}</b> ${rStat(R2,r.id)}<small>${esc(pclub(R2,r.id))}</small></div></div>`).join("")}});
 }
 
 let TYO={};try{TYO=JSON.parse(localStorage.getItem("ffe-tyo")||"{}")}catch(e){}
@@ -2562,6 +2563,46 @@ function epAgg(r){
   const cp=((r.classement_poules||[]).find(x=>x.tour===1)||(r.classement_poules||[])[0]||{}).rows||[];
   return {A,fin,cp,n:(r.final||[]).length,pl};
 }
+
+const RBD=(w,t)=>`<span class="rk" style="${w?"background:var(--good-soft);color:var(--good)":"background:var(--bad-soft);color:var(--bad)"}">${t}</span>`;
+function epMatches(ci,ei,gi,R,id){
+  const lk=(oid,h)=>R.players[oid]?`<button type="button" class="nl" data-fe="${ci}:${ei}:${gi}:${oid}">${h}</button>`:h;
+  const who=oid=>R.players[oid]?pfl(R,oid)+esc(R.players[oid][1]+" "+R.players[oid][0]):"?";
+  let ph="",th="";const tn=x=>{const q=String(x||"").match(/(\d+)/);return q?+q[1]:null};
+  (R.poules||[]).forEach(po=>{const rows=po.rows||[],ix=rows.findIndex(x=>String(x.id)===String(id));if(ix<0)return;
+    const it=(rows[ix].m||[]).map((cell,j)=>{if(j===ix||cell===""||cell==null||!rows[j])return"";const w=/^V/i.test(cell),oid=rows[j].id;
+      return `<div class="li"><div>${lk(oid,who(oid))} ${gradeTag(eloP(R,oid))}</div>${RBD(w,esc(String(cell)))}</div>`}).join("");
+    if(it)ph+=`<div class="sec">Poule ${esc(String(po.poule))}${R.classement_poules&&0?"":""}</div><div class="list">${it}</div>`});
+  const T=[];
+  (R.tableau||[]).forEach(tr=>(tr.matches||[]).forEach(m=>{if(!m.a||!m.b)return;const ia=String(m.a.id),ib=String(m.b.id),me=ia===String(id)?m.a:ib===String(id)?m.b:null;if(!me)return;
+    const op=me===m.a?m.b:m.a,w=/^V/i.test(me.sc||""),s1=tn(me.sc),s2=tn(op.sc);T.push({r:m.r,tp:tr.place,op,w,sc:s1!==null&&s2!==null?s1+"–"+s2:(w?"V":"D")})}));
+  T.sort((x,y)=>y.r-x.r);
+  th=T.length?`<div class="sec">Tableau (${T.filter(x=>x.w).length} V, ${T.filter(x=>!x.w).length} D)</div><div class="list">`+T.map(x=>`<div class="li"><div><b>${esc(RLAB[x.r]||"Tour "+x.r)}</b>${x.tp&&+x.tp>1?` <small>· tableau des places ${esc(x.tp)} et suivantes</small>`:""}<br>${x.op.id&&R.players[x.op.id]?lk(x.op.id,who(x.op.id))+" "+gradeTag(eloP(R,x.op.id)):esc(x.op.name||"?")}</div>${RBD(x.w,esc(x.sc))}</div>`).join("")+`</div>`:"";
+  return (ph||th)?`<div class="sec" style="margin-top:14px">Tous ses matchs</div>${ph}${th}`:"";
+}
+function epCompare(ci,ei,gi,R,G,id,a,fp,cr){
+  const pp=R.players[id],nk=nkey(pp[0],pp[1]);
+  const met=(a,fp,n,cr)=>{a=a||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0};const td=a.ptd+a.ttd,tr=a.ptr+a.ttr,tm=a.tw+a.tl;
+    return {place:fp&&n>1?(n-fp)/(n-1):null,pool:a.pm>=3?a.pw/a.pm:null,touch:td+tr>0?td/(td+tr):null,tab:tm>=1?a.tw/tm:null,gain:fp&&cr?cr.pl-fp:null}};
+  const me=met(a,fp,G.n,cr),O=[];const sigE=(c,e,f,n)=>[c.d,c.v,epLabel(e),f,n].join('|'),seen=new Set([sigE(D.comps[ci],D.comps[ci].eps[ei],fp,G.n)]);
+  D.comps.forEach((c2,ci2)=>{if(!inSeason(c2))return;c2.eps.forEach((e2,ei2)=>{if(ci2===ci&&ei2===ei)return;const X2=resOf(c2,e2);if(!X2||!X2.res)return;
+    X2.res.forEach((r2,g2)=>{const f=Object.keys(r2.players||{}).find(i=>nkey(r2.players[i][0],r2.players[i][1])===nk);if(!f)return;
+      const G2=epAgg(r2),a2=G2.A[f],fp2=G2.fin[f];if(!a2&&fp2===undefined)return;
+      const sg2=sigE(c2,e2,fp2,G2.n);if(seen.has(sg2))return;seen.add(sg2);
+      O.push({c:c2,e:e2,ci:ci2,ei:ei2,g:g2,id:f,fp:fp2,n:G2.n,m:met(a2,fp2,G2.n,G2.cp.find(x=>String(x.id)===String(f)))})})})});
+  if(!O.length)return `<div class="sec" style="margin-top:14px">Par rapport à ses autres compétitions</div><div class="mini">Pas d'autre compétition de la saison avec résultats pour ce tireur : comparaison impossible.</div>`;
+  const avg=k=>{const v=O.map(x=>x.m[k]).filter(x=>x!==null&&x!==undefined);return v.length?v.reduce((p,q)=>p+q,0)/v.length:null};
+  const pc=v=>Math.round(v*100)+" %",sg=v=>(v>0?"+":"")+Math.round(v);
+  const ROWS=[["place","Place (mieux que … des tireurs)",pc,true],["pool","Victoires en poule",pc,true],["touch","Touches marquées",pc,true],["tab","Victoires en tableau",pc,true],["gain","Places gagnées après les poules",v=>(v>0?"+":"")+(Math.round(v*10)/10),false]];
+  const dl=(k,v,u)=>{if(v===null||u===null)return"";const d=k==="gain"?v-u:(v-u)*100;const col=Math.abs(d)<(k==="gain"?1:3)?"":d>0?"var(--good)":"var(--bad)";return `<b style="${col?"color:"+col:""}">${d>0?"▲ ":d<0?"▼ ":""}${k==="gain"?(d>0?"+":"")+(Math.round(d*10)/10):sg(d)+" pts"}</b>`};
+  const tb=ROWS.map(([k,l,f])=>{const u=avg(k),v=me[k];if(v===null&&u===null)return"";
+    return `<div class="li"><div>${l}</div><div style="text-align:right;display:grid;gap:2px"><span><b>${v===null?"–":f(v)}</b> ici</span><span class="mini" style="margin:0">${u===null?"–":f(u)} d'habitude ${dl(k,v,u)}</span></div></div>`}).join("");
+  const key=["place","pool","tab"].map(k=>me[k]!==null&&avg(k)!==null?me[k]-avg(k):null).filter(x=>x!==null);
+  const sc=key.length?key.reduce((p,q)=>p+q,0)/key.length:null;
+  const ver=sc===null?"":sc>=0.08?["Meilleure compétition que d'habitude","good"]:sc<=-0.08?["En dessous de son niveau habituel","bad"]:["Dans ses standards","mute"];
+  const lst=O.slice().sort((x,y)=>y.c.d.localeCompare(x.c.d)).slice(0,8).map(x=>`<div class="li"><div><b>${esc(fd(x.c.d))}</b> · ${clk(x.c)}<br><small>${esc(epLabel(x.e))}</small></div><span style="display:flex;align-items:center;gap:6px">${x.fp?`<span class="rk">${esc(rkLbl(x.fp))}${x.n?` / ${x.n}`:""}</span>`:""}<button type="button" class="rs" data-fe="${x.ci}:${x.ei}:${x.g}:${x.id}">Sa fiche</button></span></div>`).join("");
+  return `<div class="sec" style="margin-top:14px">Par rapport à ses autres compétitions</div>${ver?`<div class="mini" style="margin:0 0 6px"><b style="color:var(--${ver[1]==="mute"?"muted":ver[1]})">${ver[0]}</b> · comparé à ${O.length} autre${O.length>1?"s":""} épreuve${O.length>1?"s":""} de la saison${O.length<3?" (peu de recul)":""}.</div>`:""}<div class="list">${tb}</div><div class="sec" style="margin-top:10px">Ses autres compétitions</div><div class="list">${lst}</div>`;
+}
 function cRow(label,v,P,hi,fmt,desc){
   if(v===null||v===undefined)return"";
   P=P.filter(x=>x!==null&&x!==undefined);
@@ -2573,10 +2614,17 @@ function cRow(label,v,P,hi,fmt,desc){
 }
 function epStats(ci,ei,ti){
   const c=D.comps[ci],e=c.eps[ei],t=D.tir[ti],X=resOf(c,e);if(!X||!X.res)return;
-  const nk=nkey(t[0],t[1]);let R=null,G=null,id=null;
-  for(const r of X.res){const g=epAgg(r);const f=Object.keys(r.players||{}).find(i=>nkey(r.players[i][0],r.players[i][1])===nk);if(f&&(g.A[f]||g.fin[f]!==undefined)){R=r;G=g;id=f;break}}
-  const head=`${esc(c.v)} · ${esc(epLabel(e))}<div class="sub" style="font-weight:400">${esc(t[1])} ${esc(t[0])} · ${esc(fd(c.d))}</div>`;
-  if(!R){sheet(head,'<div class="empty">Pas de résultat pour ce tireur dans cette épreuve.</div>');BACK=()=>tireur(ti);return}
+  const nk=nkey(t[0],t[1]);
+  for(let g=0;g<X.res.length;g++){const r=X.res[g];const f=Object.keys(r.players||{}).find(i=>nkey(r.players[i][0],r.players[i][1])===nk);
+    if(f){const G=epAgg(r);if(G.A[f]||G.fin[f]!==undefined){epFiche(ci,ei,g,f);return}}}
+  sheet(`${esc(c.v)} · ${esc(epLabel(e))}<div class="sub" style="font-weight:400">${esc(t[1])} ${esc(t[0])} · ${esc(fd(c.d))}</div>`,'<div class="empty">Pas de résultat pour ce tireur dans cette épreuve.</div>');
+}
+/* ===== fiche d'un tireur dans une compétition : stats, tous ses matchs, comparaison avec ses autres compétitions ===== */
+function epFiche(ci,ei,gi,pid){
+  const c=D.comps[ci],e=c.eps[ei],X=resOf(c,e);if(!X||!X.res)return;
+  gi=gi||0;const R=X.res[gi]||X.res[0];if(!R||!R.players||!R.players[pid])return;
+  const G=epAgg(R),id=pid,pp=R.players[pid],ti=tiOf(R,pid),nm=pp[1]+" "+pp[0];
+  const head=`${esc(c.v)} · ${esc(epLabel(e))}<div class="sub" style="font-weight:400">${pfl(R,id)}${esc(nm)} · ${esc(fd(c.d))}</div>`;
   const a=G.A[id]||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,pp:null,ms:[]};
   const fp=G.fin[id],cr=G.cp.find(x=>String(x.id)===String(id));
   const ids=Object.keys(G.A);
@@ -2587,7 +2635,7 @@ function epStats(ci,ei,ti){
   const tiles=`<div class="tiles"><div class="hi"><b>${fp?rkLbl(fp):"–"}</b><small>${fp?"sur "+G.n:"place finale"}</small></div><div><b>${a.pm?a.pw+"/"+a.pm:"–"}</b><small>victoires en poule</small></div><div><b>${a.ptd+a.ttd+a.ptr+a.ttr>0?Math.round((a.ptd+a.ttd)/(a.ptd+a.ttd+a.ptr+a.ttr)*100)+" %":"–"}</b><small>touches marquées</small></div></div>`;
   const line=[a.pp?`Poule ${a.pp.no} : ${a.pp.pl}${a.pp.pl===1?"er":"e"} sur ${a.pp.sz}`:"",cr?`Après les poules : ${cr.pl}${cr.pl===1?"er":"e"} sur ${G.cp.length}`:"",fp&&cr?`Place gagnée ou perdue : ${cr.pl-fp>0?"+":""}${cr.pl-fp}`:""].filter(Boolean).join(" · ");
   const ms=a.ms.slice().sort((x,y)=>y.r-x.r).map(m=>`<div class="li"><div><b>${esc(RLAB[m.r]||"Tour "+m.r)}</b>${m.tp&&+m.tp>1?` <small>· tableau des places ${esc(m.tp)} et suivantes</small>`:""}<br><small>contre ${esc(m.on)}</small></div><span class="rk ${m.s1>m.s2?"g3":""}" style="${m.s1>m.s2?"background:var(--good-soft);color:var(--good)":"background:var(--bad-soft);color:var(--bad)"}">${m.s1>m.s2?"V":"D"} ${m.s1}-${m.s2}</span></div>`).join("");
-  sheet(head,`<div class="stats"><div class="btns"><button type="button" class="btn sm" data-t="${ti}">Fiche tireur</button><button type="button" class="btn sm" data-comp="${ci}">Fiche compétition</button><button type="button" class="btn sm" data-res="${ci}:${ei}::0">Résultats</button></div>${tiles}${line?`<div class="mini" style="margin:0 0 8px">${esc(line)}</div>`:""}
+  sheet(head,`<div class="stats"><div class="btns">${ti!==undefined?`<button type="button" class="btn sm" data-t="${ti}">Fiche tireur</button>`:""}<button type="button" class="btn sm" data-comp="${ci}">Fiche compétition</button><button type="button" class="btn sm" data-res="${ci}:${ei}::${gi}">Résultats</button></div>${tiles}${line?`<div class="mini" style="margin:0 0 8px">${esc(line)}</div>`:""}${epCompare(ci,ei,gi,R,G,id,a,fp,cr)}${epMatches(ci,ei,gi,R,id)}
   ${a.pm?`<div class="sec">Poules (comparé aux autres tireurs de l'épreuve)</div>`:""}
   ${cRow("Victoires en poule",rate(a.pw,a.pm,3),F(x=>rate(x.pw,x.pm,3)),1,pct)}
   ${cRow("Touches marquées sur 100 touches jouées (poules)",a.ptd+a.ptr>=10?a.ptd/(a.ptd+a.ptr):null,F(x=>x.ptd+x.ptr>=10?x.ptd/(x.ptd+x.ptr):null),1,v=>String(Math.round(v*100)),"Sur 100 touches jouées au total (celles qu’il met + celles qu’il reçoit), combien il en met. Au-dessus de 50, il marque plus de touches qu’il n’en reçoit.")}
@@ -2602,8 +2650,7 @@ function epStats(ci,ei,ti){
   ${cRow("Touches données par match",(a.ptd+a.ttd)/all,F(x=>x.pm+x.tw+x.tl>=3?(x.ptd+x.ttd)/(x.pm+x.tw+x.tl):null),1,d1)}
   ${cRow("Touches reçues par match",(a.ptr+a.ttr)/all,F(x=>x.pm+x.tw+x.tl>=3?(x.ptr+x.ttr)/(x.pm+x.tw+x.tl):null),0,d1)}`:""}
   ${a.pm?`<div class="sec">Poules</div><div class="mini">${a.pw} victoire${a.pw>1?"s":""} sur ${a.pm} match${a.pm>1?"s":""} · ${a.ptd} touches données, ${a.ptr} reçues</div>`:""}
-  ${tm?`<div class="sec">Matchs du tableau (${a.tw} V, ${a.tl} D)</div><div class="list">${ms}</div><div class="mini" style="margin-top:6px">${a.ttd} touches données, ${a.ttr} reçues en tableau</div>`:`<div class="mini" style="margin-top:8px">Pas de match de tableau enregistré.</div>`}</div>`);
-  BACK=()=>tireur(ti);
+  ${tm?`<div class="mini" style="margin-top:8px">Tableau : ${a.tw} V, ${a.tl} D · ${a.ttd} touches données, ${a.ttr} reçues.</div>`:""}</div>`);
 }
 
 const TH=a=>`<div class="tbh">${a.map(x=>`<span>${x}</span>`).join("")}</div>`;
@@ -3000,7 +3047,7 @@ function navw(name,kf,fn){return function(...a){const sh=$("#sheet"),key=name+":
   const cur={key,go:()=>{CURF=cur;const r=fn.apply(null,a);BACK=null;return r}};CURF=cur;
   const r=fn.apply(this,a);BACK=null;return r}}
 tireur=navw("t",i=>i,tireur);compSheet=navw("c",ci=>ci,compSheet);grpSheet=navw("g",gi=>gi,grpSheet);
-results=navw("r",(ci,ei)=>ci+":"+ei,results);engages=navw("e",ci=>ci,engages);epStats=navw("s",(a,b,c)=>a+":"+b+":"+c,epStats);
+results=navw("r",(ci,ei)=>ci+":"+ei,results);engages=navw("e",ci=>ci,engages);epFiche=navw("s",(a,b,g,p)=>a+":"+b+":"+g+":"+p,epFiche);
 kDetail=navw("k",k=>k,kDetail);ffeDetail=navw("f",(l,i)=>l+":"+i,ffeDetail);liveSheet=navw("l",()=>"",liveSheet);
 const SCR={};
 function setTab(t){
@@ -3017,6 +3064,7 @@ document.addEventListener("click",ev=>{
   const b=ev.target.closest("button");
   if(!b){const cg=ev.target.closest("[data-grp]");if(cg&&!ev.target.closest("a")){grpSheet(Number(cg.dataset.grp));return}const cd=ev.target.closest("[data-comp]");if(cd&&!ev.target.closest("a"))compSheet(Number(cd.dataset.comp));return}
   if(b.dataset.close){closeSheet();return}
+  if(b.dataset.fe!==undefined){const q=b.dataset.fe.split(":");epFiche(+q[0],+q[1],+q[2],q.slice(3).join(":"));return}
   if(b.dataset.navback){const p=NAV.pop();if(p){NAVGO=true;try{p.go()}finally{NAVGO=false}}return}
   if(b.dataset.comp!==undefined&&!b.dataset.f){compSheet(Number(b.dataset.comp));return}
   if(xclick(b))return;
