@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794987586";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794988543";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1595,20 +1595,20 @@ FIE.parsePools=function(pages){const P=[];let cur=null,anch=null;
       row.name=nm.join(" ").replace(/\s+/g," ").trim();cur.rows.push(row)}}
   return P.filter(p=>p.rows.length)};
 FIE.parseTableau=function(pages){const matches=[];const ent={};
-   for(const items of pages){const hdr=items.filter(i=>/^A\d+\s*—\s*\d+\s+MATCH/.test(i.t));if(!hdr.length)continue;
+   for(const items of pages){const hdr=items.filter(i=>/^[AB]\d+\s*—\s*\d+\s+MATCH/.test(i.t));if(!hdr.length)continue;
      /* colonnes lues sur CHAQUE page : un PDF peut commencer au tableau de 128 et un autre au tableau de 32 */
-     const hs=hdr.map(i=>({x:i.x,size:+/^A(\d+)/.exec(i.t)[1],y:i.y})).sort((a,b)=>a.x-b.x);
+     const hs=hdr.map(i=>({x:i.x,size:+/^[AB](\d+)/.exec(i.t)[1],tb:i.t[0],y:i.y})).sort((a,b)=>a.x-b.x);
      const hy=hs[0].y;
      hs.forEach((c,ci)=>{const x0=c.x-56,x1=ci+1<hs.length?hs[ci+1].x-56:c.x+150;
        const it=items.filter(i=>i.y>hy+6&&i.x>=x0&&i.x<x1&&String(i.t).trim()&&!/^Generated|^\d{4}-\d\d-\d\d$/.test(i.t)).sort((a,b)=>a.y-b.y||a.x-b.x);
-       let cu=[];const E=(ent[c.size]=ent[c.size]||[]);
+       let cu=[];const E=(ent[c.tb+c.size]=ent[c.tb+c.size]||[]);
        for(const i of it){
          if(i.t==="BYE"){E.push({bye:true});cu=[];continue}
          let m=/^([VD]?)\/(\d+)$/.exec(i.t);if(!m&&/^\[\w+\]$/.test(i.t))m=["","D",null,i.t];
          if(m){const cc=cu.filter(q=>/^[A-Z]{3}$/.test(q.t)&&q.x>=c.x+30).pop();const name=cu.filter(q=>q!==cc).map(q=>q.t).join(" ").replace(/\s+/g," ").trim();E.push({name,cc:cc?cc.t:"",res:m[1],sc:m[2]==null?null:+m[2],tag:m[3]||""});cu=[];continue}
          cu.push(i)}})}
-   for(const sz in ent){const E=ent[sz].filter(e=>!e.bye),r=Math.round(Math.log2(+sz))-1;
-     for(let k=0;k<E.length-1;){const a=E[k],b=E[k+1];if(a.res&&b.res&&a.res!==b.res&&a.name&&b.name){matches.push({r,a,b});k+=2}else k++}}
+   for(const sz in ent){const E=ent[sz].filter(e=>!e.bye),tb=sz[0],r=Math.round(Math.log2(+sz.slice(1)))-1;
+     for(let k=0;k<E.length-1;){const a=E[k],b=E[k+1];if(a.res&&b.res&&a.res!==b.res&&a.name&&b.name){matches.push({r,a,b,tb});k+=2}else k++}}
    return matches};
 /* dépôt en vrac : on garde ce qui apporte quelque chose, on ignore le reste (déjà importé, moins complet, rien de nouveau) */
 FIE.take=function(x,r,name){const old=x.parts[r.kind];const n=Array.isArray(r.data)?r.data.length:0;
@@ -1620,7 +1620,7 @@ FIE.take=function(x,r,name){const old=x.parts[r.kind];const n=Array.isArray(r.da
 /* un 2e PDF « Tableau » de la même épreuve s'ajoute au premier (fie.org découpe les grands tableaux en plusieurs PDF) */
 FIE.mergeTab=function(o,n){const key=m=>m.r+"|"+[FIE.compact(m.a.name).slice(0,10),FIE.compact(m.b.name).slice(0,10)].sort().join("|");
   const out=(o||[]).slice(),idx=new Map(out.map((m,i)=>[key(m),i]));
-  (n||[]).forEach(m=>{const k=key(m);if(!idx.has(k)){idx.set(k,out.length);out.push(m)}else{const p=out[idx.get(k)];if(p.a.sc==null&&p.b.sc==null&&m.a.sc!=null&&m.b.sc!=null)out[idx.get(k)]=m}});
+  (n||[]).forEach(m=>{const k=key(m);if(!idx.has(k)){idx.set(k,out.length);out.push(m)}else{const p=out[idx.get(k)];if((p.a.sc==null&&p.b.sc==null&&m.a.sc!=null&&m.b.sc!=null)||(!p.tb&&m.tb))out[idx.get(k)]=m}});
   return out};
 /* ---- assemblage ---- */
 FIE.split=function(n){const w=String(n).trim().split(/\s+/);let i=0;while(i<w.length-1&&w[i]===w[i].toUpperCase()&&/[A-ZÀ-ÖØ-Þ]/.test(w[i]))i++;if(i===0)i=1;if(w.length===1)i=1;return[w.slice(0,i).join(" "),w.slice(i).join(" ")]};
@@ -1649,8 +1649,9 @@ FIE.build=function(P){/* P={results,poolres,pools,tableau} -> R (structure de l'
   if((P.results||[]).length)R.final=P.results.map(x=>({pl:x.rank,id:x._id}));
   const nm=i=>R.players[i][1]+" "+R.players[i][0];
   const ms=[];
-  (P.tableau||[]).forEach(m=>{const A=m.a,B=m.b,wa=A.res==="V";const ia=A._id,ib=B._id;
-    const ff=A.tag||B.tag||A.sc==null||B.sc==null;ms.push({r:m.r,a:{id:ia,name:nm(ia),sc:(wa?"V":"D")+(ff?"":A.sc)},b:{id:ib,name:nm(ib),sc:(wa?"D":"V")+(ff?"":B.sc)},arb:"",piste:"",_w:wa?ia:ib})});
+  const TB=P.tableau||[];let offA=0;{const bs=TB.filter(m=>m.tb==="B").map(m=>m.r),as=TB.filter(m=>m.tb==="A").map(m=>m.r);if(bs.length&&as.length)offA=Math.max(0,Math.max(...bs)-Math.min(...as)+1)}/* tour préliminaire (A) : ses vainqueurs entrent dans le plus grand tour du tableau principal (B) */
+  TB.forEach(m=>{const A=m.a,B=m.b,wa=A.res==="V";const ia=A._id,ib=B._id;
+    const ff=A.tag||B.tag||A.sc==null||B.sc==null;ms.push({r:m.r+(m.tb==="A"?offA:0),a:{id:ia,name:nm(ia),sc:(wa?"V":"D")+(ff?"":A.sc)},b:{id:ib,name:nm(ib),sc:(wa?"D":"V")+(ff?"":B.sc)},arb:"",piste:"",_w:wa?ia:ib})});
   if(ms.length){const by={};ms.forEach(m=>(by[m.r]=by[m.r]||[]).push(m));const used=new Set(),out=[];
     const child=(m,pid)=>(by[m.r+1]||[]).find(c=>c._w===pid&&!used.has(c));
     const walk=(m,res)=>{used.add(m);res.push({r:m.r,a:m.a,b:m.b,arb:"",piste:""});for(const pid of[m.a.id,m.b.id]){const c=child(m,pid);if(c)walk(c,res)}};
