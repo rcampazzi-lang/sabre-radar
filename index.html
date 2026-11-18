@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794978418";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794985145";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2275,14 +2275,14 @@ const sMet={
 /* Force (type Elo) : ajustement global sur tous les matchs des 12 derniers mois (poules et tableaux, saison en cours + archive).
    Résultat d'un match = 0,75 + 0,25 × marge normalisée pour le gagnant ((touches gagnant − perdant) ÷ plus gros score), le complément pour le perdant.
    Un pool par sexe et catégorie ; prior centré sur 1500 ; la fiabilité (± et « ? ») dépend du nombre de matchs. */
-const FS=400/Math.LN10;let FRC=null;const FNAME={},FCATN={},FCATD={};let FALT={};
+const FS=400/Math.LN10;let FRC=null;const FNAME={},FCATN={},FCATD={};let FALT={};const FOR=new Set(),FOR0=new Set(),LOC=new Set();/* FOR : tireurs étrangers vus seulement dans les résultats FIE ; ils servent au calcul de la force des Français mais ne sont jamais classés */
 const epG=e=>{const cs=e.c.split(", ").map(x=>pcat(x)||x);return cs.length===1&&KCATS.includes(cs[0])?e.s+"|"+cs[0]:""};
 let CURG="";
 const MLAD=["M9","M11","M13","M15","M17","M20"];
 const feeds=(X,cn)=>{if(!cn||X===cn)return false;if(MLAD.includes(X))return MLAD.indexOf(cn)>=0&&MLAD.indexOf(cn)<MLAD.indexOf(X);if(X==="SENIOR")return MLAD.includes(cn)||/^V/.test(cn);return false};
 function catNow(k){const i=tirIdx(k);if(i!==undefined){const c=pcat(D.tir[i][3]);if(c&&KCATS.includes(c))return c}if(FCATN[k])return FCATN[k];const a=FALT[k];return a?Object.keys(a).sort((x,y)=>a[y]-a[x])[0]:""}
 function forceMatches(){
-  FALT={};const W=kWin(),ALL=[],PL={},done=new Set();
+  FALT={};FOR.clear();FOR0.clear();LOC.clear();const W=kWin(),ALL=[],PL={},done=new Set();
   D.comps.concat(HIST).forEach(c=>{
     if(IGN[c.k]||c.d<=W.from||c.d>W.ref)return;
     c.eps.forEach(e=>{
@@ -2295,9 +2295,9 @@ function forceMatches(){
       const pm=Object.keys(pv).sort((a,b)=>pv[b]-pv[a])[0];
       const TP=pm?+pm:tm===8?4:(tm===10||tm===15)?5:(ecats[0]==="M9"||ecats[0]==="M11")?4:5;
       X.res.forEach(r=>{
-        if(r.src==="fie")return;/* résultats internationaux FIE : non pris en compte pour l'instant */
+        /* résultats FIE pris en compte : les adversaires étrangers (FOR) calibrent la force, mais ne sont pas classés */
         const pl=r.players||{},by={};for(const id in pl){by[nkey(pl[id][0],pl[id][1])]=id;by[nkey(pl[id][1],pl[id][0])]=id}
-        const info=id=>{const p=pl[id];if(!p)return null;const nk0=nkey(p[0],p[1]);if(!FNAME[nk0])FNAME[nk0]=[p[0]+" "+p[1],p[2]||""];const pc0=pcat(p[3]);if(pc0&&(!FCATD[nk0]||c.d>=FCATD[nk0])){FCATN[nk0]=pc0;FCATD[nk0]=c.d}if(!pc0&&single){const a=FALT[nk0]||(FALT[nk0]={});a[single]=(a[single]||0)+1}return [nk0,pc0||single]};
+        const info=id=>{const p=pl[id];if(!p)return null;const nk0=nkey(p[0],p[1]);if(r.src==="fie"){if(p[2]!=="FRA")FOR0.add(nk0)}else LOC.add(nk0);if(!FNAME[nk0])FNAME[nk0]=[p[0]+" "+p[1],p[2]||""];const pc0=pcat(p[3]);if(pc0&&(!FCATD[nk0]||c.d>=FCATD[nk0])){FCATN[nk0]=pc0;FCATD[nk0]=c.d}if(!pc0&&single){const a=FALT[nk0]||(FALT[nk0]={});a[single]=(a[single]||0)+1}return [nk0,pc0||single]};
         const add=(a,b,sa,sb)=>{const A=info(a),B=info(b);if(!A||!B||A[0]===B[0])return;
           if(single){(PL[A[0]]=PL[A[0]]||new Set()).add(single);(PL[B[0]]=PL[B[0]]||new Set()).add(single)}
           if(sa===null||sb===null||sa===sb)return;
@@ -2313,6 +2313,7 @@ function forceMatches(){
       })})});
   /* Un match compte dans l'Elo d'une catégorie X si les deux tireurs en font partie cette saison :
      tireurs de la catégorie X (annuaire) + surclassés qui y ont tiré (vétérans : surclassement = Sénior). */
+  FOR0.forEach(k=>{if(!LOC.has(k)&&tirIdx(k)===undefined)FOR.add(k)});/* étranger = vu seulement à la FIE, absent de l'annuaire FFE et des résultats FFE/Greg */
   const CN={},cn=k=>CN[k]!==undefined?CN[k]:(CN[k]=catNow(k));
   const E=(k,X)=>{const c=cn(k);if(c===X)return true;return !!(c&&PL[k]&&PL[k].has(X)&&feeds(X,c))};
   const G={};
@@ -2332,13 +2333,14 @@ function fitG(ms){
   return {ids,th,h,nm,nw,n};
 }
 function forceAll(){
-  const sig=(RES?Object.keys(RES).length:0)+"|"+HIST.length+"|"+SEASON+"|"+TODAY+"|"+Object.keys(IGN).length;
+  const sig=(RES?Object.keys(RES).length:0)+"|"+HIST.length+"|"+SEASON+"|"+TODAY+"|"+Object.keys(IGN).length+"|"+Object.keys(FIEL).length+"|"+(RES?Object.values(RES).filter(x=>x&&x.fie).length:0);
   if(FRC&&FRC.sig===sig)return FRC.R;
   const G=forceMatches(),R={},RG={};
   for(const g in G){
-    const {ids,th,h,nm,nw,n}=fitG(G[g]);
-    const E=Array.from(th,x=>FS*x),S=E.slice().sort((a,b)=>a-b);
+    const {ids,th,h,nm,nw}=fitG(G[g]);
+    const E=Array.from(th,x=>FS*x),S=E.filter((x,i)=>!FOR.has(ids[i])).sort((a,b)=>a-b),n=S.length;
     ids.forEach((k,i)=>{
+      if(FOR.has(k))return;
       const lo=S.filter(x=>x<E[i]).length,eq=S.filter(x=>x===E[i]).length;
       const o={e:Math.round(1500+E[i]),se:Math.round(FS/Math.sqrt(h[i])),nm:nm[i],nw:nw[i],pc:Math.round((lo+eq/2)/n*100),rk:1+n-lo-eq,n,g,prov:nm[i]<5};
       (RG[g]=RG[g]||{})[k]=o})}
