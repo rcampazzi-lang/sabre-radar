@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794988858";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794990287";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -564,7 +564,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 .ilab{font-size:12px;font-weight:700;color:var(--sub,#777);margin-top:10px}.ipgs{margin:10px 0}.ipg{display:grid;grid-template-columns:20px 1fr auto auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line,#e5e5e5)}.ipg small{display:block;color:var(--sub,#777);font-size:11px}.ipg.del b{text-decoration:line-through;opacity:.5}.idot{font-weight:800;color:var(--accent,#d9531e)}
 .ito{display:block;font-size:13px;color:var(--accent,#d9531e);font-weight:600}.ichk{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px}.ig{color:var(--sub,#777);font-size:11px;grid-column:3/5}
 .isel{width:100%;margin:8px 0;padding:9px;border:1px solid var(--line,#ccc);border-radius:10px;background:var(--card,#fff);color:inherit;font:inherit}
-</style>
+.flg{width:16px;height:12px;vertical-align:-1px;margin-right:2px;border-radius:2px;object-fit:cover;font-size:13px;line-height:12px}</style>
 <div id="app">
 <section id="v-c" class="screen">
   <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><div style="display:flex;gap:8px;align-items:center;flex:none"><button class="rfb" id="ub" type="button" hidden aria-label="Mettre à jour les données"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></button><button class="rfb rfr" id="rfb" type="button" aria-label="Actualiser l'appli"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><label class="seas"><select id="season" class="sels" aria-label="Saison"></select></label></div></div>
@@ -1879,6 +1879,13 @@ const stBtn=i=>i===undefined||i===null?"":`<span class="vs" data-ts="${i}" role=
 const stK=k=>{if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));return stBtn(TIRK.get(k))};
 const stRow=r=>stBtn(tirI(r));
 function rStat(R,id){const p=R.players[id];if(!p)return"";if(!TIRK)TIRK=new Map(D.tir.map((t,i)=>[nkey(t[0],t[1]),i]));const i=TIRK.get(nkey(p[0],p[1]));if(i===undefined)return"";const g=gradeTag(eloP(R,id));return `${g}${stBtn(i)}`}
+/* drapeaux : code pays (FIE / En Garde) -> drapeau ; image (flagcdn) avec repli sur l'emoji si l'image n'est pas chargée */
+const ISO2={AFG:"af",ALB:"al",ALG:"dz",AND:"ad",ANG:"ao",ARG:"ar",ARM:"am",AUS:"au",AUT:"at",AZE:"az",BAH:"bs",BRN:"bh",BAN:"bd",BAR:"bb",BLR:"by",BEL:"be",BEN:"bj",BER:"bm",BOL:"bo",BIH:"ba",BOT:"bw",BRA:"br",BUL:"bg",BUR:"bf",CAM:"kh",CMR:"cm",CAN:"ca",CPV:"cv",CHA:"td",CHI:"cl",CHN:"cn",TPE:"tw",COL:"co",COD:"cd",CGO:"cg",CRC:"cr",CRO:"hr",CUB:"cu",CYP:"cy",CZE:"cz",DEN:"dk",DOM:"do",ECU:"ec",EGY:"eg",ESA:"sv",EST:"ee",ETH:"et",FIJ:"fj",FIN:"fi",FRA:"fr",GAB:"ga",GEO:"ge",GER:"de",GHA:"gh",GBR:"gb",GRE:"gr",GUA:"gt",GUI:"gn",HAI:"ht",HON:"hn",HKG:"hk",HUN:"hu",ISL:"is",IND:"in",INA:"id",IRI:"ir",IRQ:"iq",IRL:"ie",ISR:"il",ITA:"it",CIV:"ci",JAM:"jm",JPN:"jp",JOR:"jo",KAZ:"kz",KEN:"ke",PRK:"kp",KOR:"kr",KOS:"xk",KUW:"kw",KGZ:"kg",LAO:"la",LAT:"lv",LIB:"lb",LBA:"ly",LIE:"li",LTU:"lt",LUX:"lu",MAC:"mo",MAD:"mg",MAS:"my",MLI:"ml",MLT:"mt",MEX:"mx",MDA:"md",MON:"mc",MGL:"mn",MNE:"me",MAR:"ma",MOZ:"mz",MYA:"mm",NAM:"na",NEP:"np",NED:"nl",NZL:"nz",NCA:"ni",NIG:"ne",NGR:"ng",MKD:"mk",NOR:"no",OMA:"om",PAK:"pk",PLE:"ps",PAN:"pa",PAR:"py",PER:"pe",PHI:"ph",POL:"pl",POR:"pt",PUR:"pr",QAT:"qa",ROU:"ro",RUS:"ru",RWA:"rw",KSA:"sa",SEN:"sn",SRB:"rs",SGP:"sg",SVK:"sk",SLO:"si",RSA:"za",ESP:"es",SRI:"lk",SUD:"sd",SUR:"sr",SWE:"se",SUI:"ch",SYR:"sy",TJK:"tj",TAN:"tz",THA:"th",TOG:"tg",TTO:"tt",TUN:"tn",TUR:"tr",TKM:"tm",UGA:"ug",UKR:"ua",UAE:"ae",USA:"us",URU:"uy",UZB:"uz",VEN:"ve",VIE:"vn",YEM:"ye",ZAM:"zm",ZIM:"zw"};
+const ccOf=(R,p)=>{if(!p)return"";const c=p[2]||"";if(R&&R.src==="fie")return ISO2[c]?c:"";return ISO2[c]?c:""};
+const isForeign=(R,p)=>{const c=ccOf(R,p);return !!c&&c!=="FRA"};
+const flagEmo=c=>{const i=ISO2[c];return i?String.fromCodePoint(...[...i.toUpperCase()].map(ch=>127397+ch.charCodeAt(0))):""};
+const flagH=c=>{const i=ISO2[c];if(!i)return"";return `<img class="flg" src="https://flagcdn.com/w20/${i==="gb"?"gb":i}.png" alt="${c}" title="${c}" loading="lazy" onerror="this.outerHTML='<span class=&quot;flg&quot; title=&quot;${c}&quot;>${flagEmo(c)}</span>'">`};
+const pfl=(R,id)=>{const p=R&&R.players&&R.players[id];const c=ccOf(R,p);return c?flagH(c)+" ":""};
 function pname(R,id,short){const p=R.players[id];if(!p)return "#"+id;return short?`${p[0]} ${p[1]}`:`${p[0]} ${p[1]}`}
 function pclub(R,id){const p=R.players[id];return p?p[2]:""}
 function fv(v){return (Math.round(v*100)/100).toFixed(2)}
@@ -1905,7 +1912,7 @@ function vpoules(R){
       const lvp=poolLv(R,t),mine=lvp.lv.find(x=>x.p===p);
       const n=p.rows.length;
       const head=`<tr><th class="nm">Poule ${p.poule}${mine&&mine.avg!==null?`<small style="display:block;font-weight:600">Elo moyen ${Math.round(mine.avg)}</small>`:""}</th>${p.rows.map((_,i)=>`<th>${i+1}</th>`).join("")}<th>V</th><th>V/M</th><th>TD</th><th>TR</th><th>Ind</th><th>Pl</th></tr>`;
-      const rows=p.rows.map((r,i)=>`<tr><td class="nm"><span style="display:inline-block;min-width:20px;font-weight:700;color:var(--accent)">${i+1}</span>${esc(pname(R,r.id))}<small style="padding-left:20px">${esc(pclub(R,r.id))}</small>${eloP(R,r.id)?`<div style="padding:3px 0 0 20px">${gradeTag(eloP(R,r.id))}</div>`:""}</td>${r.m.map(x=>x===""?'<td class="rx"></td>':`<td class="${x[0]==="V"?"rw":"rd"}">${esc(x)}</td>`).join("")}<td class="b">${r.v}</td><td>${n>1?fv(r.v/(n-1)):""}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.td-r.tr>0?"+":""}${r.td-r.tr}</td><td class="b">${r.pl}</td></tr>`).join("");
+      const rows=p.rows.map((r,i)=>`<tr><td class="nm"><span style="display:inline-block;min-width:20px;font-weight:700;color:var(--accent)">${i+1}</span>${pfl(R,r.id)}${esc(pname(R,r.id))}<small style="padding-left:20px">${esc(pclub(R,r.id))}</small>${eloP(R,r.id)?`<div style="padding:3px 0 0 20px">${gradeTag(eloP(R,r.id))}</div>`:""}</td>${r.m.map(x=>x===""?'<td class="rx"></td>':`<td class="${x[0]==="V"?"rw":"rd"}">${esc(x)}</td>`).join("")}<td class="b">${r.v}</td><td>${n>1?fv(r.v/(n-1)):""}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.td-r.tr>0?"+":""}${r.td-r.tr}</td><td class="b">${r.pl}</td></tr>`).join("");
       return `<div class="rgrid" style="margin-top:6px"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>${p.arb?`<div class="mini">Arbitre : ${esc(p.arb)}</div>`:""}`;
     }).join("");
   }).join("");
@@ -1913,13 +1920,13 @@ function vpoules(R){
 function vapres(R){
   const cp=R.classement_poules;const t=RS.tour&&cp.find(x=>x.tour===RS.tour)?RS.tour:cp[cp.length-1].tour;
   const chips=cp.length>1?`<div class="chips">${cp.map(x=>chip("Après tour "+x.tour,x.tour===t,`data-rs="tour:${x.tour}"`)).join("")}</div>`:"";
-  const rows=cp.find(x=>x.tour===t).rows.map(r=>`<tr><td class="b">${r.pl}</td><td class="nm">${esc(pname(R,r.id))}<small>${esc(pclub(R,r.id))}</small></td><td>${fv(r.v)}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.ind>0?"+":""}${r.ind}</td></tr>`).join("");
+  const rows=cp.find(x=>x.tour===t).rows.map(r=>`<tr><td class="b">${r.pl}</td><td class="nm">${pfl(R,r.id)}${esc(pname(R,r.id))}<small>${esc(pclub(R,r.id))}</small></td><td>${fv(r.v)}</td><td>${r.td}</td><td>${r.tr}</td><td>${r.ind>0?"+":""}${r.ind}</td></tr>`).join("");
   return chips+`<div class="rgrid"><table><thead><tr><th>Pl</th><th class="nm">Tireur</th><th>V/M</th><th>TD</th><th>TR</th><th>Ind</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function vfinal(R){
   const q=(RS.q||"").toLowerCase();
   const cnt={};R.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);
-  const rows=R.final.filter(r=>!q||(pname(R,r.id)+" "+pclub(R,r.id)).toLowerCase().includes(q)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${esc(pname(R,r.id))}</b> ${rStat(R,r.id)}<small>${esc(pclub(R,r.id))}</small></div></div>`).join("");
+  const rows=R.final.filter(r=>!q||(pname(R,r.id)+" "+pclub(R,r.id)).toLowerCase().includes(q)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${pfl(R,r.id)}${esc(pname(R,r.id))}</b> ${rStat(R,r.id)}<small>${esc(pclub(R,r.id))}</small></div></div>`).join("");
   return `<input class="rsearch" id="rsq" type="search" placeholder="Chercher un tireur ou un club" value="${esc(RS.q||"")}"><div class="mini">${R.final.length} classés${R.fin_src==="poules"?" · classement après le dernier tour de poules (pas de tableau)":""}</div><div style="display:flex;flex-direction:column;gap:4px" id="rfin">${rows||'<div class="empty">Aucun résultat.</div>'}</div>`;
 }
 const RND=["Finale","Demi-finales","Quarts de finale","Tableau de 16","Tableau de 32","Tableau de 64","Tableau de 128","Tableau de 256"];
@@ -1979,7 +1986,7 @@ function vtableau(R){
       if(!p||!p.name||/^exempt$/i.test(p.name))return `<div class="ex"><span class="sd"></span><span class="pn">Exempt</span></div>`;
       let nm=p.name;let s=seed[p.id];const mm=/^(\d+)\s+(.+)$/.exec(nm);if(mm){nm=mm[2];if(!s)s=+mm[1]}
       const v=other&&other.name&&!/^exempt$/i.test(other.name)?sc(p.sc):null;
-      return `<div class="${win?"w":""}"><span class="sd">${s||""}</span><span class="pn" title="${esc(nm)}">${esc(nm)}</span><span class="sc">${v==null?"":v}</span></div>`;
+      return `<div class="${win?"w":""}"><span class="sd">${s||""}</span><span class="pn" title="${esc(nm)}">${pfl(R,p.id)}${esc(nm)}</span><span class="sc">${v==null?"":v}</span></div>`;
     };
     boxes+=`<div class="mt" style="left:${n.x}px;top:${n.top}px;width:${BW}px;height:${BH}px" ${n.m.piste||n.m.arb?`title="${esc([n.m.piste&&"Piste "+n.m.piste,n.m.arb&&"Arbitre "+n.m.arb].filter(Boolean).join(" · "))}"`:""}>${line(a,wa,b)}${line(b,wb,a)}</div>`;
   });
@@ -2006,7 +2013,7 @@ function results(ci,ei,view,gi){
   if(PWIDE!==false)$("#sheet").dataset.wide="1";
   if(LIVEBK)BACK=liveSheet;
   const ni=$("#sheet").querySelector(".inner");if(ni&&keep)ni.scrollTop=st;
-  const q=$("#rsq");if(q)q.addEventListener("input",ev=>{RS.q=ev.target.value;const f=$("#rfin");if(f){const R2=R;const qq=RS.q.toLowerCase();const cnt={};R2.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);f.innerHTML=R2.final.filter(r=>!qq||(pname(R2,r.id)+" "+pclub(R2,r.id)).toLowerCase().includes(qq)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${esc(pname(R2,r.id))}</b> ${rStat(R2,r.id)}<small>${esc(pclub(R2,r.id))}</small></div></div>`).join("")}});
+  const q=$("#rsq");if(q)q.addEventListener("input",ev=>{RS.q=ev.target.value;const f=$("#rfin");if(f){const R2=R;const qq=RS.q.toLowerCase();const cnt={};R2.final.forEach(r=>cnt[r.pl]=(cnt[r.pl]||0)+1);f.innerHTML=R2.final.filter(r=>!qq||(pname(R2,r.id)+" "+pclub(R2,r.id)).toLowerCase().includes(qq)).map(r=>`<div class="rrow ${r.pl<=3?"g"+r.pl:""}"><div class="pl">${r.pl}${cnt[r.pl]>1?"T":""}</div><div><b>${pfl(R2,r.id)}${esc(pname(R2,r.id))}</b> ${rStat(R2,r.id)}<small>${esc(pclub(R2,r.id))}</small></div></div>`).join("")}});
 }
 
 let TYO={};try{TYO=JSON.parse(localStorage.getItem("ffe-tyo")||"{}")}catch(e){}
@@ -2724,7 +2731,7 @@ function klassData(){
         const okCat=pc=>ecats.includes(pc)||(pc[0]==="V"&&ecats.some(x=>/^V/.test(x)));
         const jg={};r.final.forEach(f=>{const p=r.players[f.id];if(!p)return;const pc=pcat(p[3])||single;if(KCATS.includes(pc)&&okCat(pc))(jg[pc]=jg[pc]||[]).push(f.pl)});
         r.final.forEach(f=>{
-          const p=r.players[f.id];if(!p)return;if(r.src==="fie"&&p[2]!=="FRA")return;
+          const p=r.players[f.id];if(!p)return;if(isForeign(r,p))return;
           const sk=(r.gid&&r.gid!=="eg"?r.gid:EK(c,e)+(r.sub?"|"+r.sub:""))+"|"+f.id;if(seen.has(sk))return;seen.add(sk)
           let pc=pcat(p[3])||single;if(!pc||!KCATS.includes(pc))return;
           if(true){
