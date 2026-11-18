@@ -564,7 +564,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:120px;z-ind
 .ilab{font-size:12px;font-weight:700;color:var(--sub,#777);margin-top:10px}.ipgs{margin:10px 0}.ipg{display:grid;grid-template-columns:20px 1fr auto auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line,#e5e5e5)}.ipg small{display:block;color:var(--sub,#777);font-size:11px}.ipg.del b{text-decoration:line-through;opacity:.5}.idot{font-weight:800;color:var(--accent,#d9531e)}
 .ito{display:block;font-size:13px;color:var(--accent,#d9531e);font-weight:600}.ichk{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px}.ig{color:var(--sub,#777);font-size:11px;grid-column:3/5}
 .isel{width:100%;margin:8px 0;padding:9px;border:1px solid var(--line,#ccc);border-radius:10px;background:var(--card,#fff);color:inherit;font:inherit}
-.flg{width:16px;height:12px;vertical-align:-1px;margin-right:2px;border-radius:2px;object-fit:cover;font-size:13px;line-height:12px}button.nl.nl{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:inherit;cursor:pointer;text-decoration:underline;text-decoration-color:var(--line,#c9c2bb);text-underline-offset:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}button.nl.nl:hover{color:var(--accent)}.panel header .xb{margin-right:2px}</style>
+.flg{width:16px;height:12px;vertical-align:-1px;margin-right:2px;border-radius:2px;object-fit:cover;font-size:13px;line-height:12px}button.nl.nl{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:inherit;cursor:pointer;text-decoration:underline;text-decoration-color:var(--line,#c9c2bb);text-underline-offset:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}button.nl.nl:hover{color:var(--accent)}.panel header .xb{margin-right:2px}.cm{display:grid;grid-template-columns:96px 1fr auto;gap:8px;align-items:center;padding:5px 4px;border-bottom:1px solid var(--line,#ece6df);font-size:14px;line-height:1.25}.cm .rl{font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}.cm .nmx{min-width:0;overflow-wrap:anywhere}.cm .sc{font-weight:700;font-size:13px;padding:2px 8px;border-radius:8px;white-space:nowrap;background:var(--fill)}.cm .sc.w{background:var(--good-soft);color:var(--good)}.cm .sc.l{background:var(--bad-soft);color:var(--bad)}.cm.ms{background:var(--fill);border-radius:8px;border:0;margin:4px 0}.cm.ms .rl{color:inherit;text-transform:none;font-size:12px;grid-column:1/3}.cm.ms .nmx{display:none}.cm .nmx .nl{display:inline}</style>
 <div id="app">
 <section id="v-c" class="screen">
   <div class="lt"><div><h1>Compétitions</h1><span class="stamp" id="stamp"></span></div><div style="display:flex;gap:8px;align-items:center;flex:none"><button class="rfb" id="ub" type="button" hidden aria-label="Mettre à jour les données"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></button><button class="rfb rfr" id="rfb" type="button" aria-label="Actualiser l'appli"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button><label class="seas"><select id="season" class="sels" aria-label="Saison"></select></label></div></div>
@@ -2333,9 +2333,9 @@ function forceMatches(){
             const iw=ci[0]==="V",cw=iw?ci:cj,cl=iw?cj:ci;let sw=sNum(cw.slice(1)),sl=sNum(cl.slice(1));
             if(sl===null)continue;if(sw===null)sw=TP;if(sw<=sl)sw=Math.max(TP,sl+1);
             add(rows[iw?i:j].id,rows[iw?j:i].id,sw,sl)}});
-        (r.tableau||[]).forEach(t=>(t.matches||[]).forEach(m=>{if(!m.a||!m.b)return;
+        tabUniq(r).forEach(({m,tr:t})=>{if(!m.a||!m.b)return;
           const ia=m.a.id||by[nkey(m.a.name,"")],ib=m.b.id||by[nkey(m.b.name,"")];if(!ia||!ib)return;
-          const tn=s=>{const q=String(s||"").match(/(\d+)/);return q?+q[1]:null};add(ia,ib,tn(m.a.sc),tn(m.b.sc))}));
+          const tn=s=>{const q=String(s||"").match(/(\d+)/);return q?+q[1]:null};add(ia,ib,tn(m.a.sc),tn(m.b.sc))});
       })})});
   /* Un match compte dans l'Elo d'une catégorie X si les deux tireurs en font partie cette saison :
      tireurs de la catégorie X (annuaire) + surclassés qui y ont tiré (vétérans : surclassement = Sénior). */
@@ -2545,20 +2545,26 @@ function statsHTML(t,idx){
 
 /* ===== Statistiques d'un tireur sur une épreuve ===== */
 const RLAB=["Finale","Demi-finale","Quart de finale","8ᵉ de finale","16ᵉ de finale","32ᵉ de finale","64ᵉ de finale","128ᵉ de finale"];
+function tabUniq(R){const seen=new Set(),out=[];
+  (R.tableau||[]).map(tr=>tr).sort((x,y)=>(y.matches||[]).length-(x.matches||[]).length).forEach(tr=>(tr.matches||[]).forEach(m=>{if(!m||!m.a||!m.b)return;
+    const nm=x=>String(x.name||x.id||"").replace(/^\d+\s+/,"").toLowerCase().replace(/\s+/g," ").trim();
+    if(nm(m.a)&&nm(m.b)){const k=[nm(m.a),nm(m.b)].sort().join("~");if(seen.has(k))return;seen.add(k)}
+    out.push({m,tr})}));
+  return out}
 function epAgg(r){
   const pl=r.players||{},byName={};
   for(const id in pl){const p=pl[id];byName[nkeyRaw(p[0],p[1])]=id;byName[nkeyRaw(p[1],p[0])]=id}
   const A={},ga=id=>A[id]||(A[id]={pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,pp:null,ms:[]});
   (r.poules||[]).forEach(po=>{const sz=(po.rows||[]).length;(po.rows||[]).forEach(x=>{const v=sNum(x.v),td=sNum(x.td),tr=sNum(x.tr);if(v===null||td===null||tr===null||sz<2)return;
     const a=ga(x.id);a.pm+=sz-1;a.pw+=v;a.ptd+=td;a.ptr+=tr;a.pp={no:po.poule,pl:x.pl,sz}})});
-  (r.tableau||[]).forEach(tr=>(tr.matches||[]).forEach(m=>{
+  tabUniq(r).forEach(({m,tr})=>{
     if(!m.a||!m.b)return;
     const tn=s=>{const q=String(s||"").match(/(\d+)/);return q?parseInt(q[1],10):null};
     const ia=m.a.id||byName[nkeyRaw(m.a.name,"")],ib=m.b.id||byName[nkeyRaw(m.b.name,"")];
     const sa=tn(m.a.sc),sb=tn(m.b.sc);if(sa===null||sb===null||sa===sb)return;
     [[ia,ib,sa,sb,m.b],[ib,ia,sb,sa,m.a]].forEach(([me,ot,s1,s2,ox])=>{if(!me)return;const a=ga(me);
       if(s1>s2)a.tw++;else a.tl++;a.ttd+=s1;a.ttr+=s2;
-      a.ms.push({tp:tr.place,r:m.r,on:ot&&pl[ot]?pl[ot][1]+" "+pl[ot][0]:(ox.name||"?"),s1,s2})})}));
+      a.ms.push({tp:tr.place,r:m.r,on:ot&&pl[ot]?pl[ot][1]+" "+pl[ot][0]:(ox.name||"?"),s1,s2})})});
   const fin={};(r.final||[]).forEach(f=>{fin[f.id]=f.pl});
   const cp=((r.classement_poules||[]).find(x=>x.tour===1)||(r.classement_poules||[])[0]||{}).rows||[];
   return {A,fin,cp,n:(r.final||[]).length,pl};
@@ -2574,17 +2580,20 @@ function poolLim(R,e){const pv={};let tm=0;
   const c0=pcat((e.c||"").split(", ")[0]);return c0==="M9"||c0==="M11"?4:5}
 function epMatchList(R,id,LIM){
   const out=[],tn=x=>{const q=String(x||"").match(/(\d+)/);return q?+q[1]:null};
-  (R.poules||[]).forEach(po=>{const rows=po.rows||[],ix=rows.findIndex(x=>String(x.id)===String(id));if(ix<0)return;
+  const nT=new Set((R.poules||[]).map(p=>p.tour||1)).size;
+  (R.poules||[]).slice().sort((x,y)=>(x.tour||1)-(y.tour||1)).forEach(po=>{const rows=po.rows||[],ix=rows.findIndex(x=>String(x.id)===String(id));if(ix<0)return;
     (rows[ix].m||[]).forEach((cell,j)=>{if(j===ix||cell===""||cell==null||!rows[j])return;const w=/^V/i.test(cell),oid=rows[j].id;
       /* case (moi, adversaire) = V4 ou D2 ; la case miroir (adversaire, moi) donne l'autre score : V4 contre D2 = 4-2 */
       const mir=(rows[j].m||[])[ix],sn=x=>{const q=String(x||"").match(/^[VD](\d+)$/);return q?+q[1]:null};
       let mine=sn(cell),opp=sn(mir);
       if(w){if(mine===null)mine=LIM}else{if(opp===null&&/^V/i.test(String(mir||"")))opp=LIM}
-      out.push({k:"p",g:"Poule "+po.poule,oid,name:"",w,mine,opp,sc:mine!==null&&opp!==null?mine+"–"+opp:String(cell)})})});
-  const T=[];
-  (R.tableau||[]).forEach(tr=>(tr.matches||[]).forEach(m=>{if(!m.a||!m.b)return;const ia=String(m.a.id),ib=String(m.b.id),me=ia===String(id)?m.a:ib===String(id)?m.b:null;if(!me)return;
-    const op=me===m.a?m.b:m.a,w=/^V/i.test(me.sc||""),s1=tn(me.sc),s2=tn(op.sc);
-    T.push({k:"t",r:m.r,g:(RLAB[m.r]||"Tour "+m.r)+(tr.place&&+tr.place>1?" · places "+tr.place+"+":""),oid:op.id,name:op.name||"?",w,mine:s1,opp:s2,sc:s1!==null&&s2!==null?s1+"–"+s2:(w?"V":"D")})}));
+      out.push({k:"p",g:(nT>1?"Tour "+(po.tour||1)+" · ":"")+"Poule "+po.poule,oid,name:"",w,mine,opp,sc:mine!==null&&opp!==null?mine+"–"+opp:String(cell)})})});
+  const T=[],grp={};
+  tabUniq(R).forEach(({m,tr})=>{const ia=String(m.a.id),ib=String(m.b.id),me=ia===String(id)?m.a:ib===String(id)?m.b:null;if(!me)return;
+    const op=me===m.a?m.b:m.a,w=/^V/i.test(me.sc||""),s1=tn(me.sc),s2=tn(op.sc),pl=String(tr.place||"");
+    (grp[pl]=grp[pl]||[]).push({k:"t",r:m.r,g:(RLAB[m.r]||"Tour "+m.r)+(pl&&+pl>1?" · places "+pl+"+":""),oid:op.id,name:op.name||"?",w,mine:s1,opp:s2,sc:s1!==null&&s2!==null?s1+"–"+s2:(w?"V":"D")})});
+  /* élimination directe : un seul match par tour, et plus rien après une défaite */
+  Object.values(grp).forEach(L=>{L.sort((x,y)=>y.r-x.r);const done=new Set();for(const x of L){if(done.has(x.r))continue;done.add(x.r);T.push(x);if(!x.w)break}});
   T.sort((x,y)=>y.r-x.r);
   return out.concat(T);
 }
@@ -2651,7 +2660,7 @@ function epFiche(ci,ei,gi,pid){
   const MT=epMatchList(R,id,poolLim(R,e)),CP=epCompare(ci,ei,gi,R,G,id,a,fp,cr);
   const fe=oid=>R.players[oid]?`${pfl(R,oid)}<button type="button" class="nl" data-fe="${ci}:${ei}:${gi}:${oid}">${esc(R.players[oid][1]+" "+R.players[oid][0])}</button>`:esc("?");
   const eo=m=>{const r=m.oid?eloP(R,m.oid):null;return r&&typeof r.e==="number"?r.e:null};
-  const tabs=[["res","Résumé"],["mat","Matchs ("+MT.length+")"],["cmp","Comparaison"],["sta","Stats détaillées"]];
+  const tabs=[["res","Résumé"],["mat","Parcours"],["cmp","Comparaison"],["sta","Stats détaillées"]];
   const nW=MT.filter(m=>m.w).length,nL=MT.length-nW;
   let panel="";
   if(EPS.tab==="res"){
@@ -2660,15 +2669,22 @@ function epFiche(ci,ei,gi,pid){
     const par=[a.pp?`Poule : ${a.pp.pl}${a.pp.pl===1?"er":"e"} sur ${a.pp.sz}`:"",cr?`Après les poules : ${cr.pl}${cr.pl===1?"er":"e"} sur ${G.cp.length}`:"",fp?`Place finale : ${rkLbl(fp)}`:""].filter(Boolean);
     const gain=fp&&cr?cr.pl-fp:null;
     const mt=m=>`${fe(m.oid)} ${eo(m)!==null?`<small>(Elo ${Math.round(eo(m))})</small>`:""} · ${esc(m.sc)} · <small>${esc(m.g)}</small>`;
-    panel=vd+(par.length?`<div class="sec" style="margin-top:0">Son parcours</div><div class="mini" style="margin:0 0 6px;font-size:14px">${par.map(esc).join(" → ")}${gain!==null&&gain!==0?` <b style="color:var(--${gain>0?"good":"bad"})">(${gain>0?"+":""}${gain} place${Math.abs(gain)>1?"s":""})</b>`:""}</div>`:"")
+    panel=vd+(par.length?`<div class="sec" style="margin-top:0">Étapes</div><div class="mini" style="margin:0 0 6px;font-size:14px">${par.map(esc).join(" → ")}${gain!==null&&gain!==0?` <b style="color:var(--${gain>0?"good":"bad"})">(${gain>0?"+":""}${gain} place${Math.abs(gain)>1?"s":""})</b>`:""}</div>`:"")
       +(best||worst?`<div class="sec">Moments clés</div><div class="list">${best?`<div class="li"><div><b>Plus belle victoire</b><br>${mt(best)}</div></div>`:""}${worst?`<div class="li"><div><b>Défaite la plus sévère</b><br>${mt(worst)}</div></div>`:""}</div>`:"")
-      +`<div class="mini" style="margin-top:8px">${nW} victoire${nW>1?"s":""}, ${nL} défaite${nL>1?"s":""}${a.ptd+a.ttd>0||a.ptr+a.ttr>0?` · ${a.ptd+a.ttd} touches données, ${a.ptr+a.ttr} reçues`:""}. Détail dans l'onglet Matchs.</div>`;
+      +`<div class="mini" style="margin-top:8px">${nW} victoire${nW>1?"s":""}, ${nL} défaite${nL>1?"s":""}${a.ptd+a.ttd>0||a.ptr+a.ttr>0?` · ${a.ptd+a.ttd} touches données, ${a.ptr+a.ttr} reçues`:""}. Détail dans l'onglet Parcours.</div>`;
   }else if(EPS.tab==="mat"){
     const FL=[["all","Tous"],["p","Poules"],["t","Tableau"],["w","Victoires"],["l","Défaites"]];
     const keep=m=>EPS.f==="all"||(EPS.f==="p"&&m.k==="p")||(EPS.f==="t"&&m.k==="t")||(EPS.f==="w"&&m.w)||(EPS.f==="l"&&!m.w);
-    const L=MT.filter(keep);let last="";
-    const rows=L.map(m=>{const h=m.g!==last&&(m.k==="p"||m.k==="t")?`<div class="sec" style="margin-top:12px">${esc(m.k==="p"?m.g:m.g)}</div>`:"";last=m.g;
-      return h+`<div class="li"><div>${m.oid&&R.players[m.oid]?fe(m.oid)+" "+gradeTag(eloP(R,m.oid)):esc(m.name||"?")}</div>${RBD(m.w,esc(m.sc))}</div>`}).join("");
+    const row=(lab,m)=>`<div class="cm"><span class="rl">${esc(lab)}</span><span class="nmx">${m.oid&&R.players[m.oid]?fe(m.oid)+" "+gradeTag(eloP(R,m.oid)):esc(m.name||"?")}</span><span class="sc ${m.w?"w":"l"}">${esc(m.sc)}</span></div>`;
+    const ms=(t,v)=>`<div class="cm ms"><span class="rl">${esc(t)}</span><span class="nmx"></span><span class="sc">${esc(v)}</span></div>`;
+    const showMs=EPS.f==="all"||EPS.f==="p"||EPS.f==="t";
+    const P=MT.filter(m=>m.k==="p"&&keep(m)),T2=MT.filter(m=>m.k==="t"&&keep(m));
+    let rows="";
+    rows+=P.map(m=>row(m.g,m)).join("");
+    if(showMs&&(cr||a.pp)&&EPS.f!=="t")rows+=ms("Après les poules",cr?`${cr.pl}${cr.pl===1?"er":"e"} / ${G.cp.length}`:`${a.pp.pl}${a.pp.pl===1?"er":"e"} / ${a.pp.sz}`);
+    else if(showMs&&(cr||a.pp)&&EPS.f==="t")rows+=ms("Classement à l'issue des poules",cr?`${cr.pl}${cr.pl===1?"er":"e"} / ${G.cp.length}`:"");
+    rows+=T2.map(m=>row(m.g,m)).join("");
+    if(showMs&&fp&&EPS.f!=="p")rows+=ms("Place finale",`${rkLbl(fp)}${G.n?" / "+G.n:""}`);
     panel=`<div class="chips" style="margin:0 0 4px">${FL.map(([k,l])=>chip(l,EPS.f===k,`data-epf="${k}"`)).join("")}</div><div class="mini" style="margin:0 0 6px">${nW} V, ${nL} D · ${a.ptd+a.ttd} touches données, ${a.ptr+a.ttr} reçues</div>${rows||'<div class="empty">Aucun match pour ce filtre.</div>'}`;
   }else if(EPS.tab==="cmp"){
     panel=CP.none?`<div class="mini">Pas d'autre compétition de la saison avec résultats pour ce tireur : comparaison impossible.</div>`:`<div class="mini" style="margin:0 0 6px">Cette compétition comparée à ses ${CP.n} autre${CP.n>1?"s":""} épreuve${CP.n>1?"s":""} de la saison.</div><div class="list">${CP.tb}</div><div class="sec">Ses autres compétitions</div><div class="list">${CP.lst}</div>`;
