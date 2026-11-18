@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1794999113";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795001762";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2572,50 +2572,49 @@ function poolLim(R,e){const pv={};let tm=0;
   const pm=Object.keys(pv).sort((a,b)=>pv[b]-pv[a])[0];if(pm)return +pm;
   if(tm===8)return 4;if(tm===10||tm===15)return 5;
   const c0=pcat((e.c||"").split(", ")[0]);return c0==="M9"||c0==="M11"?4:5}
-function epMatches(ci,ei,gi,R,id){
-  const LIM=poolLim(R,D.comps[ci].eps[ei]);
-  const lk=(oid,h)=>R.players[oid]?`<button type="button" class="nl" data-fe="${ci}:${ei}:${gi}:${oid}">${h}</button>`:h;
-  const who=oid=>R.players[oid]?pfl(R,oid)+esc(R.players[oid][1]+" "+R.players[oid][0]):"?";
-  let ph="",th="";const tn=x=>{const q=String(x||"").match(/(\d+)/);return q?+q[1]:null};
+function epMatchList(R,id,LIM){
+  const out=[],tn=x=>{const q=String(x||"").match(/(\d+)/);return q?+q[1]:null};
   (R.poules||[]).forEach(po=>{const rows=po.rows||[],ix=rows.findIndex(x=>String(x.id)===String(id));if(ix<0)return;
-    const it=(rows[ix].m||[]).map((cell,j)=>{if(j===ix||cell===""||cell==null||!rows[j])return"";const w=/^V/i.test(cell),oid=rows[j].id;
+    (rows[ix].m||[]).forEach((cell,j)=>{if(j===ix||cell===""||cell==null||!rows[j])return;const w=/^V/i.test(cell),oid=rows[j].id;
       /* case (moi, adversaire) = V4 ou D2 ; la case miroir (adversaire, moi) donne l'autre score : V4 contre D2 = 4-2 */
       const mir=(rows[j].m||[])[ix],sn=x=>{const q=String(x||"").match(/^[VD](\d+)$/);return q?+q[1]:null};
       let mine=sn(cell),opp=sn(mir);
-      if(w){if(mine===null)mine=LIM;if(opp===null&&/^D/i.test(String(mir||"")))opp=null}else{if(opp===null&&/^V/i.test(String(mir||"")))opp=LIM}
-      const txt=mine!==null&&opp!==null?mine+"–"+opp:String(cell);
-      return `<div class="li"><div>${lk(oid,who(oid))} ${gradeTag(eloP(R,oid))}</div>${RBD(w,esc(txt))}</div>`}).join("");
-    if(it)ph+=`<div class="sec">Poule ${esc(String(po.poule))}${R.classement_poules&&0?"":""}</div><div class="list">${it}</div>`});
+      if(w){if(mine===null)mine=LIM}else{if(opp===null&&/^V/i.test(String(mir||"")))opp=LIM}
+      out.push({k:"p",g:"Poule "+po.poule,oid,name:"",w,mine,opp,sc:mine!==null&&opp!==null?mine+"–"+opp:String(cell)})})});
   const T=[];
   (R.tableau||[]).forEach(tr=>(tr.matches||[]).forEach(m=>{if(!m.a||!m.b)return;const ia=String(m.a.id),ib=String(m.b.id),me=ia===String(id)?m.a:ib===String(id)?m.b:null;if(!me)return;
-    const op=me===m.a?m.b:m.a,w=/^V/i.test(me.sc||""),s1=tn(me.sc),s2=tn(op.sc);T.push({r:m.r,tp:tr.place,op,w,sc:s1!==null&&s2!==null?s1+"–"+s2:(w?"V":"D")})}));
+    const op=me===m.a?m.b:m.a,w=/^V/i.test(me.sc||""),s1=tn(me.sc),s2=tn(op.sc);
+    T.push({k:"t",r:m.r,g:(RLAB[m.r]||"Tour "+m.r)+(tr.place&&+tr.place>1?" · places "+tr.place+"+":""),oid:op.id,name:op.name||"?",w,mine:s1,opp:s2,sc:s1!==null&&s2!==null?s1+"–"+s2:(w?"V":"D")})}));
   T.sort((x,y)=>y.r-x.r);
-  th=T.length?`<div class="sec">Tableau (${T.filter(x=>x.w).length} V, ${T.filter(x=>!x.w).length} D)</div><div class="list">`+T.map(x=>`<div class="li"><div><b>${esc(RLAB[x.r]||"Tour "+x.r)}</b>${x.tp&&+x.tp>1?` <small>· tableau des places ${esc(x.tp)} et suivantes</small>`:""}<br>${x.op.id&&R.players[x.op.id]?lk(x.op.id,who(x.op.id))+" "+gradeTag(eloP(R,x.op.id)):esc(x.op.name||"?")}</div>${RBD(x.w,esc(x.sc))}</div>`).join("")+`</div>`:"";
-  return (ph||th)?`<div class="sec" style="margin-top:14px">Tous ses matchs</div>${ph}${th}`:"";
+  return out.concat(T);
 }
 function epCompare(ci,ei,gi,R,G,id,a,fp,cr){
   const pp=R.players[id],nk=nkey(pp[0],pp[1]);
   const met=(a,fp,n,cr)=>{a=a||{pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0};const td=a.ptd+a.ttd,tr=a.ptr+a.ttr,tm=a.tw+a.tl;
     return {place:fp&&n>1?(n-fp)/(n-1):null,pool:a.pm>=3?a.pw/a.pm:null,touch:td+tr>0?td/(td+tr):null,tab:tm>=1?a.tw/tm:null,gain:fp&&cr?cr.pl-fp:null}};
-  const me=met(a,fp,G.n,cr),O=[];const sigE=(c,e,f,n)=>[c.d,c.v,epLabel(e),f,n].join('|'),seen=new Set([sigE(D.comps[ci],D.comps[ci].eps[ei],fp,G.n)]);
+  const sigE=(c,e,f,n)=>[c.d,c.v,epLabel(e),f,n].join('|');
+  const me=met(a,fp,G.n,cr),O=[],seen=new Set([sigE(D.comps[ci],D.comps[ci].eps[ei],fp,G.n)]);
   D.comps.forEach((c2,ci2)=>{if(!inSeason(c2))return;c2.eps.forEach((e2,ei2)=>{if(ci2===ci&&ei2===ei)return;const X2=resOf(c2,e2);if(!X2||!X2.res)return;
     X2.res.forEach((r2,g2)=>{const f=Object.keys(r2.players||{}).find(i=>nkey(r2.players[i][0],r2.players[i][1])===nk);if(!f)return;
       const G2=epAgg(r2),a2=G2.A[f],fp2=G2.fin[f];if(!a2&&fp2===undefined)return;
       const sg2=sigE(c2,e2,fp2,G2.n);if(seen.has(sg2))return;seen.add(sg2);
       O.push({c:c2,e:e2,ci:ci2,ei:ei2,g:g2,id:f,fp:fp2,n:G2.n,m:met(a2,fp2,G2.n,G2.cp.find(x=>String(x.id)===String(f)))})})})});
-  if(!O.length)return `<div class="sec" style="margin-top:14px">Par rapport à ses autres compétitions</div><div class="mini">Pas d'autre compétition de la saison avec résultats pour ce tireur : comparaison impossible.</div>`;
+  if(!O.length)return {none:true};
   const avg=k=>{const v=O.map(x=>x.m[k]).filter(x=>x!==null&&x!==undefined);return v.length?v.reduce((p,q)=>p+q,0)/v.length:null};
   const pc=v=>Math.round(v*100)+" %",sg=v=>(v>0?"+":"")+Math.round(v);
-  const ROWS=[["place","Place (mieux que … des tireurs)",pc,true],["pool","Victoires en poule",pc,true],["touch","Touches marquées",pc,true],["tab","Victoires en tableau",pc,true],["gain","Places gagnées après les poules",v=>(v>0?"+":"")+(Math.round(v*10)/10),false]];
+  const ROWS=[["place","Place (mieux que … des tireurs)",pc],["pool","Victoires en poule",pc],["touch","Touches marquées",pc],["tab","Victoires en tableau",pc],["gain","Places gagnées après les poules",v=>(v>0?"+":"")+(Math.round(v*10)/10)]];
   const dl=(k,v,u)=>{if(v===null||u===null)return"";const d=k==="gain"?v-u:(v-u)*100;const col=Math.abs(d)<(k==="gain"?1:3)?"":d>0?"var(--good)":"var(--bad)";return `<b style="${col?"color:"+col:""}">${d>0?"▲ ":d<0?"▼ ":""}${k==="gain"?(d>0?"+":"")+(Math.round(d*10)/10):sg(d)+" pts"}</b>`};
   const tb=ROWS.map(([k,l,f])=>{const u=avg(k),v=me[k];if(v===null&&u===null)return"";
     return `<div class="li"><div>${l}</div><div style="text-align:right;display:grid;gap:2px"><span><b>${v===null?"–":f(v)}</b> ici</span><span class="mini" style="margin:0">${u===null?"–":f(u)} d'habitude ${dl(k,v,u)}</span></div></div>`}).join("");
-  const key=["place","pool","tab"].map(k=>me[k]!==null&&avg(k)!==null?me[k]-avg(k):null).filter(x=>x!==null);
-  const sc=key.length?key.reduce((p,q)=>p+q,0)/key.length:null;
-  const ver=sc===null?"":sc>=0.08?["Meilleure compétition que d'habitude","good"]:sc<=-0.08?["En dessous de son niveau habituel","bad"]:["Dans ses standards","mute"];
+  const LBL={place:"sa place finale",pool:"ses victoires en poule",tab:"ses victoires en tableau"};
+  const dd=["place","pool","tab"].map(k=>me[k]!==null&&avg(k)!==null?[k,me[k]-avg(k)]:null).filter(Boolean);
+  const sc=dd.length?dd.reduce((p,q)=>p+q[1],0)/dd.length:null;
+  const ver=sc===null?null:sc>=0.08?["Meilleure compétition que d'habitude","good"]:sc<=-0.08?["En dessous de son niveau habituel","bad"]:["Dans ses standards","mute"];
+  let why="";if(dd.length){const top=dd.slice().sort((x,y)=>Math.abs(y[1])-Math.abs(x[1]))[0];why=`Écart le plus net : ${LBL[top[0]]} (${top[1]>0?"+":""}${Math.round(top[1]*100)} pts par rapport à d'habitude).`}
   const lst=O.slice().sort((x,y)=>y.c.d.localeCompare(x.c.d)).slice(0,8).map(x=>`<div class="li"><div><b>${esc(fd(x.c.d))}</b> · ${clk(x.c)}<br><small>${esc(epLabel(x.e))}</small></div><span style="display:flex;align-items:center;gap:6px">${x.fp?`<span class="rk">${esc(rkLbl(x.fp))}${x.n?` / ${x.n}`:""}</span>`:""}<button type="button" class="rs" data-fe="${x.ci}:${x.ei}:${x.g}:${x.id}">Sa fiche</button></span></div>`).join("");
-  return `<div class="sec" style="margin-top:14px">Par rapport à ses autres compétitions</div>${ver?`<div class="mini" style="margin:0 0 6px"><b style="color:var(--${ver[1]==="mute"?"muted":ver[1]})">${ver[0]}</b> · comparé à ${O.length} autre${O.length>1?"s":""} épreuve${O.length>1?"s":""} de la saison${O.length<3?" (peu de recul)":""}.</div>`:""}<div class="list">${tb}</div><div class="sec" style="margin-top:10px">Ses autres compétitions</div><div class="list">${lst}</div>`;
+  return {ver,why,tb,lst,n:O.length};
 }
+const EPS={key:"",tab:"res",f:"all",args:null};
 function cRow(label,v,P,hi,fmt,desc){
   if(v===null||v===undefined)return"";
   P=P.filter(x=>x!==null&&x!==undefined);
@@ -2648,8 +2647,33 @@ function epFiche(ci,ei,gi,pid){
   const tiles=`<div class="tiles"><div class="hi"><b>${fp?rkLbl(fp):"–"}</b><small>${fp?"sur "+G.n:"place finale"}</small></div><div><b>${a.pm?a.pw+"/"+a.pm:"–"}</b><small>victoires en poule</small></div><div><b>${a.ptd+a.ttd+a.ptr+a.ttr>0?Math.round((a.ptd+a.ttd)/(a.ptd+a.ttd+a.ptr+a.ttr)*100)+" %":"–"}</b><small>touches marquées</small></div></div>`;
   const line=[a.pp?`Poule ${a.pp.no} : ${a.pp.pl}${a.pp.pl===1?"er":"e"} sur ${a.pp.sz}`:"",cr?`Après les poules : ${cr.pl}${cr.pl===1?"er":"e"} sur ${G.cp.length}`:"",fp&&cr?`Place gagnée ou perdue : ${cr.pl-fp>0?"+":""}${cr.pl-fp}`:""].filter(Boolean).join(" · ");
   const ms=a.ms.slice().sort((x,y)=>y.r-x.r).map(m=>`<div class="li"><div><b>${esc(RLAB[m.r]||"Tour "+m.r)}</b>${m.tp&&+m.tp>1?` <small>· tableau des places ${esc(m.tp)} et suivantes</small>`:""}<br><small>contre ${esc(m.on)}</small></div><span class="rk ${m.s1>m.s2?"g3":""}" style="${m.s1>m.s2?"background:var(--good-soft);color:var(--good)":"background:var(--bad-soft);color:var(--bad)"}">${m.s1>m.s2?"V":"D"} ${m.s1}-${m.s2}</span></div>`).join("");
-  sheet(head,`<div class="stats"><div class="btns">${ti!==undefined?`<button type="button" class="btn sm" data-t="${ti}">Fiche tireur</button>`:""}<button type="button" class="btn sm" data-comp="${ci}">Fiche compétition</button><button type="button" class="btn sm" data-res="${ci}:${ei}::${gi}">Résultats</button></div>${tiles}${line?`<div class="mini" style="margin:0 0 8px">${esc(line)}</div>`:""}${epCompare(ci,ei,gi,R,G,id,a,fp,cr)}${epMatches(ci,ei,gi,R,id)}
-  ${a.pm?`<div class="sec">Poules (comparé aux autres tireurs de l'épreuve)</div>`:""}
+  const key=ci+":"+ei+":"+gi+":"+id;if(EPS.key!==key){EPS.key=key;EPS.tab="res";EPS.f="all"}EPS.args=[ci,ei,gi,id];
+  const MT=epMatchList(R,id,poolLim(R,e)),CP=epCompare(ci,ei,gi,R,G,id,a,fp,cr);
+  const fe=oid=>R.players[oid]?`${pfl(R,oid)}<button type="button" class="nl" data-fe="${ci}:${ei}:${gi}:${oid}">${esc(R.players[oid][1]+" "+R.players[oid][0])}</button>`:esc("?");
+  const eo=m=>{const r=m.oid?eloP(R,m.oid):null;return r&&typeof r.e==="number"?r.e:null};
+  const tabs=[["res","Résumé"],["mat","Matchs ("+MT.length+")"],["cmp","Comparaison"],["sta","Stats détaillées"]];
+  const nW=MT.filter(m=>m.w).length,nL=MT.length-nW;
+  let panel="";
+  if(EPS.tab==="res"){
+    const best=MT.filter(m=>m.w&&eo(m)!==null).sort((x,y)=>eo(y)-eo(x))[0],worst=MT.filter(m=>!m.w&&eo(m)!==null).sort((x,y)=>eo(x)-eo(y))[0];
+    const vd=CP.ver?`<div class="vd" style="padding:10px 12px;border-radius:12px;margin:0 0 10px;background:var(--${CP.ver[1]==="mute"?"fill":CP.ver[1]+"-soft"})"><b style="color:${CP.ver[1]==="mute"?"inherit":"var(--"+CP.ver[1]+")"}">${CP.ver[0]}</b><div class="mini" style="margin:3px 0 0">${esc(CP.why)} Comparé à ${CP.n} autre${CP.n>1?"s":""} épreuve${CP.n>1?"s":""} de la saison${CP.n<3?" (peu de recul)":""}.</div></div>`:`<div class="mini" style="margin:0 0 10px">Pas d'autre compétition de la saison avec résultats : pas de comparaison possible.</div>`;
+    const par=[a.pp?`Poule : ${a.pp.pl}${a.pp.pl===1?"er":"e"} sur ${a.pp.sz}`:"",cr?`Après les poules : ${cr.pl}${cr.pl===1?"er":"e"} sur ${G.cp.length}`:"",fp?`Place finale : ${rkLbl(fp)}`:""].filter(Boolean);
+    const gain=fp&&cr?cr.pl-fp:null;
+    const mt=m=>`${fe(m.oid)} ${eo(m)!==null?`<small>(Elo ${Math.round(eo(m))})</small>`:""} · ${esc(m.sc)} · <small>${esc(m.g)}</small>`;
+    panel=vd+(par.length?`<div class="sec" style="margin-top:0">Son parcours</div><div class="mini" style="margin:0 0 6px;font-size:14px">${par.map(esc).join(" → ")}${gain!==null&&gain!==0?` <b style="color:var(--${gain>0?"good":"bad"})">(${gain>0?"+":""}${gain} place${Math.abs(gain)>1?"s":""})</b>`:""}</div>`:"")
+      +(best||worst?`<div class="sec">Moments clés</div><div class="list">${best?`<div class="li"><div><b>Plus belle victoire</b><br>${mt(best)}</div></div>`:""}${worst?`<div class="li"><div><b>Défaite la plus sévère</b><br>${mt(worst)}</div></div>`:""}</div>`:"")
+      +`<div class="mini" style="margin-top:8px">${nW} victoire${nW>1?"s":""}, ${nL} défaite${nL>1?"s":""}${a.ptd+a.ttd>0||a.ptr+a.ttr>0?` · ${a.ptd+a.ttd} touches données, ${a.ptr+a.ttr} reçues`:""}. Détail dans l'onglet Matchs.</div>`;
+  }else if(EPS.tab==="mat"){
+    const FL=[["all","Tous"],["p","Poules"],["t","Tableau"],["w","Victoires"],["l","Défaites"]];
+    const keep=m=>EPS.f==="all"||(EPS.f==="p"&&m.k==="p")||(EPS.f==="t"&&m.k==="t")||(EPS.f==="w"&&m.w)||(EPS.f==="l"&&!m.w);
+    const L=MT.filter(keep);let last="";
+    const rows=L.map(m=>{const h=m.g!==last&&(m.k==="p"||m.k==="t")?`<div class="sec" style="margin-top:12px">${esc(m.k==="p"?m.g:m.g)}</div>`:"";last=m.g;
+      return h+`<div class="li"><div>${m.oid&&R.players[m.oid]?fe(m.oid)+" "+gradeTag(eloP(R,m.oid)):esc(m.name||"?")}</div>${RBD(m.w,esc(m.sc))}</div>`}).join("");
+    panel=`<div class="chips" style="margin:0 0 4px">${FL.map(([k,l])=>chip(l,EPS.f===k,`data-epf="${k}"`)).join("")}</div><div class="mini" style="margin:0 0 6px">${nW} V, ${nL} D · ${a.ptd+a.ttd} touches données, ${a.ptr+a.ttr} reçues</div>${rows||'<div class="empty">Aucun match pour ce filtre.</div>'}`;
+  }else if(EPS.tab==="cmp"){
+    panel=CP.none?`<div class="mini">Pas d'autre compétition de la saison avec résultats pour ce tireur : comparaison impossible.</div>`:`<div class="mini" style="margin:0 0 6px">Cette compétition comparée à ses ${CP.n} autre${CP.n>1?"s":""} épreuve${CP.n>1?"s":""} de la saison.</div><div class="list">${CP.tb}</div><div class="sec">Ses autres compétitions</div><div class="list">${CP.lst}</div>`;
+  }else{
+    panel=`${a.pm?`<div class="sec">Poules (comparé aux autres tireurs de l'épreuve)</div>`:""}
   ${cRow("Victoires en poule",rate(a.pw,a.pm,3),F(x=>rate(x.pw,x.pm,3)),1,pct)}
   ${cRow("Touches marquées sur 100 touches jouées (poules)",a.ptd+a.ptr>=10?a.ptd/(a.ptd+a.ptr):null,F(x=>x.ptd+x.ptr>=10?x.ptd/(x.ptd+x.ptr):null),1,v=>String(Math.round(v*100)),"Sur 100 touches jouées au total (celles qu’il met + celles qu’il reçoit), combien il en met. Au-dessus de 50, il marque plus de touches qu’il n’en reçoit.")}
   ${cRow("Touches données par match",a.pm>=3?a.ptd/a.pm:null,F(x=>x.pm>=3?x.ptd/x.pm:null),1,d1)}
@@ -2663,7 +2687,9 @@ function epFiche(ci,ei,gi,pid){
   ${cRow("Touches données par match",(a.ptd+a.ttd)/all,F(x=>x.pm+x.tw+x.tl>=3?(x.ptd+x.ttd)/(x.pm+x.tw+x.tl):null),1,d1)}
   ${cRow("Touches reçues par match",(a.ptr+a.ttr)/all,F(x=>x.pm+x.tw+x.tl>=3?(x.ptr+x.ttr)/(x.pm+x.tw+x.tl):null),0,d1)}`:""}
   ${a.pm?`<div class="sec">Poules</div><div class="mini">${a.pw} victoire${a.pw>1?"s":""} sur ${a.pm} match${a.pm>1?"s":""} · ${a.ptd} touches données, ${a.ptr} reçues</div>`:""}
-  ${tm?`<div class="mini" style="margin-top:8px">Tableau : ${a.tw} V, ${a.tl} D · ${a.ttd} touches données, ${a.ttr} reçues.</div>`:""}</div>`);
+  ${tm?`<div class="mini" style="margin-top:8px">Tableau : ${a.tw} V, ${a.tl} D · ${a.ttd} touches données, ${a.ttr} reçues.</div>`:""}`;
+  }
+  sheet(head,`<div class="stats"><div class="btns">${ti!==undefined?`<button type="button" class="btn sm" data-t="${ti}">Fiche tireur</button>`:""}<button type="button" class="btn sm" data-comp="${ci}">Fiche compétition</button><button type="button" class="btn sm" data-res="${ci}:${ei}::${gi}">Résultats</button></div>${tiles}<div class="chips" style="margin:6px 0 10px">${tabs.map(([k,l])=>chip(l,EPS.tab===k,`data-ept="${k}"`)).join("")}</div>${panel}</div>`);
 }
 
 const TH=a=>`<div class="tbh">${a.map(x=>`<span>${x}</span>`).join("")}</div>`;
@@ -3078,6 +3104,7 @@ document.addEventListener("click",ev=>{
   if(!b){const cg=ev.target.closest("[data-grp]");if(cg&&!ev.target.closest("a")){grpSheet(Number(cg.dataset.grp));return}const cd=ev.target.closest("[data-comp]");if(cd&&!ev.target.closest("a"))compSheet(Number(cd.dataset.comp));return}
   if(b.dataset.close){closeSheet();return}
   if(b.dataset.fe!==undefined){const q=b.dataset.fe.split(":");epFiche(+q[0],+q[1],+q[2],q.slice(3).join(":"));return}
+  if(b.dataset.ept!==undefined||b.dataset.epf!==undefined){if(b.dataset.ept!==undefined)EPS.tab=b.dataset.ept;if(b.dataset.epf!==undefined)EPS.f=b.dataset.epf;if(EPS.args)epFiche(...EPS.args);return}
   if(b.dataset.navback){const p=NAV.pop();if(p){NAVGO=true;try{p.go()}finally{NAVGO=false}}return}
   if(b.dataset.comp!==undefined&&!b.dataset.f){compSheet(Number(b.dataset.comp));return}
   if(xclick(b))return;
