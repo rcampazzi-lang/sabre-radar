@@ -19,6 +19,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Diagnostic accès Greg
+        continue-on-error: true
+        run: |
+          U='https://www.escrime-info.com/gregxml/Greg/BD/services/service.php/derniersResultats?jours=5'
+          curl -s -m 30 -o /dev/null -w 'curl simple: %{http_code}\n' "$U" || echo 'curl simple: échec réseau'
+          curl -s -m 30 -A 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1' -o /dev/null -w 'curl navigateur: %{http_code}\n' "$U" || echo 'curl navigateur: échec réseau'
+          curl -s -m 30 -D - -o /dev/null "$U" | head -n 12 || true
       - name: Interroger Greg
         env:
           CLES: ${{ inputs.cles }}
