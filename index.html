@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795151224";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795200661";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1061,13 +1061,14 @@ function renderHero(){
 }
 
 let LIVEBK=false;
-const liveGroups=()=>groupComps(D.comps.filter(c=>c.d<=TODAY&&TODAY<=c.f&&!IGN[c.k]&&inSeason(c))).sort((a,b)=>a.d.localeCompare(b.d));
+const LVD=d=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()-1);return iso(x)};
+const liveGroups=()=>groupComps(D.comps.filter(c=>LVD(c.d)<=TODAY&&TODAY<=c.f&&!IGN[c.k]&&inSeason(c))).sort((a,b)=>a.d.localeCompare(b.d));
 function renderLive(){
   const h=$("#live");if(!h)return;
   const G=liveGroups();
   if(!G.length||S.q.trim()){h.innerHTML="";return}
   const n=G.reduce((a,g)=>a+g.cs.reduce((m,c)=>m+c.eps.length,0),0);
-  h.innerHTML=`<button class="lvban" type="button" data-f="live"><i class="ldot"></i><span><b>En direct</b> · ${esc(G.map(g=>g.cs[0].v).join(", "))}<small>${n} épreuve${n>1?"s":""} aujourd’hui · Elo et niveau des poules</small></span><i class="chv"></i></button>`;
+  h.innerHTML=`<button class="lvban" type="button" data-f="live"><i class="ldot"></i><span><b>En direct</b> · ${esc(G.map(g=>g.cs[0].v).join(", "))}<small>${n} épreuve${n>1?"s":""} ${G.every(g=>g.d>TODAY)?"demain":"aujourd’hui"} · Elo et niveau des poules</small></span><i class="chv"></i></button>`;
 }
 function epState(X){
   if(!X||!X.res||!X.res.length)return ["Inscriptions","w"];
@@ -1080,7 +1081,7 @@ function epState(X){
 function liveSheet(){
   LIVEBK=false;
   const G=liveGroups();
-  if(!G.length){sheet("En direct",'<div class="empty">Aucune compétition aujourd’hui.</div>');return}
+  if(!G.length){sheet("En direct",'<div class="empty">Aucune compétition aujourd’hui ni demain.</div>');return}
   let R2={};try{R2=ratingAll()}catch(e){}
   const body=G.map(g=>{
     const sec=g.cs.map(c=>{
@@ -1112,7 +1113,7 @@ function renderComps(){
     if(q&&!(c.v+" "+c.n+" "+(c.nn||"")+" "+(c.dt||"")+" "+(c.rg||"")+" "+(c.gr||"")).toLowerCase().includes(q))return false;
     return compMatch(c);
   });
-  const GR0=groupComps(L).filter(g=>g.cs.some(c=>c.eps.some(epMatch))&&(S.st!=="cours"||(g.d<=TODAY&&TODAY<=g.f)));L=GR0.flatMap(g=>g.cs);
+  const GR0=groupComps(L).filter(g=>g.cs.some(c=>c.eps.some(epMatch))&&(S.st!=="cours"||(LVD(g.d)<=TODAY&&TODAY<=g.f)));L=GR0.flatMap(g=>g.cs);
   const ORD=S.ord||(S.st==="passe"?"desc":"asc");L.sort((a,b)=>ORD==="desc"?b.d.localeCompare(a.d):a.d.localeCompare(b.d));
   const nE=L.reduce((n,c)=>n+c.eps.length,0);
   const _g=GR0.length;$("#c-count").textContent=L.length+" compétition"+(L.length>1?"s":"")+(_g<L.length?" · "+_g+" tournois/lieux":"")+" · "+nE+" épreuve"+(nE>1?"s":"");
