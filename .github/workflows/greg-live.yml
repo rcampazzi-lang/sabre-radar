@@ -1,0 +1,50 @@
+name: Greg en direct
+# Lancé depuis le bouton d'actualisation de la fiche « En direct » (appli iPhone) : interroge Greg (inscrits et résultats)
+# uniquement pour les compétitions données, met à jour resultats.json, candidats.json et greg_statut.json.
+on:
+  workflow_dispatch:
+    inputs:
+      cles:
+        description: "Clés de compétition séparées par des virgules"
+        required: true
+        type: string
+concurrency:
+  group: greg-live
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  greg:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Interroger Greg
+        env:
+          CLES: ${{ inputs.cles }}
+        run: |
+          set -e
+          echo "$CLES" | grep -Eq '^[A-Za-z0-9=,_+/-]+$' || { echo "clés invalides"; exit 1; }
+          mkdir -p work/gcache
+          cp greg/*.py work/
+          cp index.html work/ffe.html
+          cp resultats.json candidats.json work/
+          if [ -f greg_statut.json ]; then cp greg_statut.json work/; fi
+          cd work
+          cp resultats.json resultats_orig.json
+          GREG_FRESH=1 python3 greg_match_live.py
+          python3 greg_run.py --comp="$CLES"
+          python3 merge_live.py resultats_orig.json resultats.json "$CLES" resultats_m.json
+          mv resultats_m.json resultats.json
+          python3 greg_statut.py "$CLES" ffe.html greg_match.json resultats.json greg_statut.json
+          cp resultats.json candidats.json greg_statut.json ..
+      - name: Publier
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add resultats.json candidats.json greg_statut.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Résultats en direct du $(date -u +'%d/%m/%Y %H:%M') UTC"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
