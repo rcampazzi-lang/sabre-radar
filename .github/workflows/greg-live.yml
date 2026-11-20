@@ -19,13 +19,6 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Diagnostic accès Greg
-        continue-on-error: true
-        run: |
-          U='https://www.escrime-info.com/gregxml/Greg/BD/services/service.php/derniersResultats?jours=5'
-          curl -s -m 30 -o /dev/null -w 'curl simple: %{http_code}\n' "$U" || echo 'curl simple: échec réseau'
-          curl -s -m 30 -A 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1' -o /dev/null -w 'curl navigateur: %{http_code}\n' "$U" || echo 'curl navigateur: échec réseau'
-          curl -s -m 30 -D - -o /dev/null "$U" | head -n 12 || true
       - name: Interroger Greg
         env:
           CLES: ${{ inputs.cles }}
@@ -38,6 +31,11 @@ jobs:
           cp resultats.json candidats.json work/
           if [ -f greg_statut.json ]; then cp greg_statut.json work/; fi
           cd work
+          # escrime-info.com (Cloudflare) refuse l'agent « curl » nu depuis GitHub : agent de navigateur (essai autorisé par l'utilisateur)
+          mkdir -p bin
+          printf '#!/bin/sh\nexec /usr/bin/curl -A "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1" "$@"\n' > bin/curl
+          chmod +x bin/curl
+          export PATH="$PWD/bin:$PATH"
           cp resultats.json resultats_orig.json
           GREG_FRESH=1 python3 greg_match_live.py
           python3 greg_run.py --comp="$CLES"
