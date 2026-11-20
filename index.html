@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795201323";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795201602";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -1101,7 +1101,8 @@ function liveSheet(){
           info=`${e.n||0} inscrit${(e.n||0)>1?"s":""}`+(v.length>=4?` · Elo moyen ${Math.round(v.reduce((a,b)=>a+b,0)/v.length)} · meilleur ${Math.max(...v)}`:"");
         }
         const fdt=s=>s?s.slice(8,10)+"/"+s.slice(5,7)+" "+s.slice(11,16):"";
-        info+=(R?` · Greg : à jour ${fdt(X.t)}`:c.d>TODAY?" · Greg : pas encore de résultats (début demain)":` · Greg : aucun résultat trouvé${RBUILT?" (dernière vérification "+fdt(RBUILT)+")":""}`);
+        const gs=GST[EK(c,e)],gt=gs&&gs.t?" (vérifié "+fdt(gs.t)+")":"";
+        info+=R?` · Greg : à jour ${fdt(X.t)}`:gs?` · Greg : ${({vide:"rien publié pour l’instant",valider:"rapprochement à valider",aucun:"épreuve introuvable",futur:"pas encore commencé",ok:"à jour"})[gs.st]||gs.st}${gt}`:c.d>TODAY?" · Greg : pas encore de résultats (début demain)":` · Greg : pas encore vérifié${RBUILT?" (données du "+fdt(RBUILT)+")":""}`;
         return `<button class="lvc" type="button" data-lres="${ci}:${ei}"><div class="lvh"><b>${esc(epLabel(e))}</b><span class="lvs ${cl}">${st}</span></div><div class="lvn">${esc(info)}</div></button>`}).join("");
     }).join("");
     return sec}).join("");
@@ -1847,7 +1848,7 @@ function egBindZones(){
 function egPaste(id){
   const show=why=>{const ta=document.querySelector('textarea[data-egz="'+id+'"]');if(ta){ta.hidden=false;const st=ta.closest(".zr")||ta.previousElementSibling;const sm=document.querySelector('[data-egpaste="'+id+'"]').closest(".zr").querySelector("small");if(sm){sm.textContent=why;sm.style.color="var(--accent)"}ta.focus()}};
   if(navigator.clipboard&&navigator.clipboard.readText){let done=false;const to=setTimeout(()=>{if(!done)show("Touche la zone ci-dessous, puis « Coller ».")},2500);navigator.clipboard.readText().then(t=>{done=true;clearTimeout(to);if(t&&t.length>=200)egIngest(id,t);else show("Presse-papiers vide ou trop court : touche la zone ci-dessous, puis « Coller ».")},()=>{done=true;clearTimeout(to);show("Touche la zone ci-dessous, puis « Coller ».")})}else show("Touche la zone ci-dessous, puis « Coller ».")}
-let RES=null,RBUILT="";
+let RES=null,RBUILT="",GST={};
 function resOf(c,e){return RES&&RES[EK(c,e)]||null}
 const RS={};
 function rview(R){const a=[];if(R.poules&&R.poules.length)a.push(["poules","Poules"]);if(R.classement_poules&&R.classement_poules.length)a.push(["apres","Après poules"]);if(R.tableau&&R.tableau.some(t=>t.matches.some(m=>m.a&&m.a.name)))a.push(["tableau","Tableau"]);if(R.final&&R.final.length)a.push(["final","Classement final"]);return a}
@@ -3395,6 +3396,7 @@ document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend"
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".sclr");if(!b)return;e.stopPropagation();const i=b.parentElement.querySelector("input");i.value="";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()},true);
 applyTypes();applySeason();
 applyEG();renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
+fetch("greg_statut.json?"+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps)GST=j.eps}).catch(()=>{});
 fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;RBUILT=j.built||"";mergeArc();applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="t")renderTV()}}).catch(()=>{});
 fetch("archive.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){ARCH=j.eps;mergeArc();renderTir();if(S.tab==="t")renderTV()}}).catch(()=>{});
 fieGhLoad();
@@ -3411,7 +3413,7 @@ setInterval(()=>{
 if(/github\.io$/.test(location.hostname)||location.protocol==="http:"||location.protocol==="https:"&&location.pathname.indexOf("sabre-radar")>-1){location.replace(location.pathname+"?r="+Date.now())}else{location.reload()}}))})();
 
 (function(){
-const SRV="Claude Code Remote",TR={live:"trig_01Km9uY5PiYrib4wJemqiSdP",full:"trig_01WQYpc4Kgop5UGha5VGjWzE"},LK="ffe-upd-job",DK="ffe-upd-done",MAX=50*60000;
+const SRV="Claude Code Remote",TR={live:"trig_016XbTdQTBHoB5onEduUEPbe",full:"trig_01WQYpc4Kgop5UGha5VGjWzE"},LK="ffe-upd-job",DK="ffe-upd-done",MAX=50*60000;
 const $$=id=>document.getElementById(id),ub=$$("ub"),bn=$$("bn"),cfm=$$("cfm");
 let mcp=null,timer=null,hide=null,busy=false;
 const ls={g:k=>{try{return localStorage.getItem(k)}catch(e){return null}},s:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},r:k=>{try{localStorage.removeItem(k)}catch(e){}}};
@@ -3435,7 +3437,7 @@ ub.onclick=async()=>{if(!(await guard()))return;
 ask("Mettre à jour les données ?","Mise à jour complète : FFE puis Greg (15 à 20 minutes). Pour les résultats des compétitions en direct, utilise le bouton d'actualisation de la fiche « En direct ».",[["Annuler"],["Mise à jour complète","primary",()=>launch("full","","Mise à jour complète lancée. Environ 15 à 20 minutes.")]])};
 document.addEventListener("click",async e=>{const b=e.target.closest&&e.target.closest("[data-upd1]");if(!b||!mcp)return;e.preventDefault();e.stopPropagation();
 const keys=b.getAttribute("data-upd1");if(!(await guard()))return;
-ask("Actualiser les résultats ?",b.dataset.lv?"Claude relit Greg uniquement pour les compétitions suivies en direct (3 à 5 minutes). Si Greg n'a rien pour une épreuve, la fiche En direct l'indiquera.":"Claude relit Greg pour cette compétition seulement (3 à 5 minutes).",[["Annuler"],["Actualiser","primary",()=>launch("live","CIBLE: "+keys+"\n(Une ou plusieurs clés séparées par des virgules : utilise greg_run.py --comp=<clés>.)","Actualisation lancée. Environ 3 à 5 minutes.")]])},true);
+ask("Actualiser les résultats ?",b.dataset.lv?"Claude relit Greg uniquement pour les compétitions suivies en direct (3 à 5 minutes). Si Greg n'a rien pour une épreuve, la fiche En direct l'indiquera.":"Claude relit Greg pour cette compétition seulement (3 à 5 minutes).",[["Annuler"],["Actualiser","primary",()=>launch("live","CIBLE: "+keys,"Actualisation lancée. Environ 3 à 5 minutes.")]])},true);
 cfm.addEventListener("click",e=>{if(e.target===cfm)cfm.hidden=true});
 if(ls.g(DK)){ls.r(DK);banner("L'appli est à jour.","ok",6000)}
 (async()=>{try{if(!(window.claude&&claude.use))return;mcp=await claude.use("mcp");if(!mcp)return;ub.hidden=false;document.body.classList.add("mcp");if(job()){watch();const j=job();banner("Requête Claude en cours depuis "+hm(j.t0)+". Ne relance pas avant la fin.","")}}catch(e){}})();

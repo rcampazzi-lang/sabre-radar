@@ -1,4 +1,4 @@
-SABRE RADAR - NOTES PIPELINE (maj 16/11/2026)
+SABRE RADAR - NOTES PIPELINE (maj 18/11/2026)
 
 Tache quotidienne trig_01WQYpc4Kgop5UGha5VGjWzE (05:47 Paris). Etapes : A FFE (update.py) > B Greg (greg_match/greg_run) > B1 PDF FFE > B2 classements officiels > C republication Artifact > D push GitHub (build_site.py).
 
@@ -7,7 +7,7 @@ B1 PDF FFE
 - pdf_run.py FFE_HTML PREV.json OUT.json WORKDIR [--all] : liste des competitions passees, extrait les liens engagement/telecharger/2/<id> (id = /engages/<id>- de ep.u), telecharge, saute si sha identique, parse (pool de 4), ecrit {src:"pdf",gids,res:[R],w:nb_avertissements,parts}. --all = relecture complete (historique, deja faite le 16/11).
 - merge_pdf.py RESULTATS PDF OUT : idempotent. PDF propre (w=0) remplace Greg ; w>0 = poules retirees, utilise seulement si rien d'autre ; sinon Greg conserve.
 - Formats : En Garde (pdfplumber, noms/clubs tronques completes via engages D.tir), BellePoule (bellepoule.py), texte double (dedupe_chars), PDF sans texte (OCR tesseract fra, ocr_results.py : rangs recales, noms rapproches des engages), Fencing Time (Chinon veterans) NON lu.
-- Tableaux : score = sous le vainqueur (nom precedent le plus proche, <=25 pt) ; DNF/ABD = V/D sans score ; tableaux sur plusieurs pages (page x/y, y>1) ignores.
+- Tableaux : score = sous le vainqueur (nom precedent le plus proche, <=25 pt) ; DNF/ABD = V/D sans score ; tableaux sur plusieurs pages (page x/y) lus depuis le 18/11/2026 (voir LECTEUR PDF v2).
 - Reste connu : ~13 PDF avec avertissements de poules (BellePoule poules 6-7 tireurs, En Garde Brest/Clamart), 10 Chinon illisibles. Resultats locaux (En Garde importes, validations Greg) restent prioritaires dans l'appli.
 - Pieges : merge_pdf doit etre lance apres greg_run (greg_run ecrit resultats.json) ; build_site.py ne doit pas recevoir les fichiers du depot comme arguments (SameFileError) ; ocr_results.py ne doit pas contenir le caractere U+FFFD (refus de publication).
 
@@ -35,6 +35,17 @@ FUSION GREG + PDF (17/11/2026, correctif poules manquantes)
 - archive.py : ne remplace jamais une entrée de l'archive par une version moins complète.
 - Rattrapage du 17/11 : tous les résultats Greg retéléchargés (GREG_FRESH=1, resultats.json absent) puis fusion avec pdf_resultats.json : poules 369 -> 483 (épreuves avec poules 139 -> 159), matchs de tableau 1935 -> 2923, aucune perte.
 
-== Points FFE par competition (17/11/2026) ==
-- ffe_class.py lit aussi l'export CSV officiel de chaque classement (dirigeant.escrime-ffe.fr/classements/export/<id>/csv). ffe_classements.json : liste.eps = noms des colonnes (competitions, "NOM JJ-MM-AAAA") ; ligne[6] = [col, pts, col, pts...] ; col >= 0 = points retenus ; col < 0 = -(col+1) = points obtenus mais NON retenus (entre crochets dans le fichier FFE).
-- Page : taper un tireur dans Tireurs > FFE officiel ouvre le detail (points retenus / non retenus).
+LECTEUR PDF v2 (18/11/2026, pdf_results.py)
+- Tableaux sur plusieurs pages : chaque page est une tranche alignee du tableau (32 lignes de tete) ; toutes les pages sont lues, les matchs se rejoignent par (tour, couple de tireurs) comme avant. Verifie sur 5 PDF reels (Brest M17/M20, 111605) : nombre de matchs = inscrits - 1, un seul arbre.
+- Colonnes d'un tableau : regroupees par position horizontale (x0) au lieu d'un pas fixe de 90 pt (la mise en page change selon le nombre de colonnes) ; les mots de la ligne de tete situes avant la 2e colonne sont le club (corrige « CE » pris pour un nom).
+- Listes sur plusieurs pages (inscrits, classement des poules, classement a la fin des poules, classement general) : accumulees page apres page (avant, seule la derniere page restait !). Les rangs a 3 chiffres imprimes « ## » sont recalcules (rang precedent + 1).
+- Classement des poules d'un meme tour reparti sur plusieurs pages : fusionne en un seul tour.
+- Nom tronque suivi de mots du club (« Ma ST JEAN ») : on retire les mots de fin jusqu'a un prefixe unique d'un inscrit ; moins de joueurs en double.
+- PDF contenant plusieurs epreuves a la suite (page « Clubs (concernant ... » repetee, ex. Brest Semaine du sabre) : on repart de zero a chaque epreuve et on garde la derniere (avant : melange des deux).
+- Relecture ciblee : pdf_resultats.json peut contenir "redo": [identifiants de PDF]. pdf_run.py relit ces PDF meme si inchanges puis vide la liste. Relecture faite le 18/11/2026 pour 26 PDF (Brest, Merignac, Marly, Guyancourt, 111605...).
+- Reste connu : PDF Fencing Time (Chinon) illisibles ; PDF a plusieurs epreuves : seule la derniere est lue ; tableaux avec scores absents sur les tours de 256/128 (le PDF ne les imprime pas : matchs sans score, donc sans effet sur la note de force).
+
+TACHE EN DIRECT CIBLEE (20/11/2026)
+- Tache a la demande trig_016XbTdQTBHoB5onEduUEPbe « Sabre Radar : resultats Greg en direct (cible) », declenchee par le bouton d'actualisation de la fiche En direct (message « CIBLE: cle1,cle2 » = competitions suivies en direct). Sans CIBLE elle ne fait rien. Ancienne tache « Resultats du jour » (trig_01Km9...) plus utilisee par l'appli.
+- Etapes : greg_match.py, greg_run.py --comp=<cles>, greg_statut.py (compte rendu par epreuve -> greg_statut.json : st ok/vide/valider/aucun/futur + heure), republication de resultats.json, candidats.json, greg_statut.json (page inchangee) et push GitHub de ces 3 fichiers seulement.
+- L'appli lit greg_statut.json (fiche En direct) pour afficher « Greg : a jour / rien publie / a valider / introuvable / pas encore commence ».
