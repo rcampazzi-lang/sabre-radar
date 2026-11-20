@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795200762";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795201068";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -984,7 +984,7 @@ function bodyHTML(c){
   <div class="sec">Épreuves</div>${rows}
   <div class="mini">${c.src?esc(c.src)+". ":"Pas de note sur la fiche. "}Horaires et tarifs à confirmer dans la note.</div>`;
 }
-const updB=cs=>`<button class="x" type="button" data-upd1="${esc(cs.map(x=>x.k).join(","))}" aria-label="Actualiser">${REF}</button>`;
+const updB=(cs,lv)=>`<button class="x" type="button" data-upd1="${esc(cs.map(x=>x.k).join(","))}"${lv?` data-lv="1"`:""} aria-label="Actualiser">${REF}</button>`;
 function compSheet(ci){CUR.g=null;CUR.ci=ci;const c=D.comps[ci];HX=updB([c]);sheet(`${esc(c.v)}<span class="favt">${favcBtn([c])}</span><div class="sub">${esc(c.n)}</div>`,bodyHTML(c))}
 function addDay(s){const d=new Date(s+"T12:00:00");d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
 function noteKey(c){return c.nh||c.nt||""}
@@ -1083,6 +1083,7 @@ function liveSheet(){
   const G=liveGroups();
   if(!G.length){sheet("En direct",'<div class="empty">Aucune compétition suivie aujourd’hui ni demain.</div>');return}
   let R2={};try{R2=ratingAll()}catch(e){}
+  HX=updB(G.flatMap(g=>g.cs.filter(followed)),1);
   const body=G.map(g=>{
     const sec=g.cs.map(c=>{
       const ci=D.comps.indexOf(c);
@@ -1098,6 +1099,8 @@ function liveSheet(){
           const v=(e.l||[]).map(i=>D.tir[i]).filter(Boolean).map(t=>{const k=nkey(t[0],t[1]);return CURG?ratingIn(k,CURG):R2[k]}).filter(Boolean).map(x=>x.e);
           info=`${e.n||0} inscrit${(e.n||0)>1?"s":""}`+(v.length>=4?` · Elo moyen ${Math.round(v.reduce((a,b)=>a+b,0)/v.length)} · meilleur ${Math.max(...v)}`:"");
         }
+        const fdt=s=>s?s.slice(8,10)+"/"+s.slice(5,7)+" "+s.slice(11,16):"";
+        info+=(R?` · Greg : à jour ${fdt(X.t)}`:c.d>TODAY?" · Greg : pas encore de résultats (début demain)":` · Greg : aucun résultat trouvé${RBUILT?" (dernière vérification "+fdt(RBUILT)+")":""}`);
         return `<button class="lvc" type="button" data-lres="${ci}:${ei}"><div class="lvh"><b>${esc(epLabel(e))}</b><span class="lvs ${cl}">${st}</span></div><div class="lvn">${esc(info)}</div></button>`}).join("");
     }).join("");
     return sec}).join("");
@@ -1843,7 +1846,7 @@ function egBindZones(){
 function egPaste(id){
   const show=why=>{const ta=document.querySelector('textarea[data-egz="'+id+'"]');if(ta){ta.hidden=false;const st=ta.closest(".zr")||ta.previousElementSibling;const sm=document.querySelector('[data-egpaste="'+id+'"]').closest(".zr").querySelector("small");if(sm){sm.textContent=why;sm.style.color="var(--accent)"}ta.focus()}};
   if(navigator.clipboard&&navigator.clipboard.readText){let done=false;const to=setTimeout(()=>{if(!done)show("Touche la zone ci-dessous, puis « Coller ».")},2500);navigator.clipboard.readText().then(t=>{done=true;clearTimeout(to);if(t&&t.length>=200)egIngest(id,t);else show("Presse-papiers vide ou trop court : touche la zone ci-dessous, puis « Coller ».")},()=>{done=true;clearTimeout(to);show("Touche la zone ci-dessous, puis « Coller ».")})}else show("Touche la zone ci-dessous, puis « Coller ».")}
-let RES=null;
+let RES=null,RBUILT="";
 function resOf(c,e){return RES&&RES[EK(c,e)]||null}
 const RS={};
 function rview(R){const a=[];if(R.poules&&R.poules.length)a.push(["poules","Poules"]);if(R.classement_poules&&R.classement_poules.length)a.push(["apres","Après poules"]);if(R.tableau&&R.tableau.some(t=>t.matches.some(m=>m.a&&m.a.name)))a.push(["tableau","Tableau"]);if(R.final&&R.final.length)a.push(["final","Classement final"]);return a}
@@ -3391,7 +3394,7 @@ document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend"
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".sclr");if(!b)return;e.stopPropagation();const i=b.parentElement.querySelector("input");i.value="";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()},true);
 applyTypes();applySeason();
 applyEG();renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
-fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;mergeArc();applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="t")renderTV()}}).catch(()=>{});
+fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;RBUILT=j.built||"";mergeArc();applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="t")renderTV()}}).catch(()=>{});
 fetch("archive.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){ARCH=j.eps;mergeArc();renderTir();if(S.tab==="t")renderTV()}}).catch(()=>{});
 fieGhLoad();
 fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();admBadge();if(S.tab==="m")renderAdmin()}}).catch(()=>{});
@@ -3427,10 +3430,10 @@ setBusy(true);try{const st=await status();setBusy(false);for(const k in st)if(is
 async function launch(k,text,okMsg){setBusy(true);try{const st=await status();for(const x in st)if(isRun(st[x])){ls.s(LK,JSON.stringify({k:x,t0:Date.parse(st[x].fired_at)||Date.now()}));watch();banner("Une mise à jour est déjà en cours.");return}
 const t0=Date.now();const inp={trigger_id:TR[k]};if(text)inp.text=text;await mcp.callTool(SRV,"fire_trigger",inp,{cache:false});ls.s(LK,JSON.stringify({k,t0}));watch();banner(okMsg,"",7000)}catch(e){setBusy(!!timer);banner(msg(e),"err")}}
 ub.onclick=async()=>{if(!(await guard()))return;
-ask("Mettre à jour les données ?","Résultats du jour : relit seulement Greg pour les compétitions du jour (3 à 5 minutes). Mise à jour complète : FFE puis Greg (15 à 20 minutes).",[["Annuler"],["Mise à jour complète","",()=>launch("full","","Mise à jour complète lancée. Environ 15 à 20 minutes.")],["Résultats du jour","primary",()=>launch("live","","Résultats du jour lancés. Environ 3 à 5 minutes.")]])};
+ask("Mettre à jour les données ?","Mise à jour complète : FFE puis Greg (15 à 20 minutes). Pour les résultats des compétitions en direct, utilise le bouton d'actualisation de la fiche « En direct ».",[["Annuler"],["Mise à jour complète","primary",()=>launch("full","","Mise à jour complète lancée. Environ 15 à 20 minutes.")]])};
 document.addEventListener("click",async e=>{const b=e.target.closest&&e.target.closest("[data-upd1]");if(!b||!mcp)return;e.preventDefault();e.stopPropagation();
 const keys=b.getAttribute("data-upd1");if(!(await guard()))return;
-ask("Actualiser les résultats ?","Claude relit Greg pour cette compétition seulement (3 à 5 minutes).",[["Annuler"],["Actualiser","primary",()=>launch("live","CIBLE: "+keys+"\n(Une ou plusieurs clés séparées par des virgules : utilise greg_run.py --comp=<clés>.)","Actualisation lancée. Environ 3 à 5 minutes.")]])},true);
+ask("Actualiser les résultats ?",b.dataset.lv?"Claude relit Greg uniquement pour les compétitions suivies en direct (3 à 5 minutes). Si Greg n'a rien pour une épreuve, la fiche En direct l'indiquera.":"Claude relit Greg pour cette compétition seulement (3 à 5 minutes).",[["Annuler"],["Actualiser","primary",()=>launch("live","CIBLE: "+keys+"\n(Une ou plusieurs clés séparées par des virgules : utilise greg_run.py --comp=<clés>.)","Actualisation lancée. Environ 3 à 5 minutes.")]])},true);
 cfm.addEventListener("click",e=>{if(e.target===cfm)cfm.hidden=true});
 if(ls.g(DK)){ls.r(DK);banner("L'appli est à jour.","ok",6000)}
 (async()=>{try{if(!(window.claude&&claude.use))return;mcp=await claude.use("mcp");if(!mcp)return;ub.hidden=false;document.body.classList.add("mcp");if(job())watch()}catch(e){}})();
