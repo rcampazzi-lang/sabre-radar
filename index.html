@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795501319";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795501558";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2412,13 +2412,13 @@ function forceAll(){
   FRC={sig,R,G,RG};return R;
 }
 const EH={};
-function eloHist(k){
-  const rt=ratingAll()[k];if(!rt)return[];
+function eloHist(k,g0){
+  ratingAll();const rt=g0?((ratingG()[g0]||{})[k]||null):ratingAll()[k];if(!rt)return[];
   if(EH.sig!==FRC.sig){EH.sig=FRC.sig;EH.m={}}
-  if(EH.m[k])return EH.m[k];
+  const ck=k+"|"+rt.g;if(EH.m[ck])return EH.m[ck];
   const G=FRC.G[rt.g]||[],ds=[...new Set(G.filter(m=>m[0]===k||m[1]===k).map(m=>m[3]))].sort(),out=[];
   ds.forEach(d=>{const F=fitG(G.filter(m=>m[3]<=d)),i=F.ids.indexOf(k);if(i<0)return;out.push({d,e:Math.round(1500+FS*F.th[i]),se:Math.round(FS/Math.sqrt(F.h[i])),nm:F.nm[i]})});
-  return EH.m[k]=out;
+  return EH.m[ck]=out;
 }
 function ratingAll(){return forceAll()}
 const ratingG=()=>{ratingAll();return FRC.RG};
@@ -2475,10 +2475,10 @@ function eloChart(H){
   const last=H.length-1;
   return `<svg class="fchart" viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Évolution de la force estimée"><polygon points="${up.concat(dn).join(" ")}" fill="var(--accent)" opacity=".13"/><polyline points="${ln}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>${H.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(x.e).toFixed(1)}" r="${i===last?4.5:3}" fill="var(--accent)"/>`).join("")}<text x="${X(0).toFixed(1)}" y="${(Y(H[0].e)-8).toFixed(1)}" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="start">${H[0].e}</text><text x="${X(last).toFixed(1)}" y="${(Y(H[last].e)-8).toFixed(1)}" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="end">${H[last].e}</text><text x="${pl}" y="${Ht-6}" font-size="10" fill="var(--muted)">${d2(H[0].d)}</text><text x="${W-pr}" y="${Ht-6}" font-size="10" fill="var(--muted)" text-anchor="end">${d2(H[last].d)}</text></svg>`;
 }
-function duelGroup(a,b){const G=ratingG();let best=null;for(const g in G){const x=G[g][a],y=G[g][b];if(x&&y){const sc=Math.min(x.nm,y.nm),ci=KCATS.indexOf(g.split("|")[1]);if(!best||sc>best.sc||(sc===best.sc&&ci>best.ci))best={g,x,y,sc,ci}}}return best}
+function duelGroup(a,b,cf){const G=ratingG();let best=null;for(const g in G){if(cf&&!g.endsWith("|"+cf))continue;const x=G[g][a],y=G[g][b];if(x&&y){const sc=Math.min(x.nm,y.nm),ci=KCATS.indexOf(g.split("|")[1]);if(!best||sc>best.sc||(sc===best.sc&&ci>best.ci))best={g,x,y,sc,ci}}}return best}
 function duelRes(){
   const t=D.tir[DUELT];if(!t||!DUELK)return"";
-  const nk=nkey(t[0],t[1]),DG=duelGroup(nk,DUELK);if(!DG){const i0=tirIdx(DUELK),f0=FNAME[DUELK]||["",""];return `<div class="card2"><h4>Contre ${esc(i0!==undefined?D.tir[i0][0]+" "+D.tir[i0][1]:f0[0])}</h4><div class="h">Ils n’ont pas de catégorie commune où les deux ont des matchs : la comparaison n’aurait pas de sens.</div></div>`}const a=DG.x,b=DG.y;
+  const nk=nkey(t[0],t[1]),DG=duelGroup(nk,DUELK,STCT);if(!DG){const i0=tirIdx(DUELK),f0=FNAME[DUELK]||["",""];return `<div class="card2"><h4>Contre ${esc(i0!==undefined?D.tir[i0][0]+" "+D.tir[i0][1]:f0[0])}</h4><div class="h">Ils n’ont pas de catégorie commune où les deux ont des matchs : la comparaison n’aurait pas de sens.</div></div>`}const a=DG.x,b=DG.y;
   const i2=tirIdx(DUELK),f=FNAME[DUELK]||["",""],nm=i2!==undefined?D.tir[i2][0]+" "+D.tir[i2][1]:f[0];
   const pp=Math.round(winP(a.e,b.e)*100);
   const me=(statsAll(STCT)||{})[nk],h=me?[...me.pms,...me.ms].filter(m=>m.on===DUELK).sort(chron):[];
@@ -2554,7 +2554,7 @@ function statsHTML(t,idx){
   /* Parcours */
   const evoRows=CS.map(x=>{const f=fld(x);return `<div class="li"><div><b>${esc(x.c.v)}</b> · ${esc(fd(x.c.d))}<br><small>${esc(x.c.n)}${f?` · peloton Elo ${f} en moyenne`:""}</small></div><span class="rk" style="background:var(--accent-soft);color:var(--accent)">${rkLbl(x.pl)} / ${x.n}</span></div>`}).join("");
   const lv=Object.entries(me.lv).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<span class="tag n">${esc(k)} · ${v.n} (meilleure ${rkLbl(v.best)})</span>`).join("");
-  const H=rt?eloHist(nk):[];
+  const H=rt?eloHist(nk,rt.g):[];
   const pJ=`<div id="sm-j" ${STM==="j"?"":"hidden"}><div class="sec">Évolution de la force (12 mois)</div><div class="card2">${eloChart(H)}<div class="h">Chaque point est une compétition. La zone claire montre la marge d’incertitude.</div></div>
     <div class="sec">Régularité</div><div class="tiles">${kp(reg,"régularité")}${kp(run+" V","série en cours")}${kp(bs+" V","plus longue série")}</div>${med!==null?note(`Place habituelle : il bat en général ${Math.round(med*100)} % du peloton${me.pls.length>1&&worst&&best?` (meilleure place ${rkLbl(best.pl)} sur ${best.n}, moins bonne ${rkLbl(worst.pl)} sur ${worst.n})`:""}.`):""}
     <div class="sec">Compétition par compétition</div><div class="list">${evoRows||`<div class="empty">Pas encore de classement final.</div>`}</div>
