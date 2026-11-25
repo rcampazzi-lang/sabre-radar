@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795587766";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795587867";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -238,7 +238,7 @@ body.updbusy [data-upd1]{background:var(--accent-soft)!important;color:var(--acc
 .tbl .mt{position:absolute;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:12px;overflow:hidden;color:var(--ink)}
 .tbl .mt div{display:flex;gap:5px;align-items:center;height:24px;padding:0 6px}
 .tbl .mt div+div{border-top:1px solid var(--line)}
-.tbl .mt .sd{color:var(--muted);font-size:10.5px;min-width:16px;text-align:right}
+.tbl .mt.q0{--qc:#8fb4e3}.tbl .mt.q1{--qc:#8fcba0}.tbl .mt.q2{--qc:#e0c46a}.tbl .mt.q3{--qc:#e59a9a}.tbl .mt.qf{--qc:#a98ad8}.tbl .mt[class*=" q"]::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--qc);z-index:2;pointer-events:none}.tbl .mt .pn{display:flex;align-items:center}.tbl .mt .pn .flg{flex:none}.tbl .mt .pn>*:not(.flg){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tbl .mt .sd{color:var(--muted);font-size:10.5px;min-width:16px;text-align:right}
 .tbl .mt .pn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tbl .mt .sc{font-variant-numeric:tabular-nums;min-width:18px;text-align:right}
 .tbl .mt .w{font-weight:700;background:var(--good-soft)}
@@ -2018,6 +2018,9 @@ function vtableau(R){
   const W=(maxd+1)*CW,H=Math.max(leaf,1)*RH+TOP+6;
   let paths="",boxes="";
   const sc=x=>{const v=/\d+/.exec(x||"");return v?+v[0]:null};
+  /* couleurs sur le côté : 4 quarts de tableau (haut -> bas), violet à partir des demi-finales */
+  const mainT=!tr.label.startsWith("Place");
+  if(mainT&&maxd>=2){const qs=nodes.filter(n=>n.r===2).sort((a,b)=>a.y-b.y);qs.forEach((q,i)=>{(function f(n){n.q=i%4;n.ch.forEach(f)})(q)});nodes.forEach(n=>{if(n.r<2)n.q="f"})}
   nodes.forEach(n=>{
     n.x=(maxd-n.r)*CW;n.top=TOP+n.y*RH+(RH-BH)/2;
     n.ch.forEach(c=>{
@@ -2032,7 +2035,7 @@ function vtableau(R){
       const v=other&&other.name&&!/^exempt$/i.test(other.name)?sc(p.sc):null;
       return `<div class="${win?"w":""}"><span class="sd">${s||""}</span><span class="pn" title="${esc(nm)}">${pfl(R,p.id)}${flk(R,p.id,esc(nm))}</span><span class="sc">${v==null?"":v}</span></div>`;
     };
-    boxes+=`<div class="mt" style="left:${n.x}px;top:${n.top}px;width:${BW}px;height:${BH}px" ${n.m.piste||n.m.arb?`title="${esc([n.m.piste&&"Piste "+n.m.piste,n.m.arb&&"Arbitre "+n.m.arb].filter(Boolean).join(" · "))}"`:""}>${line(a,wa,b)}${line(b,wb,a)}</div>`;
+    boxes+=`<div class="mt${n.q!==undefined?" q"+n.q:""}" style="left:${n.x}px;top:${n.top}px;width:${BW}px;height:${BH}px" ${n.m.piste||n.m.arb?`title="${esc([n.m.piste&&"Piste "+n.m.piste,n.m.arb&&"Arbitre "+n.m.arb].filter(Boolean).join(" · "))}"`:""}>${line(a,wa,b)}${line(b,wb,a)}</div>`;
   });
   let heads="";
   for(let r=0;r<=maxd;r++)heads+=`<div class="ch" style="left:${(maxd-r)*CW}px;width:${BW}px">${esc(tr.label.startsWith("Place")?(r===0?tr.label:"Tour "+(maxd-r+1)):(RND[r]||"Tableau de "+Math.pow(2,r+1)))}</div>`;
