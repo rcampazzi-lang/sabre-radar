@@ -22,7 +22,17 @@ def score(e):
     rs = e.get("res", [])
     return (sum(len(r.get("poules", [])) for r in rs), sum(len(m.get("matches", [])) for r in rs for m in r.get("tableau", [])), sum(len(r.get("final", [])) for r in rs))
 new = upd = skip = keep = 0
+# épreuves tirées en mixte : le résultat « <cat> Mixte » remplace les anciennes entrées Hommes / Dames de la même catégorie (sinon matchs comptés plusieurs fois)
+for key in list(R):
+    p = key.split("|")
+    if len(p) == 3 and p[2] == "Mixte" and R[key] and R[key].get("res"):
+        for sx in ("Hommes", "Dames"):
+            eps.pop("%s|%s|%s" % (p[0], p[1], sx), None)
+def _mixte_existe(key):
+    p = key.split("|")
+    return len(p) == 3 and p[2] in ("Hommes", "Dames") and ("%s|%s|Mixte" % (p[0], p[1])) in eps
 for key, e in R.items():
+    if _mixte_existe(key): skip += 1; continue
     if not e or not e.get("res"): skip += 1; continue
     parts = key.split("|")
     ck, cat, sex, eq = parts[0], parts[1], parts[2], (len(parts) > 3 and parts[3] == "Eq")
