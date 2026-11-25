@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795590052";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795590351";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2793,7 +2793,7 @@ const K={sx:"Hommes",cat:"M15",gr:"",rg:"",club:"",hp:false};try{Object.assign(K
 if(!K.v)K.v=K.src==="ffe"?"ffe":"sr";
 const saveK=()=>{try{localStorage.setItem("ffe-k",JSON.stringify(K))}catch(e){}};
 let FFK=null;
-fetch("ffe_classements.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.lists){FFK=j;if(S.tab==="t")renderTV()}}).catch(()=>{});
+fetch("ffe_classements.json?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.lists){FFK=j;if(S.tab==="t")renderTV()}}).catch(()=>{});
 const FLV={International:0,National:1,"Régional":2};
 const fmtJ=s=>s?s.slice(8)+"/"+s.slice(5,7)+"/"+s.slice(0,4):"";
 const fCat=(x,c)=>x.cat===c||x.cat.split(" / ").includes(c);
@@ -3463,10 +3463,10 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
 applyTypes();applySeason();
 applyEG();renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
 fetch("greg_statut.json?"+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps)GST=j.eps}).catch(()=>{});
-fetch("resultats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;RBUILT=j.built||"";mergeArc();applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="t")renderTV()}}).catch(()=>{});
-fetch("archive.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){ARCH=j.eps;mergeArc();renderTir();if(S.tab==="t")renderTV()}}).catch(()=>{});
+fetch("resultats.json?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;RBUILT=j.built||"";mergeArc();applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="t")renderTV()}}).catch(()=>{});
+fetch("archive.json?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){ARCH=j.eps;mergeArc();renderTir();if(S.tab==="t")renderTV()}}).catch(()=>{});
 fieGhLoad();
-fetch("candidats.json").then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();admBadge();if(S.tab==="m")renderAdmin()}}).catch(()=>{});
+fetch("candidats.json?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.pend){CAND=j;applyDec();renderComps();admBadge();if(S.tab==="m")renderAdmin()}}).catch(()=>{});
 setInterval(()=>{
   if(document.hidden||$("#sheet").hidden||RS.ci==null||!RES||!$("#sheet").querySelector(".rtabs"))return;
   const c=D.comps[RS.ci],e=c&&c.eps[RS.ei],X=e&&resOf(c,e);if(!X||X.done)return;
