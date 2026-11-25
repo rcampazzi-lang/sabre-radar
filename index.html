@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795583250";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795586910";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2121,7 +2121,7 @@ function dupAct(a){
 let AT="rap",ACF="chk",AQ="";
 /* Accès admin : pour l'instant un simple réglage (?admin=0 le masque, ?admin=1 le réaffiche). Une vraie restriction par compte viendra plus tard. */
 function isAdmin(){try{const q=new URLSearchParams(location.search).get("admin");if(q==="0"||q==="1")localStorage.setItem("ffe-admin",q)}catch(e){}try{return localStorage.getItem("ffe-admin")!=="0"}catch(e){return true}}
-function admTodo(){return (CAND?CAND.pend.map(pendInfo).filter(Boolean).filter(x=>DEC[x.p.key]===undefined).length:0)+D.comps.filter(c=>inSeason(c)&&tyDoubt(c)).length}
+function admTodo(){return cflPend().length+(CAND?CAND.pend.map(pendInfo).filter(Boolean).filter(x=>DEC[x.p.key]===undefined).length:0)+D.comps.filter(c=>inSeason(c)&&tyDoubt(c)).length}
 function admBadge(){const r=$("#adm-row");if(!r)return;r.hidden=!isAdmin();const n=admTodo();$("#adm-n").textContent=n?String(n):""}
 function admLinks(c){return `<div class="btns" style="margin-top:8px">${c.go?"":`<a class="btn sm" href="https://www.ffescrime.fr/competition/${esc(c.k)}" target="_blank" rel="noopener">Fiche FFE</a>`}${c.nt?`<a class="btn sm" href="${esc(c.nt)}" target="_blank" rel="noopener">Note d'organisation</a>`:`<span class="tag">Pas de note</span>`}${c.mp?`<a class="btn sm" href="${esc(c.mp)}" target="_blank" rel="noopener">Lieu</a>`:""}</div>`}
 function admInfo(c){const ne=c.eps.reduce((n,e)=>n+(e.n||0),0);return `<details class="adet"><summary>Toutes les infos</summary><dl class="kv">
@@ -2134,9 +2134,31 @@ function admInfo(c){const ne=c.eps.reduce((n,e)=>n+(e.n||0),0);return `<details 
   <dt>Source des données</dt><dd>${esc(c.src||"–")}</dd>
   <dt>Mon classement auto</dt><dd>${esc(TYL[c._t0||c.ty]||"–")} · ${esc(c._w0||c.tw||"–")}</dd></dl></details>`}
 let CAND=null,DEC={},SEL={};
+/* Conflits Greg / PDF : Greg complet est gardé ; si le PDF donne un autre classement général, choix dans Admin > Conflits */
+let CFD={},CF0={};try{CFD=JSON.parse(localStorage.getItem("ffe-cfd")||"{}")}catch(e){}
+const saveCfd=()=>{try{localStorage.setItem("ffe-cfd",JSON.stringify(CFD))}catch(e){}};
+function applyCf(){if(!RES)return;
+  for(const key of Object.keys(RES)){let v=RES[key];if(!v)continue;const o=v._cfa?CF0[key]:v;if(!o||!o.cf)continue;CF0[key]=o;
+    const d=CFD[key],pdf=d&&d.sha===o.cf.sha&&d.c==="pdf";
+    if(pdf&&!v._cfa)RES[key]={...o,res:[o.cf.pdf],src:"pdf",choix:"pdf",_cfa:1};
+    else if(!pdf&&v._cfa)RES[key]=o}}
+function cflPend(){return Object.keys(CF0).filter(k=>{const o=CF0[k],d=CFD[k];return o&&o.cf&&!(d&&d.sha===o.cf.sha)})}
+function cflTop(R,n){const pl=R.players||{};return (R.final||[]).filter(f=>typeof f.pl==="number"&&pl[f.id]).sort((a,b)=>a.pl-b.pl).slice(0,n).map(f=>`<div class="sub"><b>${f.pl}</b> · ${esc(pl[f.id][1]||"")} ${esc(pl[f.id][0]||"")}</div>`).join("")||`<div class="sub">Pas de classement</div>`}
+function renderCfl(){
+  const ks=Object.keys(CF0).filter(k=>CF0[k]&&CF0[k].cf);const todo=cflPend();
+  $("#a-intro").innerHTML=`Quand Greg est complet (poules, classements, tableaux), je le garde. Si le PDF FFE arrive avec un classement général différent, tu choisis ici lequel afficher. À trancher : ${todo.length} sur ${ks.length}. Tes choix sont gardés sur cet appareil ; transmets-les moi pour qu'ils soient pris en compte à chaque mise à jour.`;
+  const card=(k)=>{const o=CF0[k],ci=D.comps.findIndex(c=>c.k===k.split("|")[0]);const c=D.comps[ci];if(!c)return"";const e=c.eps.find(x=>EK(c,x)===k);const d=CFD[k],ok=d&&d.sha===o.cf.sha;const R=o.res[0],P=o.cf.pdf;const i=ks.indexOf(k);
+    return `<div class="acard"><div><b>${esc(c.v)}</b> · ${esc(fd(c.d))}<div class="sub">${esc(c.n)}</div><div class="sub">${esc(e?epLabel(e):k.split("|").slice(1).join(" "))} · ${o.cf.diff} différence${o.cf.diff>1?"s":""} de place</div></div>
+    <div class="row" style="gap:12px;align-items:flex-start"><div style="flex:1;min-width:0"><div class="fs-h">Greg</div>${cflTop(R,10)}</div><div style="flex:1;min-width:0"><div class="fs-h">PDF FFE</div>${cflTop(P,10)}</div></div>
+    ${ok?`<div class="adone">Choix : ${d.c==="pdf"?"PDF FFE":"Greg"}</div><div class="btns"><button class="btn" data-cfl="undo|${i}">Modifier</button></div>`:`<div class="btns"><button class="btn primary" data-cfl="greg|${i}">Garder Greg</button><button class="btn" data-cfl="pdf|${i}">Prendre le PDF</button></div>`}</div>`};
+  $("#a-list").innerHTML=(ks.length?ks.slice().sort((a,b)=>(!!(CFD[a]&&CFD[a].sha===CF0[a].cf.sha))-(!!(CFD[b]&&CFD[b].sha===CF0[b].cf.sha))).map(card).join(""):`<div class="empty">Aucun conflit entre Greg et les PDF.</div>`)+`<div class="acard"><b>Mes décisions</b><div class="sub">À copier et me transmettre.</div><textarea id="a-json" readonly>${esc(JSON.stringify(CFD))}</textarea><div class="btns"><button class="btn" data-cfl="reset|0">Tout effacer</button></div></div>`;
+}
+function cflAct(a){const [act,i]=a.split("|");const ks=Object.keys(CF0).filter(k=>CF0[k]&&CF0[k].cf);const k=ks[+i];
+  if(act==="reset")CFD={};else if(act==="undo"&&k)delete CFD[k];else if(k&&(act==="greg"||act==="pdf"))CFD[k]={c:act,sha:CF0[k].cf.sha};
+  saveCfd();applyCf();renderAdmin();renderComps();try{if(S.tab==="t")renderTV()}catch(e){}}
 try{DEC=JSON.parse(localStorage.getItem("ffe-dec")||"{}")}catch(e){}
 const saveDec=()=>{try{localStorage.setItem("ffe-dec",JSON.stringify(DEC))}catch(e){}};
-function applyDec(){applyEG();
+function applyDec(){applyEG();try{applyCf()}catch(e){}
   if(!CAND)return;if(!RES)RES={};
   for(const [key,ids] of Object.entries(DEC)){
     if(!ids.length)continue;if(RES[key]&&!RES[key].local)continue;
@@ -2152,7 +2174,8 @@ function pendInfo(p,idx){
 function renderAdmin(){
   const ndc=D.comps.filter(tyDoubt).length;
   const ngr=grpClusters().length;let nd2=0;try{nd2=dupCands().length}catch(e){}
-  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"')+seg("Doublons"+(nd2?" ("+nd2+")":""),AT==="dup",'data-atab="dup"')+seg("Import GitHub",AT==="imp",'data-atab="imp"')+seg("Import FIE",AT==="fie",'data-atab="fie"');
+  $("#a-seg").innerHTML=seg("Rapprochements",AT==="rap",'data-atab="rap"')+seg("Classifications"+(ndc?" ("+ndc+")":""),AT==="cls",'data-atab="cls"')+seg("Regroupements"+(ngr?" ("+ngr+")":""),AT==="grp",'data-atab="grp"')+seg("Doublons"+(nd2?" ("+nd2+")":""),AT==="dup",'data-atab="dup"')+seg("Conflits"+(cflPend().length?" ("+cflPend().length+")":""),AT==="cfl",'data-atab="cfl"')+seg("Import GitHub",AT==="imp",'data-atab="imp"')+seg("Import FIE",AT==="fie",'data-atab="fie"');
+  if(AT==="cfl")return renderCfl();
   if(AT==="cls")return renderCls();
   if(AT==="grp")return renderGrp();
   if(AT==="dup")return renderDup();
@@ -3406,6 +3429,7 @@ function xclick(b){
     saveGrp();GSEL={};renderAdmin();renderComps();return true}
   if(b.dataset.f==="adm"){setTab("m");return true}
   if(b.dataset.f==="admback"){setTab("a");return true}
+  if(b.dataset.cfl){cflAct(b.dataset.cfl);return true}
   if(b.dataset.dup){dupAct(b.dataset.dup);return true}
   if(b.dataset.imp){impAct(b.dataset.imp);return true}
   if(b.dataset.fie){fieAct(b.dataset.fie);return true}
