@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795593510";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795593726";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -3462,7 +3462,11 @@ document.querySelectorAll(".search").forEach(l=>l.insertAdjacentHTML("beforeend"
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".sclr");if(!b)return;e.stopPropagation();const i=b.parentElement.querySelector("input");i.value="";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()},true);
 applyTypes();applySeason();
 applyEG();renderFilters();renderComps();renderTir();renderChanges();renderParcours();renderSyncRow();admBadge();
-fetch("greg_statut.json?"+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps)GST=j.eps}).catch(()=>{});
+window.saveRet=function(){try{sessionStorage.setItem("ffe-ret",JSON.stringify({t:Date.now(),tab:S.tab,y:window.scrollY,tq:S.tq}))}catch(e){}};
+ (function(){try{const r=JSON.parse(sessionStorage.getItem("ffe-ret")||"null");if(!r||Date.now()-r.t>45000)return;
+  if(r.tab&&r.tab!=="c"&&r.tab!=="m"&&r.tab!==S.tab){if(r.tq){S.tq=r.tq}setTab(r.tab)}
+  const go=()=>window.scrollTo(0,r.y||0);setTimeout(go,300);setTimeout(go,1200)}catch(e){}})();
+ fetch("greg_statut.json?"+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps)GST=j.eps}).catch(()=>{});
 fetch("resultats.json?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){RES=j.eps;RBUILT=j.built||"";mergeArc();applyDec();applySeason();renderComps();renderTir();renderParcours();if(S.tab==="t")renderTV()}}).catch(()=>{});
 fetch("archive.json?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.eps){ARCH=j.eps;mergeArc();renderTir();if(S.tab==="t")renderTV()}}).catch(()=>{});
 fieGhLoad();
@@ -3475,7 +3479,7 @@ setInterval(()=>{
     RES=j.eps;mergeArc();applyDec();if(!$("#sheet").hidden&&!document.activeElement.matches?.("input"))results(RS.ci,RS.ei,RS.view,RS.gi);renderComps()}).catch(()=>{});
 },60000);
 
-(function(){document.querySelectorAll(".rfr").forEach(b=>b.addEventListener("click",async()=>{b.classList.add("spin");try{if(window.caches){const k=await caches.keys();await Promise.all(k.map(x=>caches.delete(x)))}}catch(e){}
+(function(){document.querySelectorAll(".rfr").forEach(b=>b.addEventListener("click",async()=>{b.classList.add("spin");try{window.saveRet&&saveRet()}catch(e){}try{if(window.caches){const k=await caches.keys();await Promise.all(k.map(x=>caches.delete(x)))}}catch(e){}
 if(/github\.io$/.test(location.hostname)||location.protocol==="http:"||location.protocol==="https:"&&location.pathname.indexOf("sabre-radar")>-1){location.replace(location.pathname+"?r="+Date.now())}else{location.reload()}}))})();
 
 (function(){
@@ -3493,7 +3497,7 @@ async function status(){const r=await mcp.callTool(SRV,"list_triggers",{limit:10
 const isRun=lr=>!!(lr&&lr.fired_at&&!lr.finished_at);
 function stop(){clearInterval(timer);timer=null;ls.r(LK);setBusy(false)}
 function watch(){if(timer)return;setBusy(true);timer=setInterval(async()=>{const j=job();if(!j){stop();return}
-try{const lr=(await status())[j.k];if(lr&&lr.finished_at&&Date.parse(lr.fired_at)>=j.t0-90000){stop();if(/SUCCEEDED/.test(lr.status||"")){ls.s(DK,"1");location.reload()}else banner("La mise à jour a échoué. Les données précédentes restent affichées.","err")}}catch(e){}},30000)}
+try{const lr=(await status())[j.k];if(lr&&lr.finished_at&&Date.parse(lr.fired_at)>=j.t0-90000){stop();if(/SUCCEEDED/.test(lr.status||"")){ls.s(DK,"1");try{window.saveRet&&saveRet()}catch(e){}location.reload()}else banner("La mise à jour a échoué. Les données précédentes restent affichées.","err")}}catch(e){}},30000)}
 function ask(h,p,btns){$$("cfm-h").textContent=h;$$("cfm-p").textContent=p;const b=$$("cfm-b");b.innerHTML="";for(const [t,cls,fn] of btns){const x=document.createElement("button");x.type="button";x.className="btn"+(cls?" "+cls:"");x.textContent=t;x.onclick=()=>{cfm.hidden=true;fn&&fn()};b.appendChild(x)}cfm.hidden=false}
 async function guard(){const j=job();if(j){watch();banner("Une mise à jour est déjà en cours.");return false}
 setBusy(true);try{const st=await status();setBusy(false);for(const k in st)if(isRun(st[k])){ls.s(LK,JSON.stringify({k,t0:Date.parse(st[k].fired_at)||Date.now()}));watch();banner("Une mise à jour est déjà en cours : attends qu'elle soit terminée avant de relancer.");return false}return true}catch(e){setBusy(false);banner(msg(e),"err");return false}}
