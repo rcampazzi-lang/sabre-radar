@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795842325";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sabre Radar"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#D9541E"><script>(function(){var B="1795847976";try{if(location.search.indexOf("v=")>-1&&location.search.indexOf("v="+B)>-1)return;fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var B="(\d+)"/);if(m&&m[1]!==B){location.replace(location.pathname+"?v="+m[1])}}).catch(function(){})}catch(e){}})()</script><title>Sabre Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
@@ -2306,7 +2306,7 @@ function statsAll(CF){CF=CF||"";
         const pl=r.players||{};const byName={};
         for(const id in pl){const p=pl[id];byName[nkey(p[0],p[1])]=id;byName[nkey(p[1],p[0])]=id}
         const A={};const ga=id=>A[id]||(A[id]={pm:0,pw:0,ptd:0,ptr:0,tw:0,tl:0,ttd:0,ttr:0,nmS:0,nmN:0,opp:{},pn:0,pq:0,pf:0,ms:[],pms:[],pools:[]});
-        const idk=id=>pl[id]?nkey(pl[id][0],pl[id][1]):null,TPG=(single==="M9"||single==="M11")?4:5,TB=(r.tableau||[]).some(t=>(t.matches||[]).length>0);
+        const idk=id=>pl[id]?nkey(pl[id][0],pl[id][1]):null,TPG=typeof K3pLim==="function"?K3pLim(r,e):(single==="M9"||single==="M11")?4:5,TB=(r.tableau||[]).some(t=>(t.matches||[]).length>0);
         const KS=Object.values(pl).map(p=>nkey(p[0],p[1]));
         const PM=po=>{const rows=po.rows||[],n=rows.length;if(n<2||!rows.every(x=>(x.m||[]).length===n))return;
           for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const ci=rows[i].m[j],cj=rows[j].m[i];
@@ -3778,3 +3778,288 @@ $("#tab-k").addEventListener("click",()=>setTab("k"));
 
 renderParcours();
 /*K2-END*/</script>
+<script>/*K3-BEGIN : onglet « Analyse » de la fiche Statistiques  */
+(function(){
+const A3={sig:null,cf:{},pair:null};
+const tnum=s=>{const q=String(s??"").match(/(\d+)/);return q?parseInt(q[1],10):null};
+/* limite de touches en poule : M13 et plus = 5 ; M9/M11 : tableau en 8 -> poule en 4, tableau en 10 -> poule en 5, sinon score Greg le plus fréquent, sinon 4 */
+function pLim(R,e){
+  const cs=String(e.c||"").split(",").map(x=>pcat(x.trim())||x.trim());
+  if(cs.some(c=>!["M9","M11"].includes(c)))return 5;
+  let tm=0;(R.tableau||[]).forEach(t=>(t.matches||[]).forEach(m=>[m.a,m.b].forEach(s=>{if(s&&/^V/.test(String(s.sc||""))){const d=tnum(s.sc);if(d)tm=Math.max(tm,d)}})));
+  if(tm===8)return 4;if(tm===10)return 5;
+  const pv={};(R.poules||[]).forEach(po=>(po.rows||[]).forEach(x=>(x.m||[]).forEach(cl=>{if(/^V\d+$/.test(cl)){const v=+cl.slice(1);pv[v]=(pv[v]||0)+1}})));
+  const pm=Object.keys(pv).sort((a,b)=>pv[b]-pv[a])[0];return pm?+pm:4}
+function build(CF){
+  let sig=0;if(RES)for(const k in RES)sig++;sig+="|"+(HIST||[]).length;
+  if(A3.sig!==sig){A3.sig=sig;A3.cf={};A3.pair=null}
+  if(A3.cf[CF])return A3.cf[CF];
+  const P={},PAIR=new Set(),done=new Set();
+  const gp=(k,nm,club)=>P[k]||(P[k]={k,nm,club,M:[],C:[],grp:{}});
+  D.comps.concat(HIST||[]).forEach(c=>{
+    if(IGN[c.k]||c.go||c.fie)return;
+    c.eps.forEach(e=>{
+      const X=resOf(c,e);if(!X||!X.res||EQ(e))return;const ek=EK(c,e);if(done.has(ek))return;done.add(ek);
+      const cats=String(e.c).split(", ").map(x=>pcat(x)||x),single=cats.length===1?cats[0]:"";
+      if(CF&&single!==CF)return;
+      X.res.forEach(R=>{
+        const pl=R.players||{},by={};for(const id in pl){by[nkeyRaw(pl[id][0],pl[id][1])]=id}
+        const K=id=>pl[id]?nkey(pl[id][0],pl[id][1]):null,NM=id=>pl[id]?pl[id][1]+" "+pl[id][0]:"";
+        const lim=pLim(R,e);
+        const seen=new Set();
+        const touch=id=>{const k=K(id);if(!k)return null;const o=gp(k,NM(id),pl[id][2]||"");if(pl[id][2])o.club=pl[id][2];
+          if(!seen.has(id)){seen.add(id);const sx=rsx(e,R,id),pc=pcat(pl[id][3])||single;if(sx&&pc){const g=sx+"|"+pc;o.grp[g]=(o.grp[g]||0)+1}}return o};
+        const add=(a,b,sa,sb,wa,st,extra)=>{const A=touch(a),B=touch(b);if(!A||!B||A.k===B.k)return;
+          PAIR.add(A.k<B.k?A.k+"~"+B.k:B.k+"~"+A.k);
+          const base={c,e,ek,d:c.d,st,lim,...extra};
+          A.M.push({...base,on:B.k,nm:B.nm,s1:sa,s2:sb,w:wa});B.M.push({...base,on:A.k,nm:A.nm,s1:sb,s2:sa,w:!wa})};
+        (R.poules||[]).forEach(po=>{const rows=po.rows||[],n=rows.length;if(n<2||!rows.every(x=>(x.m||[]).length===n))return;
+          for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const ci=String(rows[i].m[j]||""),cj=String(rows[j].m[i]||"");
+            if(!/^[VD]/.test(ci)||!/^[VD]/.test(cj)||ci[0]===cj[0])continue;
+            const iw=ci[0]==="V";let sw=tnum(iw?ci:cj),sl=tnum(iw?cj:ci);if(sw===null)sw=lim;if(sl!==null&&sw<=sl)sw=Math.max(lim,sl+1);
+            const W=rows[iw?i:j].id,L=rows[iw?j:i].id;add(W,L,sw,sl,true,"p",{tour:po.tour||1})}});
+        const firstT={};
+        (typeof tabUniq==="function"?tabUniq(R):[]).forEach(({m,tr})=>{
+          const ia=m.a.id||by[nkeyRaw(m.a.name||"","")],ib=m.b.id||by[nkeyRaw(m.b.name||"","")];if(!ia||!ib||!pl[ia]||!pl[ib])return;
+          const va=/^V/i.test(String(m.a.sc||"")),vb=/^V/i.test(String(m.b.sc||""));let sa=tnum(m.a.sc),sb=tnum(m.b.sc);
+          let wa=va&&!vb?true:vb&&!va?false:(sa!==null&&sb!==null&&sa!==sb?sa>sb:null);if(wa===null)return;
+          if(String(m.a.sc)==="V0"||String(m.b.sc)==="V0")return;
+          const main=!tr.place||tr.place==="1";add(ia,ib,sa,sb,wa,"t",{r:m.r,main})});
+        const FN=(R.final||[]).filter(f=>Number.isInteger(f.pl)&&pl[f.id]);
+        if(e.s==="Mixte"&&R.sx){/* épreuve mixte : place et effectif recalculés parmi les tireurs du même sexe */
+          ["H","D"].forEach(sx=>{const L=FN.filter(f=>R.sx[f.id]===sx).sort((a,b)=>a.pl-b.pl);if(L.length<2)return;
+            L.forEach(f=>{const o=touch(f.id);if(o)o.C.push({c,e,d:c.d,pl:1+L.filter(x=>x.pl<f.pl).length,n:L.length,mx:1})})})}
+        else{const n=FN.length;FN.forEach(f=>{const o=touch(f.id);if(o&&n>1)o.C.push({c,e,d:c.d,pl:f.pl,n})})}
+      })})});
+  Object.values(P).forEach(o=>{o.M.sort((a,b)=>a.d.localeCompare(b.d)||(a.st===b.st?(a.st==="t"?(b.r||0)-(a.r||0):(a.tour||0)-(b.tour||0)):(a.st==="p"?-1:1)));o.C.sort((a,b)=>a.d.localeCompare(b.d));
+    o.g=Object.entries(o.grp).sort((a,b)=>b[1]-a[1]).map(x=>x[0])[0]||""});
+  A3.pair=PAIR;return A3.cf[CF]=P}
+const rel=x=>(x.n-x.pl)/(x.n-1);
+const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
+const sdv=a=>{if(a.length<2)return null;const m=mean(a);return Math.sqrt(a.reduce((s,x)=>s+(x-m)*(x-m),0)/a.length)};
+const slope=a=>{const n=a.length;if(n<3)return null;const xm=(n-1)/2,ym=mean(a);let u=0,v=0;a.forEach((y,i)=>{u+=(i-xm)*(y-ym);v+=(i-xm)*(i-xm)});return u/v};
+/* Elo du groupe à une date de coupure (médiane des matchs du groupe) : sert à la Progression ; un seul ajustement par groupe */
+const EAT={};
+function eloAt(g){if(!g)return null;ratingAll();const key=g+"|"+FRC.sig;if(EAT[g]&&EAT[g].key===key)return EAT[g];
+  const G=(FRC.G&&FRC.G[g])||[];if(G.length<20)return EAT[g]={key,m:{},cut:null,n:{}};
+  const ds=G.map(m=>m[3]).sort(),cut=ds[Math.floor(ds.length/2)];
+  const F=fitG(G.filter(m=>m[3]<=cut)),M={};F.ids.forEach((k,i)=>{M[k]=1500+FS*F.th[i]});
+  const nb={},na={};G.forEach(m=>{const t=m[3]<=cut?nb:na;t[m[0]]=(t[m[0]]||0)+1;t[m[1]]=(t[m[1]]||0)+1});
+  return EAT[g]={key,m:M,cut,nb,na}}
+/* métriques brutes (null = pas assez de données) */
+function raw(o){
+  if(o._raw&&o._raw.sig===FRC.sig)return o._raw.r;
+  const M=o.M,pm=M.filter(m=>m.st==="p"),tm=M.filter(m=>m.st==="t"),sc=M.filter(m=>m.s1!==null&&m.s2!==null),g=o.g;
+  const r={};
+  r.Poule=pm.length>=5?pm.filter(m=>m.w).length/pm.length:null;
+  r.Tableau=tm.length>=3?tm.filter(m=>m.w).length/tm.length:null;
+  const cl=sc.filter(m=>Math.abs(m.s1-m.s2)===1);r.Clutch=cl.length>=2?cl.filter(m=>m.w).length/cl.length:null;
+  const ws=sc.filter(m=>m.w);r.Killer=ws.length>=3?ws.filter(m=>(m.s1-m.s2)/Math.max(m.s1,m.s2)>=.5).length/ws.length:null;
+  const q=o.C.map(rel);r["Régularité"]=q.length>=2?-sdv(q):null;r._lvl=q.length?mean(q):null;
+  /* Momentum : sur ses 10 derniers matchs, victoires obtenues moins victoires attendues d'après la force des deux tireurs */
+  const me=g?ratingIn(o.k,g):null;
+  if(me){const L=M.map(m=>({m,q:ratingIn(m.on,g)})).filter(x=>x.q).slice(-10);r.Momentum=L.length>=10?L.reduce((s,x)=>s+(x.m.w?1:0)-winP(me.e,x.q.e),0)/L.length:null}else r.Momentum=null;
+  const el=M.map(m=>ratingIn(m.on,epG(m.e)||g)).filter(Boolean).map(x=>x.e);r["Niveau des adversaires"]=el.length>=5?mean(el):null;
+  const seenE=new Set(),late=tm.filter(m=>m.main!==false&&(seenE.has(m.ek)?true:(seenE.add(m.ek),false)));r["Late Game"]=late.length>=2?late.filter(m=>m.w).length/late.length:null;
+  /* Progression : gain de force (Elo) entre la mi-parcours de la catégorie et aujourd'hui */
+  const ea=eloAt(g);r.Progression=me&&ea&&ea.m[o.k]!==undefined&&(ea.nb[o.k]||0)>=2&&(ea.na[o.k]||0)>=2?me.e-ea.m[o.k]:null;
+  r["Expérience"]=M.length>=3?M.length:null;
+  o._raw={sig:FRC.sig,r};return r}
+const AXES=["Poule","Tableau","Clutch","Killer","Régularité","Momentum","Niveau des adversaires","Late Game","Progression","Expérience"];
+const SHORT={"Niveau des adversaires":"Niv. adversaires"};
+const AXD={Poule:"Victoires en poule.",Tableau:"Victoires en tableau.",Clutch:"Victoires dans les matchs gagnés ou perdus d’une seule touche (5-4, 15-14…). Au moins 2 matchs.",Killer:"Part des victoires larges (écart d’au moins la moitié du score : 5-2, 15-7…).","Régularité":"Places proches d’une compétition à l’autre (au moins 2 compétitions classées). Si ses places sont en moyenne dans la seconde moitié du classement, l’axe s’appelle « Constance » et ne compte ni en force ni en faiblesse.",Constance:"Places proches d’une compétition à l’autre, mais en moyenne dans la seconde moitié du classement : information seulement.",Momentum:"Forme récente : sur ses 10 derniers matchs, victoires obtenues comparées aux victoires attendues vu la force des adversaires. Un tireur qui gagne contre plus fort que prévu monte.","Niveau des adversaires":"Force (Elo) moyenne des adversaires rencontrés. Information seulement : ne compte ni en force ni en faiblesse.","Late Game":"Victoires en tableau après le premier match de tableau (les tours où il ne reste que les meilleurs).",Progression:"Évolution de sa force (Elo) entre le milieu de la période et aujourd’hui. Un tireur qui gagne toujours continue de progresser tant qu’il bat ses adversaires.","Expérience":"Nombre de matchs enregistrés."};
+/* groupe de comparaison : sa catégorie ; si moins de 12 tireurs comparables sur un axe, catégories voisines (vétérans ensemble), puis toutes catégories du même sexe */
+const LAD=["M9","M11","M13","M15","M17","M20","SENIOR"],VETS=["V1","V2","V3","V4"];
+function fams(cat){if(VETS.includes(cat))return [[cat],VETS,LAD.concat(VETS)];const i=LAD.indexOf(cat);if(i<0)return [[cat]];return [[cat],LAD.slice(Math.max(0,i-1),i+2),LAD.concat(VETS)]}
+function peerVals(sx,cat,a){
+  for(const [lvl,F] of fams(cat).entries()){const vs=[];
+    F.forEach(c=>{const P=build(c);for(const k in P){const x=P[k];if(x.g!==sx+"|"+c||x.M.length<5)continue;const v=raw(x)[a];if(v!==null&&v!==undefined)vs.push(v)}});
+    if(vs.length>=12)return {vs,lvl,F}}
+  return null}
+function scores(P,o){
+  const R0=raw(o),out={},wid={},[sx,cat]=(o.g||"|").split("|");
+  AXES.forEach(a=>{const v=R0[a];out[a]=null;if(v===null||v===undefined||!o.g)return;
+    const pv=peerVals(sx,cat,a);if(!pv)return;
+    const below=pv.vs.filter(x=>x<v).length,eq=pv.vs.filter(x=>x===v).length;out[a]=Math.round((below+eq/2)/pv.vs.length*100);if(pv.lvl)wid[a]=pv});
+  return {s:out,raw:R0,wid}}
+const col=v=>v===null?"var(--muted)":v>=65?"var(--good)":v>=40?"var(--accent)":v>=25?"var(--warn)":"var(--bad)";
+function radarSVG(AX,S,LB){
+  const c=150,R=105,n=AX.length,pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [c+Math.cos(a)*R*v/100,c+Math.sin(a)*R*v/100]};
+  let g="";[25,50,75,100].forEach(v=>{g+=`<polygon points="${AX.map((_,i)=>pt(i,v).join(",")).join(" ")}" fill="none" stroke="var(--line)" stroke-width="1"/>`});
+  AX.forEach((a,i)=>{const [x,y]=pt(i,100);g+=`<line x1="${c}" y1="${c}" x2="${x}" y2="${y}" stroke="var(--line)"/>`;const [lx,ly]=pt(i,122);g+=`<text x="${lx}" y="${ly}" font-size="10" fill="var(--muted)" text-anchor="${lx<c-5?"end":lx>c+5?"start":"middle"}" dominant-baseline="middle">${esc(SHORT[LB[a]]||LB[a])}</text>`});
+  g+=`<polygon points="${AX.map((a,i)=>pt(i,S[a]).join(",")).join(" ")}" fill="var(--accent)" fill-opacity=".22" stroke="var(--accent)" stroke-width="2"/>`;
+  AX.forEach((a,i)=>{const [x,y]=pt(i,S[a]);g+=`<circle cx="${x}" cy="${y}" r="4" fill="${col(S[a])}"/>`});
+  return `<svg viewBox="-50 0 400 300" style="width:100%;max-width:420px;display:block;margin:0 auto">${g}</svg>`}
+const pc=v=>Math.round(v*100)+" %",d1=v=>v.toFixed(1).replace(".",",");
+const card=(h,body,sub)=>`<div class="card2 k3c"><h4>${h}</h4>${sub?`<div class="h" style="margin:-4px 0 8px">${sub}</div>`:""}${body}</div>`;
+/* ---------- 1. Profil : radar 10 axes ---------- */
+function profil(P,o,nk,RC){
+  const {s,raw:R0,wid}=scores(P,o),ok=AXES.filter(a=>s[a]!==null);
+  const cons=R0._lvl!==null&&R0._lvl<.5,LB={};AXES.forEach(a=>LB[a]=a==="Régularité"&&cons?"Constance":a);
+  const INFO=new Set(["Niveau des adversaires"]);if(cons)INFO.add("Régularité");
+  const F=[],W=[];
+  const ph={Poule:["Très efficace en poule","Victoires en poule insuffisantes"],Tableau:["Solide en tableau","Difficultés à passer les tours de tableau"],Clutch:["Gagne les matchs serrés","Perd souvent les matchs à une touche"],Killer:["Gagne souvent largement","Victoires rarement nettes"],"Régularité":["Résultats réguliers","Résultats en dents de scie"],Momentum:["Fait mieux que prévu sur ses derniers matchs","Moins bien que prévu sur ses derniers matchs"],"Late Game":["Performant dans les tours avancés","Cale dans les tours avancés du tableau"],Progression:["Force en hausse","Force en baisse"],"Expérience":["Beaucoup de matchs au compteur","Encore peu de matchs au compteur"]};
+  const cand=ok.filter(a=>!INFO.has(a)&&ph[a]);
+  cand.slice().sort((a,b)=>s[b]-s[a]).forEach(a=>{if(s[a]>=65&&F.length<3)F.push(ph[a][0])});
+  cand.slice().sort((a,b)=>s[a]-s[b]).forEach(a=>{if(s[a]<=35&&W.length<3)W.push(ph[a][1])});
+  let rt=null;try{rt=o.g?ratingIn(nk,o.g):null}catch(e){}
+  const men=rt&&typeof rt.pc==="number"?(rt.pc/10).toFixed(1).replace(".",","):null;
+  const lab=o.g?`${o.g.split("|")[0]==="Dames"?"tireuses":"tireurs"} ${KL(o.g.split("|")[1])}`:"tireurs";
+  const miss=AXES.filter(a=>s[a]===null);
+  const head=card("Profil",`<div class="k3fw"><div><div class="k3t g">Forces</div>${F.length?F.map(x=>`<div class="k3i">✓ ${esc(x)}</div>`).join(""):`<div class="h">Rien de saillant pour l’instant.</div>`}</div><div><div class="k3t w">Axes d’amélioration</div>${W.length?W.map(x=>`<div class="k3i">⚠ ${esc(x)}</div>`).join(""):`<div class="h">Rien de saillant pour l’instant.</div>`}</div></div>${men?`<div class="k3men">Menace <b>${men}/10</b><small>d’après sa force Elo ${o.g?"en "+esc(KL(o.g.split("|")[1])):""}</small></div>`:""}`);
+  if(ok.length<3)return head+card("Radar de performance",`<div class='h'>Pas encore assez de matchs pour dessiner le radar (${ok.length} axe${ok.length>1?"s":""} mesurable${ok.length>1?"s":""} sur 10).</div>`);
+  const bars=ok.map(a=>`<div class="k3b" data-k3ax="${esc(LB[a])}"><span>${esc(LB[a])}${wid[a]?"*":""}</span><div class="trk"><i style="width:${s[a]}%;background:${INFO.has(a)?"var(--muted)":col(s[a])}"></i></div><b style="color:${INFO.has(a)?"var(--muted)":col(s[a])}">${s[a]}</b></div>`).join("");
+  const wl=Object.keys(wid).length?` * = trop peu de ${esc(lab)} mesurables sur cet axe : comparé aussi aux catégories voisines.`:"";
+  const surc=RC?` Calculé sur ses épreuves ${esc(KL(RC))} seulement (surclassement exclu).`:"";
+  return head+card(`Radar de performance · ${ok.length} axe${ok.length>1?"s":""}`,(ok.length>=3?radarSVG(ok,s,LB):"")+`<div class="k3bars">${bars}</div><div class="h" id="k3axd">Touche un axe pour voir ce qu’il mesure. Note de 0 à 100 = part des ${esc(lab)} qu’il dépasse sur ce critère.${wl}${surc}${miss.length?` Pas encore mesurable : ${esc(miss.map(a=>LB[a]).join(", "))}.`:""}</div>`)}
+/* ---------- 2. Réseau d'adversaires ---------- */
+const CATC={proie:"var(--good)",noire:"var(--bad)",rival:"#E69A1F",nouveau:"#6B6BF0"},CATL={proie:"Proie",noire:"Bête noire",rival:"Rival",nouveau:"Une rencontre"};
+function oppList(o){const O={};o.M.forEach(m=>{const x=O[m.on]||(O[m.on]={k:m.on,nm:m.nm,w:0,l:0,ms:[]});m.w?x.w++:x.l++;x.ms.push(m)});
+  return Object.values(O).map(x=>{const n=x.w+x.l,wr=x.w/n;x.n=n;x.cat=n===1?"nouveau":wr>=.67?"proie":wr<=.33?"noire":"rival";x.last=x.ms[x.ms.length-1].d;return x}).sort((a,b)=>b.n-a.n||b.last.localeCompare(a.last))}
+let NETN=20,NETX=false,NETS="";
+function netSVG(o,P){
+  const L=oppList(o).slice(0,NETN);if(!L.length)return "";
+  const W=360,c=180,mx=Math.max(...L.map(x=>x.n)),ord=["proie","rival","noire","nouveau"];
+  const G=ord.map(k=>L.filter(x=>x.cat===k)),tot=L.length;let idx=0;const pos={};
+  G.forEach(g=>g.forEach(x=>{const a=-Math.PI/2+(idx+.5)*2*Math.PI/tot;idx++;const r=62+(1-(x.n-1)/Math.max(1,mx-1))*95;pos[x.k]=[c+Math.cos(a)*r,c+Math.sin(a)*r,a]}));
+  let s="";
+  if(NETX&&A3.pair){for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++){const a=L[i].k,b=L[j].k;if(A3.pair.has(a<b?a+"~"+b:b+"~"+a)){const p=pos[a],q=pos[b];s+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="var(--muted)" stroke-opacity=".25" stroke-width=".8"/>`}}}
+  L.forEach(x=>{const p=pos[x.k];s+=`<line x1="${c}" y1="${c}" x2="${p[0]}" y2="${p[1]}" stroke="${CATC[x.cat]}" stroke-opacity=".45" stroke-width="${.8+Math.min(x.n,6)*.5}"/>`});
+  L.forEach(x=>{const p=pos[x.k],r=5+Math.min(x.n,6),nm=x.nm.split(" ").slice(1).join(" ")||x.nm,lx=p[0]+Math.cos(p[2])*(r+4),ly=p[1]+Math.sin(p[2])*(r+4);
+    s+=`<g data-k3o="${esc(x.k)}" style="cursor:pointer"><circle cx="${p[0]}" cy="${p[1]}" r="${r+6}" fill="transparent"/><circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="var(--surface)" stroke="${CATC[x.cat]}" stroke-width="${NETS===x.k?4:2.5}"/><text x="${lx}" y="${ly}" font-size="9" font-weight="600" fill="var(--ink)" text-anchor="${Math.cos(p[2])<-.2?"end":Math.cos(p[2])>.2?"start":"middle"}" dominant-baseline="middle">${esc(nm.length>14?nm.slice(0,13)+"…":nm)}</text></g>`});
+  s+=`<circle cx="${c}" cy="${c}" r="20" fill="var(--accent)"/><text x="${c}" y="${c}" font-size="11" font-weight="700" fill="var(--accent-ink)" text-anchor="middle" dominant-baseline="middle">MOI</text>`;
+  return `<svg viewBox="-75 -10 510 380" style="width:100%;display:block">${s}</svg>`}
+function oppDetail(o,k){const x=oppList(o).find(y=>y.k===k);if(!x)return "";
+  let ch="";try{const g=o.g,a=ratingIn(nkMe,g),b=ratingIn(k,g);if(a&&b)ch=`<div class="h">Force : lui ${a.e}, l’adversaire ${b.e} → environ <b>${Math.round(winP(a.e,b.e)*100)} %</b> de chances de gagner le prochain match.</div>`}catch(e){}
+  return `<div class="k3od"><div class="dh"><span><b>${esc(x.nm)}</b> · <span style="color:${CATC[x.cat]};font-weight:700">${CATL[x.cat]}</span></span><b>${x.w} V – ${x.l} D</b></div>${ch}${x.ms.slice().reverse().map(m=>`<div class="k3m"><span>${esc(fd(m.d))} · ${esc(m.c.v)} · ${m.st==="p"?"poule":(typeof RLAB!=="undefined"&&RLAB[m.r])||"tableau"}</span><b style="color:${m.w?"var(--good)":"var(--bad)"}">${m.w?"V":"D"}${m.s1!==null&&m.s2!==null?" "+m.s1+"-"+m.s2:""}</b></div>`).join("")}${typeof stK==="function"?stK(k):""}</div>`}
+let nkMe="";
+function reseau(P,o){
+  const L=oppList(o);if(!L.length)return card("Réseau d’adversaires","<div class='h'>Pas encore de match.</div>");
+  const cnt=k=>L.filter(x=>x.cat===k).length;
+  const freq=L.slice(0,10).map(x=>`<div class="k3m" data-k3o="${esc(x.k)}" style="cursor:pointer"><span><i class="k3dot" style="background:${CATC[x.cat]}"></i>${esc(x.nm)}</span><b style="color:${x.w>x.l?"var(--good)":x.w<x.l?"var(--bad)":"var(--ink)"}">${x.w}V/${x.l}D</b></div>`).join("");
+  return card("Réseau d’adversaires",`<div class="k3lg">${["proie","noire","rival","nouveau"].map(k=>`<span><i class="k3dot" style="background:${CATC[k]}"></i>${CATL[k]} ${cnt(k)}</span>`).join("")}</div>
+    <div class="schips" style="margin-top:8px">${[10,20,40].map(n=>`<button aria-pressed="${NETN===n}" data-k3n="${n}">${n} adversaires</button>`).join("")}<button aria-pressed="${NETX}" data-k3x="1">Liens entre eux</button></div>
+    <div id="k3net">${netSVG(o,P)}</div><div id="k3od">${NETS?oppDetail(o,NETS):`<div class="h">Touche un adversaire pour voir vos matchs. Plus il est proche du centre, plus vous vous êtes rencontrés.</div>`}</div>
+    <div class="sec" style="margin-top:10px">Les plus fréquents</div>${freq}`,
+    `${L.length} adversaires · Proie = il gagne au moins 2 fois sur 3 · Bête noire = il perd au moins 2 fois sur 3 · Rival = entre les deux · Une rencontre = un seul match`)}
+/* ---------- 3. Poule / tableau, écarts, scores ---------- */
+let ECF="p";
+function hist(ms,TL){
+  let B,lab,bin;
+  if(TL){const w=Math.max(1,Math.round(TL/5));B=[-4,-3,-2,-1,1,2,3,4];bin=d=>{const k=Math.min(4,Math.ceil(Math.abs(d)/w));return d<0?-k:k};
+    lab=b=>{const a=(Math.abs(b)-1)*w+1,z=Math.abs(b)*w,sg=b<0?"−":"+";return Math.abs(b)===4?(b<0?"≤−":"≥+")+a:(a===z?sg+a:sg+a+"/"+z)}}
+  else{B=[-4,-3,-2,-1,1,2,3,4];bin=d=>Math.max(-4,Math.min(4,d));lab=b=>b<=-4?"≤−4":b>=4?"≥+4":(b>0?"+":"−")+Math.abs(b)}
+  const c={};B.forEach(b=>c[b]=0);ms.forEach(m=>{if(m.s1===null||m.s2===null||m.s1===m.s2)return;c[bin(m.s1-m.s2)]++});
+  const mx=Math.max(1,...Object.values(c));
+  return `<div class="k3h">${B.map(b=>`<div><i style="height:${Math.round(c[b]/mx*100)}%;background:${b<0?"var(--bad)":"var(--good)"}"><em>${c[b]||""}</em></i><small>${lab(b)}</small></div>`).join("")}</div>`}
+function dist(ms,lim){const td={},tr={};for(let i=0;i<=lim;i++){td[i]=0;tr[i]=0}ms.forEach(m=>{if(m.s1===null||m.s2===null)return;if(m.s1<=lim)td[m.s1]++;if(m.s2<=lim)tr[m.s2]++});
+  const mx=Math.max(1,...Object.values(td),...Object.values(tr));
+  return `<div class="k3h k3d">${Object.keys(td).map(i=>`<div><span class="k3pair"><i style="height:${Math.round(td[i]/mx*100)}%;background:var(--t-nat)"></i><i style="height:${Math.round(tr[i]/mx*100)}%;background:var(--bad)"></i></span><small>${i}</small></div>`).join("")}</div>`}
+function pouleTab(o){
+  const pm=o.M.filter(m=>m.st==="p"),tm=o.M.filter(m=>m.st==="t");
+  if(!pm.length&&!tm.length)return "";
+  const row=(l,ms)=>{if(!ms.length)return `<div class="k3pt"><b>${l}</b><span class="h">aucun match</span></div>`;const w=ms.filter(m=>m.w).length,sc=ms.filter(m=>m.s1!==null&&m.s2!==null),td=sc.reduce((s,m)=>s+m.s1,0),tr=sc.reduce((s,m)=>s+m.s2,0);
+    return `<div class="k3pt"><b>${l}</b><div class="trk"><i style="width:${w/ms.length*100}%;background:${w/ms.length>=.5?"var(--good)":"var(--bad)"}"></i></div><span class="k3pv">${pc(w/ms.length)}</span><small>${w}V/${ms.length-w}D${sc.length?` · ${d1(td/sc.length)} données · ${d1(tr/sc.length)} reçues · indice ${td-tr>0?"+":""}${td-tr}`:""}</small></div>`};
+  let badge="";if(pm.length>=5&&tm.length>=3){const a=pm.filter(m=>m.w).length/pm.length,b=tm.filter(m=>m.w).length/tm.length,d=Math.round((a-b)*100);badge=`<span class="k3bd">${d>=0?`Meilleur en poule (+${d} pts)`:`Meilleur en tableau (+${-d} pts)`}</span>`}
+  const L=pm.length?Object.entries(pm.reduce((a,m)=>(a[m.lim]=(a[m.lim]||0)+1,a),{})).sort((a,b)=>b[1]-a[1])[0][0]:5;
+  const pmL=pm.filter(m=>m.lim==L),tmax=tm.filter(m=>m.s1!==null&&m.s2!==null).map(m=>Math.max(m.s1,m.s2)),TL=tmax.length?+Object.entries(tmax.reduce((a,x)=>(a[x]=(a[x]||0)+1,a),{})).sort((a,b)=>b[1]-a[1])[0][0]:15;
+  const tmL=tm.filter(m=>m.s1!==null&&m.s2!==null&&Math.max(m.s1,m.s2)<=TL);
+  return card(`Poule ou tableau ${badge}`,row("Poules",pm)+row("Tableau",tm))+
+    card("Écart de touches",`<div class="schips">${[["p","Poules"],["t","Tableaux"]].map(([k,l])=>`<button aria-pressed="${ECF===k}" data-k3e="${k}">${l}</button>`).join("")}</div>${ECF==="t"?hist(tm,TL):hist(pm)}<div class="h">${ECF==="t"?`De combien il gagne ou perd chaque match de tableau, par tranches de ${Math.max(1,Math.round(TL/5))} touche${Math.round(TL/5)>1?"s":""} (tableau en ${TL}).`:"De combien il gagne ou perd chaque match de poule. « −1 » = perdu d’une touche (4-5)."} Matchs sans score complet ignorés.</div>`)+
+    card("Distribution des scores",`${pmL.length?`<div class="sec">Poules en ${L} · ${pmL.length} matchs</div>${dist(pmL,+L)}`:""}${tmL.length?`<div class="sec">Tableau en ${TL} · ${tmL.length} matchs</div>${dist(tmL,TL)}`:""}<div class="k3lg"><span><i class="k3dot" style="background:var(--t-nat)"></i>touches données</span><span><i class="k3dot" style="background:var(--bad)"></i>touches reçues</span></div><div class="h">Nombre de matchs où il a mis (bleu) ou reçu (rouge) ce nombre de touches. Poules M13 et plus en 5 ; en M9-M11 la limite vient du tableau (tableau en 8 → poules en 4, en 10 → poules en 5).</div>`)}
+/* ---------- 4. ADN tactique ---------- */
+function adn(o){
+  const M=o.M;if(M.length<3)return "";
+  const bw=7,W=Math.max(320,M.length*bw+20),H=120,mid=60;let s="",ls="";
+  M.forEach((m,i)=>{const q=m.s1!==null&&m.s2!==null?Math.abs(m.s1-m.s2)/Math.max(m.s1,m.s2,1):.4,h=10+q*40,x=10+i*bw;
+    const cl=!m.w?"var(--bad)":m.st==="p"?"var(--t-int)":(m.r<=1&&m.main!==false)?"var(--good)":"var(--t-nat)";
+    const ph=m.st==="p"?"poule":((typeof RLAB!=="undefined"&&RLAB[m.r])||"tableau");
+    s+=`<rect data-k3a="${i}" x="${x}" y="${m.w?mid-h:mid+1}" width="${bw-2}" height="${h}" rx="1.5" fill="${cl}"><title>${esc(m.d)} · ${esc(ph)} · ${esc(m.nm)} · ${m.s1??"?"}-${m.s2??"?"}</title></rect>`;
+    const sn=seasonOf(m.d);if(i===0||seasonOf(M[i-1].d)!==sn)ls+=`<line x1="${x-1}" y1="4" x2="${x-1}" y2="${H-4}" stroke="var(--line)"/><text x="${x+2}" y="12" font-size="9" fill="var(--muted)">${seasonLbl(sn)}</text>`});
+  const sc=M.filter(m=>m.s1!==null&&m.s2!==null),q=m=>(m.s1-m.s2)/Math.max(m.s1,m.s2),n=sc.length||1;
+  const k=[["Victoires larges",sc.filter(m=>m.w&&q(m)>=.5).length,"var(--good)"],["Victoires serrées",sc.filter(m=>m.w&&q(m)<.5).length,"var(--t-nat)"],["Défaites serrées",sc.filter(m=>!m.w&&-q(m)<.5).length,"var(--warn)"],["Défaites lourdes",sc.filter(m=>!m.w&&-q(m)>=.5).length,"var(--bad)"]];
+  return card("ADN tactique",`<div class="k3lg"><span><i class="k3dot" style="background:var(--t-int)"></i>Poule</span><span><i class="k3dot" style="background:var(--t-nat)"></i>Tableau</span><span><i class="k3dot" style="background:var(--good)"></i>Demi/finale</span><span><i class="k3dot" style="background:var(--bad)"></i>Défaite</span></div>
+    <div style="overflow-x:auto;margin-top:6px" id="k3adnw"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${ls}<line x1="0" y1="${mid}" x2="${W}" y2="${mid}" stroke="var(--line)"/>${s}</svg></div><div class="h" id="k3adi">Chaque barre est un match, du plus ancien au plus récent : vers le haut une victoire, vers le bas une défaite ; plus la barre est haute, plus l’écart est grand. Touche une barre pour le détail.</div>
+    <div class="k3tl">${k.map(([l,v,c])=>`<div><b style="color:${c}">${Math.round(v/n*100)} %</b><small>${l}<br>${v} match${v>1?"s":""}</small></div>`).join("")}</div>`,"Victoire large = écart d’au moins la moitié du score (5-2, 15-7) ; serrée sinon.")}
+/* ---------- 5. Progression ---------- */
+function progression(o,NX){
+  const C=o.C;if(!C.length)return card("Progression","<div class='h'>Pas encore de classement final.</div>");
+  const pts=C.map(x=>({x,v:rel(x)*100}));
+  const W=340,H=170,pl=30,pr=10,pt=18,pb=26,X=i=>pl+(pts.length===1?(W-pl-pr)/2:i*(W-pl-pr)/(pts.length-1)),Y=v=>pt+(100-v)/100*(H-pt-pb);
+  let s=[0,25,50,75,100].map(v=>`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${pl-4}" y="${Y(v)}" font-size="8.5" fill="var(--muted)" text-anchor="end" dominant-baseline="middle">${v}</text>`).join("");
+  s+=`<polyline points="${pts.map((p,i)=>X(i)+","+Y(p.v)).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2.2"/>`;
+  pts.forEach((p,i)=>{s+=`<circle cx="${X(i)}" cy="${Y(p.v)}" r="4" fill="var(--accent)"><title>${esc(p.x.c.v)} · ${esc(fd(p.x.d))} · ${p.x.pl}/${p.x.n}</title></circle><text x="${X(i)}" y="${Y(p.v)-8}" font-size="${pts.length>9?7:8.5}" font-weight="700" fill="var(--accent)" text-anchor="middle">${p.x.pl===1?"1er":p.x.pl+"ᵉ"}<tspan font-weight="400" fill="var(--muted)">/${p.x.n}</tspan></text>`});
+  const lbl=[0,pts.length-1].filter((v,i,a)=>a.indexOf(v)===i);lbl.forEach(i=>{s+=`<text x="${X(i)}" y="${H-8}" font-size="8.5" fill="var(--muted)" text-anchor="${pts.length===1?"middle":i===0?"start":"end"}">${esc(pts[i].x.d.slice(5).split("-").reverse().join("/")+"/"+pts[i].x.d.slice(2,4))}</text>`});
+  const chart=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">${s}</svg><div class="h">Part du peloton devancée à chaque compétition (100 = vainqueur), avec la place et le nombre de tireurs au-dessus du point (3ᵉ/17 = 3ᵉ sur 17). Plus le peloton est grand, plus une même place vaut cher.</div>`;
+  /* grille par saison */
+  const cc=x=>{const t=rel(x);return t>=.85?"#1B7A3A":t>=.7?"#4CAF6A":t>=.5?"#3B6FD8":t>=.3?"#E69A1F":"#D64545"};
+  const bySeason={};C.forEach(x=>{(bySeason[seasonOf(x.d)]=bySeason[seasonOf(x.d)]||[]).push(x)});
+  const grid=Object.keys(bySeason).sort().reverse().map(sn=>`<div class="k3gr"><span>${seasonLbl(+sn)} (${bySeason[sn].length})</span><div>${bySeason[sn].map(x=>`<i style="background:${cc(x)}" title="${esc(x.c.v)} · ${esc(fd(x.d))} · ${x.pl}/${x.n}${x.n<6?" (petit peloton)":""}"${x.n<6?" class=\"sm\"":""}>${x.pl}</i>`).join("")}</div></div>`).join("");
+  /* tableau par saison */
+  const SS=Object.keys(bySeason).sort().reverse().map(sn=>{const ms=o.M.filter(m=>seasonOf(m.d)==sn),cs=bySeason[sn],best=cs.slice().sort((a,b)=>a.pl/a.n-b.pl/b.n)[0];return {sn,c:cs.length,m:ms.length,v:ms.length>=3?ms.filter(m=>m.w).length/ms.length:null,best,pod:cs.filter(x=>x.pl<=3).length}});
+  const ar=(a,b,hi)=>b===undefined||a===null||b===null?"":a>b?`<em style="color:${hi?"var(--good)":"var(--bad)"}">▲</em>`:a<b?`<em style="color:${hi?"var(--bad)":"var(--good)"}">▼</em>`:"";
+  const tab=`<div class="k3tab"><div class="k3th"><span>Saison</span><span>Compét.</span><span>Matchs</span><span>% V</span><span>Meilleur</span><span>Podiums</span></div>${SS.map((r,i)=>{const nx=SS[i+1];return `<div><span>${seasonLbl(+r.sn)}</span><span>${r.c}${ar(r.c,nx&&nx.c,1)}</span><span>${r.m}${ar(r.m,nx&&nx.m,1)}</span><span>${r.v===null?"–":pc(r.v)}${nx&&r.v!==null&&nx.v!==null?ar(r.v,nx.v,1):""}</span><span>${r.best.pl===1?"1er":r.best.pl+"ᵉ"}/${r.best.n}</span><span>${r.pod||"–"}</span></div>`}).join("")}</div>`;
+  /* tendance & projection */
+  let proj="";const last=pts.slice(-6).map(p=>p.v);
+  if(last.length>=3){const sl=slope(last),sd=sdv(last),mu=mean(last),nx=Math.max(0,Math.min(100,mu+sl*((last.length-1)/2+1))),n4=Math.max(0,Math.min(100,mu+sl*((last.length-1)/2+4)));
+    const top=mu>=90&&sl>=-1.5;const tr=top?["Au sommet","var(--good)"]:sl>1.5?["En progression","var(--good)"]:sl<-1.5?["En baisse","var(--bad)"]:["Stable","var(--ink)"],cons=sd<12?"Régulier":sd<22?"Assez régulier":"Irrégulier";
+    const N=Math.max(2,NX&&NX.n||16),sig=Math.max(8,sd||15);
+    const cdf=z=>.5*(1+Math.tanh(z*0.7978845608*(1+0.044715*z*z)));
+    const pTop=k=>{if(k>=N)return 1;const thr=(N-k)/(N-1)*100;return 1-cdf((thr-nx)/sig)};
+    const p3=pTop(3),p8=pTop(8),p16=pTop(16),p32=pTop(32);
+    const rows=[["Podium (top 3)",p3],["Top 4-8",p8-p3],["Top 9-16",p16-p8],["Top 17-32",p32-p16],["Au-delà",1-p32]].filter(r=>r[1]>.005);
+    proj=`<div class="k3tl"><div><b style="color:${tr[1]}">${tr[0]}</b><small>${sl>0?"+":""}${d1(sl)} pt/compét.</small></div><div><b>~${Math.round(nx)} %</b><small>prochaine compét.</small></div><div><b>~${Math.round(n4)} %</b><small>dans 4 compét. (± ${Math.round(sig)})</small></div><div><b>${cons}</b><small>écart-type ${Math.round(sd)} pts (${last.length} dernières)</small></div></div>
+    <div class="sec">Projection prochaine compétition <span class="k3bd" style="background:var(--warn-soft);color:var(--warn)">indicatif</span></div>${rows.map(([l,v])=>`<div class="k3b"><span>${l}</span><div class="trk"><i style="width:${Math.round(v*100)}%;background:var(--accent)"></i></div><b>${Math.round(v*100)} %</b></div>`).join("")}<div class="h">${NX&&NX.src?"Pour "+esc(NX.src)+".":"Pour un peloton d’environ "+N+" tireurs."}${top?" Déjà en tête : la marge de progression en places est faible, l’enjeu est de rester devant.":""} Calcul à partir de ses ${last.length} dernières places et de leur tendance ; le tirage des poules et du tableau peut tout changer.</div>`}
+  else proj=`<div class="h">Tendance et projection : il faut au moins 3 compétitions classées.</div>`;
+  return card("Progression",chart)+card("Résultats par compétition",`${grid}<div class="k3lg">${[["#1B7A3A","Devance ≥ 85 %"],["#4CAF6A","≥ 70 %"],["#3B6FD8","≥ 50 %"],["#E69A1F","≥ 30 %"],["#D64545","< 30 %"]].map(([c,l])=>`<span><i class="k3dot" style="background:${c}"></i>${l}</span>`).join("")}</div>`,"Une case = une compétition ; le chiffre = la place, la couleur = la part du peloton devancée (même échelle que le graphique). Case en pointillés = moins de 6 tireurs, à relativiser.")+card("Évolution par saison",tab,"▲▼ = par rapport à la saison d’avant ; % V masqué sous 3 matchs.")+card("Tendance",proj)}
+/* ---------- assemblage ---------- */
+let CUR=null;
+function nextField(t,idx,o){const cat=pcat(t[3])||"",sx=o&&o.g;const sOK=e=>!sx||e.s==="Mixte"||(sx==="H"?e.s==="Hommes":e.s==="Dames");
+  const fut=(D.comps||[]).filter(c=>c.d>=TODAY&&c.eps).sort((a,b)=>a.d<b.d?-1:1);
+  for(const c of fut)for(const e of c.eps)if((e.l||[]).includes(idx)&&e.n>1)return {n:e.n,src:`sa prochaine compétition (${c.v||c.n}, ${fd(c.d)}) : ${e.n} inscrits à ce jour`};
+  const ns=(D.comps||[]).filter(c=>c.d<TODAY&&c.eps).flatMap(c=>c.eps).filter(e=>e.c===cat&&sOK(e)&&e.n>1).map(e=>e.n).sort((a,b)=>a-b);
+  if(ns.length)return {n:ns[Math.floor(ns.length/2)],src:`un peloton d’environ ${ns[Math.floor(ns.length/2)]} tireurs (taille habituelle en ${KL(cat)}, pas d’inscription à venir)`};
+  return {n:16,src:""}}
+function anaHTML(t,idx){
+  nkMe=nkey(t[0],t[1]);const CF=STCT||"";const P=build(CF),o=P[nkMe];
+  if(!o||(!o.M.length&&!o.C.length))return `<div class="empty">Pas encore de résultats pour ce tireur${CF?" dans cette catégorie":""}.</div>`;
+  CUR={P,o};
+  return `<div class="k3note">Toutes les données disponibles dans l’appli (saisons et archive), ${o.M.length} matchs et ${o.C.length} classements.${CF?" Catégorie "+esc(KL(CF))+" seulement.":""}</div>`+(()=>{const RC=CF||pcat(t[3])||"";const P2=RC?build(RC):P,o2=P2[nkMe];return o2&&o2.M.length?profil(P2,o2,nkMe,RC):profil(P,o,nkMe,"")})()+reseau(P,o)+pouleTab(o)+adn(o)+progression(o,nextField(t,idx,o))}
+function fill(){const el=document.getElementById("sm-a");if(!el)return;const i=+el.dataset.t;if(!D.tir[i])return;el.innerHTML=anaHTML(D.tir[i],i);el.dataset.done="1"}
+const _sH=statsHTML;
+statsHTML=function(t,idx){let h=_sH(t,idx);if(h.indexOf('data-smode="d"')<0)return h;
+  h=h.replace(/(data-smode="d">[^<]*<\/button>)/,`$1<button aria-pressed="${STM==="a"}" data-smode="a">Analyse ✦</button>`);
+  h=h.replace('<div id="sm-r"',`<div id="sm-a" data-t="${idx}" ${STM==="a"?"":"hidden"}></div><div id="sm-r"`);
+  if(STM==="a")setTimeout(fill,0);NETS="";return h};
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-smode],[data-k3n],[data-k3x],[data-k3o],[data-k3e],[data-k3a],[data-k3ax]");if(!b)return;
+  if(b.dataset.smode!==undefined){const el=document.getElementById("sm-a");if(el){el.hidden=b.dataset.smode!=="a";if(b.dataset.smode==="a"&&!el.dataset.done)setTimeout(fill,0)}return}
+  if(!CUR)return;const {P,o}=CUR;
+  if(b.dataset.k3n){NETN=+b.dataset.k3n;document.querySelectorAll("[data-k3n]").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.k3n===NETN));$("#k3net").innerHTML=netSVG(o,P);return}
+  if(b.dataset.k3x){NETX=!NETX;b.setAttribute("aria-pressed",NETX);$("#k3net").innerHTML=netSVG(o,P);return}
+  if(b.dataset.k3o){NETS=b.dataset.k3o;$("#k3net").innerHTML=netSVG(o,P);$("#k3od").innerHTML=oppDetail(o,NETS);$("#k3od").scrollIntoView({block:"nearest",behavior:"smooth"});return}
+  if(b.dataset.k3e){ECF=b.dataset.k3e;const el=document.getElementById("sm-a");const st=el.closest(".inner")?el.closest(".inner").scrollTop:0;el.innerHTML=anaHTML(D.tir[+el.dataset.t],+el.dataset.t);if(el.closest(".inner"))el.closest(".inner").scrollTop=st;return}
+  if(b.dataset.k3a){const m=o.M[+b.dataset.k3a];if(m)$("#k3adi").innerHTML=`<b>${esc(fd(m.d))}</b> · ${esc(m.c.v)} · ${m.st==="p"?"poule":esc((typeof RLAB!=="undefined"&&RLAB[m.r])||"tableau")} · contre ${esc(m.nm)} · <b style="color:${m.w?"var(--good)":"var(--bad)"}">${m.w?"V":"D"} ${m.s1??"?"}-${m.s2??"?"}</b>`;return}
+  if(b.dataset.k3ax){const a=b.dataset.k3ax;$("#k3axd").innerHTML=`<b>${esc(a)}</b> : ${esc(AXD[a]||"")}`;return}
+},true);
+const st=document.createElement("style");st.textContent=`
+.sth-s{overflow-x:auto;scrollbar-width:none}.sth-s::-webkit-scrollbar{display:none}.sth-s button{flex:1 0 auto;padding-left:9px;padding-right:9px;white-space:nowrap}
+#sm-a{display:flex;flex-direction:column;gap:10px}.k3c h4{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.k3note{font-size:12px;color:var(--muted);background:var(--fill);border-radius:12px;padding:7px 10px}
+.k3fw{display:grid;grid-template-columns:1fr 1fr;gap:10px}.k3t{font:700 11.5px var(--font-body);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}.k3t.g{color:var(--good)}.k3t.w{color:var(--warn)}
+.k3i{font-size:13px;line-height:1.35;margin-bottom:4px}.k3men{margin-top:10px;display:flex;align-items:baseline;gap:8px;font-size:13px}.k3men b{font:700 18px var(--font-head);color:var(--accent)}.k3men small{color:var(--muted)}
+.k3bars{margin-top:6px}.k3b{display:grid;grid-template-columns:92px minmax(0,1fr) 34px;gap:8px;align-items:center;font-size:12.5px;padding:3px 0;cursor:pointer}.k3b b{text-align:right;font-variant-numeric:tabular-nums}
+.k3b .trk,.k3pt .trk{height:8px;border-radius:4px;background:var(--fill);overflow:hidden}.k3b .trk i,.k3pt .trk i{display:block;height:100%;border-radius:4px}
+.k3lg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--muted);margin-top:4px}.k3dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.k3od{margin-top:6px;padding:10px;border-radius:14px;background:var(--fill)}.k3m{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}.k3m:last-child{border-bottom:0}.k3m span{min-width:0;overflow-wrap:anywhere}
+.k3od .vs{margin:6px 0 0}
+.k3pt{display:grid;grid-template-columns:62px minmax(0,1fr) 44px;gap:4px 8px;align-items:center;padding:6px 0}.k3pt small{grid-column:1/-1;color:var(--muted);font-size:12px}.k3pv{font:700 15px var(--font-head);text-align:right}
+.k3bd{font:600 11.5px var(--font-body);padding:3px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.k3h{display:flex;align-items:flex-end;gap:5px;height:110px;margin-top:8px}.k3h>div{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:3px}.k3h i{display:block;width:100%;border-radius:5px 5px 2px 2px;position:relative;min-height:2px}.k3h em{position:absolute;top:-15px;left:0;right:0;text-align:center;font:600 10.5px var(--font-body);font-style:normal;color:var(--muted)}.k3h small{font-size:10.5px;color:var(--muted)}
+.k3d{height:80px}.k3pair{display:flex;gap:2px;align-items:flex-end;width:100%;height:100%}.k3pair i{flex:1;border-radius:3px 3px 1px 1px}
+.k3tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:10px}.k3tl>div{background:var(--fill);border-radius:14px;padding:9px 6px;text-align:center}.k3tl b{display:block;font:700 17px var(--font-head)}.k3tl small{display:block;margin-top:2px;font-size:11px;color:var(--muted);line-height:1.25}
+.k3gr i.sm{outline:2px dashed rgba(0,0,0,.35);outline-offset:-2px;opacity:.75}.k3gr{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px;align-items:center;padding:4px 0;font-size:12px;color:var(--muted)}.k3gr>div{display:flex;flex-wrap:wrap;gap:4px}.k3gr i{font-style:normal;min-width:28px;height:24px;border-radius:7px;color:#fff;font:700 11.5px var(--font-body);display:grid;place-items:center;padding:0 4px}
+.k3tab{font-size:12.5px;overflow-x:auto}.k3tab>div{display:grid;grid-template-columns:72px repeat(5,minmax(52px,1fr));gap:6px;padding:7px 0;border-bottom:1px solid var(--line);white-space:nowrap}.k3tab>div:last-child{border-bottom:0}.k3th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase}.k3tab em{font-style:normal;font-size:9px;margin-left:2px}
+`;document.head.appendChild(st);
+window.K3pLim=pLim;
+})();
+/*K3-END*/</script>
